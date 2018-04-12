@@ -39,7 +39,7 @@ jQuery(document).ready(function(){
 <!--topHeader-->
 <div class="fullGrid center logoBarbg slideposi">
 	<div class="wrapperIn positionR">
-    	<div class="logoBarLeft"><a href=""><img src="${pageContext.request.contextPath}/resources/images/monginislogo.jpg" alt="monginis"></a></div>  
+    	<div class="logoBarLeft"><a href=""><img src="${pageContext.request.contextPath}/resources/images/monginislogoo.png" alt="monginis"></a></div>  
         <div class="logoBarRight"><div id="menuzord" class="menuzord red menuzord-responsive">
             <ul class="menuzord-menu menuzord-right menuzord-indented scrollable">
                <%--  <li><a href="#"><div class="usericon">John doe</div> <div class="userimg"><img src="${pageContext.request.contextPath}/resources/images/userimg.jpg"></div> </a>

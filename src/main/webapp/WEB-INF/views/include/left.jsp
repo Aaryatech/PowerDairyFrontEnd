@@ -26,68 +26,55 @@
 						<span>Masters</span>
 					</div></a></li>
 					<%-- </c:if> --%>
-			<c:if test="${info.accessRight==1 or info.accessRight==2 or info.accessRight==3}">	
-					
-			<li><a href="${pageContext.request.contextPath}/orderHistory"><div
-						class="img">
-						<i class="fa fa-file-text-o icon"></i>
-					</div>
-					<div class="title">
-						Order <span>History</span>
-					</div></a></li>
-			</c:if>		
-					
-					
-					<li><a href="${pageContext.request.contextPath}/showCustomerBill"><div
+			  
+					<li><a href="${pageContext.request.contextPath}/purchaseBill"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Customer Bill <span></span>
+						Purchase Bill <span></span>
 					</div></a></li>
 					
 				 
-					<li><a href="${pageContext.request.contextPath}/showExpressBill"><div
+					<li><a href="${pageContext.request.contextPath}/tempBill"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Express Bill <span></span>
+						Temporary Bill  <span></span>
 					</div></a></li>
 					
-					<li><a href="${pageContext.request.contextPath}/showBill"><div
+					<li><a href="${pageContext.request.contextPath}/approvedTempBill"><div
 						class="img">
 						<i class="fa fa-money icon"></i>
 					</div>
 					<div class="title">
-						View Purchase <span>Bills</span>
+						Approved Temp Bill <span></span>
 					</div></a></li>
 					
-						<li><a href="${pageContext.request.contextPath}/showOtherBill"><div
+						<li><a href="${pageContext.request.contextPath}/returnManf"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Other Purchase Bill<span></span>
+						Return Manufacture<span></span>
 					</div></a></li>
 					
-					<li><a href="${pageContext.request.contextPath}/showRuleFilePdf"><div
+					<li><a href="${pageContext.request.contextPath}/creditNote"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Rule And Regulation <span></span>
+						Credit Note <span></span>
 					</div></a></li>
 					
-						<c:if test="${info.accessRight==1 or info.accessRight==2}">	
-					<li><a href="${pageContext.request.contextPath}/showstockdetail" ><div class="img">
-						<img
-							src="${pageContext.request.contextPath}/resources/images//nav-orerhistory.png"
-							alt="img">
+						<li><a href="${pageContext.request.contextPath}/vehInfo"><div
+						class="img">
+						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Stock <span>Details</span>
-					</div></a></li></c:if>
+						Vehicle Information <span></span>
+					</div></a></li>
 					
 					
 					
