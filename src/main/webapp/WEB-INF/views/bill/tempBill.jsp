@@ -70,7 +70,7 @@
 					
 						<div class="col-md -3">
 							
-								<div class="col1title" align="left"><h3> Temporary Bill</h3></div>
+								<div class="col1title" align="left"><h3>Bill</h3></div>
 								 
 						</div>
 						
@@ -130,6 +130,22 @@
 
 						</div>
 					 
+					</div> 
+					
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Vehicle Out KM*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="opnQty" class="form-control"
+								placeholder="Vehicle Out KM" name="opnQty"   type="number" required>
+
+						</div>
+						
+						<div class="col-md-1">
+							 
+						</div>
+ 
 					</div> 
 					
 					 <div class="colOuter"> 

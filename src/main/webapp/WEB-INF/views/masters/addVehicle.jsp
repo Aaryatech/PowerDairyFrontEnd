@@ -63,7 +63,7 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
+					action="${pageContext.request.contextPath}/insertVehicle">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
@@ -76,11 +76,11 @@
 						
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Vehicle Name*: </div>
+							<div class="col1title" align="left">Vehicle No*: </div>
 						</div>
 						<div class="col-md-3">
 							<input id="vehicleName" class="form-control"
-								placeholder="Vehicle Name" name="vehicleName" type="text" required>
+								placeholder="Vehicle No" name="vehicleName" type="text" required>
 								<input id="vehId" class="form-control"
 								  name="vehId"  type="hidden" >
 
@@ -123,7 +123,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="datepicker" class="texboxitemcode texboxcal"
-								  name="fromDate" type="text" required>
+								  name="openingKmDate" type="text" required>
 
 						</div>
 						
@@ -139,51 +139,42 @@
 				 
 					</div>
 					
-					<%-- <div id="table-scroll" class="table-scroll">
-					<div id="faux-table" class="faux-table" aria="hidden"></div>
-					<div class="table-wrap">
-						<table id="table_grid" class="main-table">
-
-							<thead>
-								<tr class="bgpink">
-								
-									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
-									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
-									<th class="col-md-1">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${supplierList}" var="supplierList"
+					 <div id="table-scroll" class="table-scroll">
+									<div id="faux-table" class="faux-table" aria="hidden"></div>
+									<div class="table-wrap table-wrap-custbill">
+										<table id="table_grid1" class="main-table small-td">
+											<thead>
+												<tr class="bgpink">
+													<th class="col-sm-1">Sr no.</th>
+													<th class="col-md-1">Vehicle No</th> 
+													<th class="col-md-1">Vehicle Type</th> 
+													<th class="col-md-1">Vehicle Opening KM</th>
+													<th class="col-md-1">Opening KM Date</th>
+													<th class="col-md-1">Action</th>
+												</tr>
+											</thead>
+											<tbody>
+											
+											<c:forEach items="${vehicleList}" var="vehicleList"
 									varStatus="count">
 									<tr>
-										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
-										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
-						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
-												 
-											</div></td>
+										 <td class="col-md-1"><c:out value="${count.index+1}" /></td>
+										  
+											 
+										 <td class="col-md-1"><c:out value="${vehicleList.vehName}" /></td>
+										<td class="col-md-1"><c:out value="${vehicleList.vehType}" /></td>		 
+										<td class="col-md-1"><c:out value="${vehicleList.vehOpKms}" /></td>	
+										<td class="col-md-1"><c:out value="${vehicleList.vehOpKmsDate}" /></td>	
+									 <td><a href="${pageContext.request.contextPath}/deleteVehicle/${vehicleList.vehId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a></td>
+										 
 									</tr>
 								</c:forEach>
-						</table>
 
-					</div>
-				</div> --%>
+											</tbody>
+
+										</table>
+									</div>
+								</div>
 
 				</form>
 

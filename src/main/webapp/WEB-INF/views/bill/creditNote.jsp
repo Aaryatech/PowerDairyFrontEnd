@@ -76,15 +76,10 @@
 						
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Select Customer *: </div>
+							<div class="col1title" align="left"> Customer Name : </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="custId" id="custId" required>
-							<option value="">Select Option</option>
-							<option value="1">Mahesh</option>
-							<option value="2">Sachin</option> 
-						 </select>
+							 Mahesh
 
 						</div>
 						
@@ -93,15 +88,11 @@
 						</div>
 
 						<div class="col-md-2">
-							<div class="col1title" align="left">Scrap Type*: </div>
+							<div class="col1title" align="left">Bill No : </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="crapType" id="crapType" required>
-							<option value="">Select Option</option>
-							<option value="1">Leakage</option>
-							<option value="2">Expire</option> 
-						 </select>
+							<input id="creditNo" class="form-control"
+								placeholder="Bill No" name="creditNo"   type="number" required disabled>
 
 						</div>
 					 
@@ -109,7 +100,7 @@
 					
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Credit No*: </div>
+							<div class="col1title" align="left">Credit No : </div>
 						</div>
 						<div class="col-md-3">
 							<input id="creditNo" class="form-control"
@@ -127,53 +118,8 @@
 					 <div class="colOuter"> 
 					</div>
 					 
-					<div class="colOuter">
-						 
-						<div class="col-md-2">
-							<div class="col1title" align="left">Select Item *: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="itemId" id="itemId" required>
-							<option value="">Select Option</option>
-							<option value="1">Milk</option>
-							<option value="2">Dahi</option> 
-						 </select>
-
-						</div>
-						<div class="col-md-1"> </div>
-						<div class="col-md-2">
-							<div class="col1title" align="left">Select Batch *: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="batchId" id="batchId" required>
-							<option value="">Select Option</option>
-							 
-						 </select>
-
-						</div>
-				 
-					</div>
-					
-					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty"   type="number" required>
-
-						</div>
-						<div class="col-md-1">
-							 
-						</div>
- 
-					</div>
-					
-				 
+					  
 					 
-					 <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  >
 					 
 					 <div class="colOuter"> 
 					</div>
@@ -186,15 +132,39 @@
 													<th class="col-sm-1">Sr no.</th>
 													<th class="col-md-1">Batch No</th>
 													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Qty</th>   
+													<th class="col-md-1">Bill Qty</th>   
+													<th class="col-md-1">Expire Qty </th>
+													<th class="col-md-1">Leakage Qty</th>
 													<th class="col-md-1">Rate</th>
-													<th class="col-md-1">Tax%</th>
-													<th class="col-md-1">Tax Amt</th>
 													<th class="col-md-1">Total</th>
-													<th class="col-md-1">Action</th>
+													 
 												</tr>
 											</thead>
 											<tbody>
+											
+											<tr>
+												<td class="col-md-1"><c:out value="${1}" /></td> 
+												<td class="col-md-1"><c:out value="1" /></td> 
+												<td class="col-md-1"><c:out value="Milk" /></td> 
+												<td class="col-md-1"><c:out value="90" /></td> 
+												<td class="col-md-1"><input type="text" min="0" max="500"
+																			class="form-control" name="discPer" id="discPer" value="0"
+																			onkeypress="onQty(event,1)"
+																			oninput="validity.valid||(value='');"></td>
+												<td class="col-md-1"><input type="text" min="0" max="500"
+																			class="form-control" name="discPer" id="discPer" value="0"
+																			onkeypress="onQty(event,1)"
+																			oninput="validity.valid||(value='');"></td>
+												 
+												
+												 
+												
+												 
+												<td><h4 id="discAmt${1}" >50</h4></td>
+												<td><h4 id="discAmt${1}" >0</h4></td>
+												 
+												 
+												</tr>
 
 											</tbody>
 

@@ -32,26 +32,19 @@
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Purchase Bill <span></span>
+						 Purchase  <span></span>
 					</div></a></li>
 					
 				 
-					<li><a href="${pageContext.request.contextPath}/tempBill"><div
+					<li><a href="${pageContext.request.contextPath}/showAllTempAndSettleBill"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
 					<div class="title">
-						Temporary Bill  <span></span>
+						  Bills  <span></span>
 					</div></a></li>
 					
-					<li><a href="${pageContext.request.contextPath}/approvedTempBill"><div
-						class="img">
-						<i class="fa fa-money icon"></i>
-					</div>
-					<div class="title">
-						Approved Temp Bill <span></span>
-					</div></a></li>
-					
+					  
 						<li><a href="${pageContext.request.contextPath}/returnManf"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
@@ -60,7 +53,7 @@
 						Return Manufacture<span></span>
 					</div></a></li>
 					
-					<li><a href="${pageContext.request.contextPath}/creditNote"><div
+					<%-- <li><a href="${pageContext.request.contextPath}/creditNote"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>
 					</div>
@@ -74,7 +67,7 @@
 					</div>
 					<div class="title">
 						Vehicle Information <span></span>
-					</div></a></li>
+					</div></a></li> --%>
 					
 					
 					
@@ -427,12 +420,12 @@
 						<div class="ibox-head">
 						<div class="ibox-title">Masters</div>
 						</div>
-						<a href="${pageContext.request.contextPath}/addCustomer"><i class="fa fa-files-o icon"></i>Add Customer</a>
-						<a href="${pageContext.request.contextPath}/addItem"><i class="fa fa-files-o icon"></i>Add Item</a> 
-						 <a href="${pageContext.request.contextPath}/addCategory"><i class="fa fa-files-o icon"></i>Add Category</a>
-						  <a href="${pageContext.request.contextPath}/addUom"><i class="fa fa-files-o icon"></i>Add UOM</a>
-						 <a href="${pageContext.request.contextPath}/addVehicle"><i class="fa fa-files-o icon"></i>Add Vehicle</a>
-						  <a href="${pageContext.request.contextPath}/addUser"><i class="fa fa-files-o icon"></i>Add User</a>
+						<a href="${pageContext.request.contextPath}/addUom"><i class="fa fa-files-o icon"></i> UOM Masters</a>
+						 <a href="${pageContext.request.contextPath}/addCategory"><i class="fa fa-files-o icon"></i> Category Masters</a>
+						  <a href="${pageContext.request.contextPath}/addVehicle"><i class="fa fa-files-o icon"></i> Vehicle Masters</a>
+						<a href="${pageContext.request.contextPath}/addCustomer"><i class="fa fa-files-o icon"></i> Customer Masters</a>
+						<a href="${pageContext.request.contextPath}/addItem"><i class="fa fa-files-o icon"></i> Item Masters</a> 
+						  <a href="${pageContext.request.contextPath}/addUser"><i class="fa fa-files-o icon"></i> User Masters</a>
 						
 								
 						</div>

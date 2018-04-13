@@ -14,6 +14,12 @@
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -94,7 +100,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="custAdd" class="form-control"
-								placeholder="Customer Address" name="custAdd" type="text" required>
+								placeholder="Customer Address"  name="custAdd" type="text" required>
 
 						</div>
 					 
@@ -109,11 +115,11 @@
 						</div>
 						<div class="col-md-3">
 							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="isSameState" id="isSameState" required>
+							name="custType" id="custType" required>
 							<option value="">Select Option</option>
-							<option value="1">Hotel</option>
-							<option value="2">Distributor</option>
-							<option value="3">Retailer</option>
+							<c:forEach items="${customerTypeList}" var="customerTypeList"> 
+								<option value="${customerTypeList.custTypeId}" ><c:out value="${customerTypeList.custTypeName}"/></option> 
+							</c:forEach>
 						 </select>
 
 						</div>
@@ -254,8 +260,8 @@
 							<div class="col1title" align="left">Opening Cap*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="custRef" class="form-control"
-								placeholder="Customer Reference" name="custRef" type="number" required>
+							<input id="openigCap" class="form-control"
+								placeholder="Customer Reference" name="openigCap" type="number" required>
 
 						</div>
 						<div class="col-md-1">
@@ -263,15 +269,50 @@
 						</div>
 
 						<div class="col-md-2">
-							<div class="col1title" align="left">Creadit Cap </div>
+							<div class="col1title" align="left">Credit Cap </div>
 						</div>
 						<div class="col-md-3">
-							<input id="createCap" class="form-control"
-								placeholder="Creadit Cap" name="createCap" type="number" required>
+							<input id="creditCap" class="form-control"
+								placeholder="Creadit Cap" name="creditCap" type="number" required>
 
 						</div>
 				 
 					</div> 
+					
+					<div class="colOuter">
+						 
+						<div class="col-md-2">
+							<div class="col1title" align="left">Rate Type*: </div>
+						</div>
+						<div class="col-md-3">
+							<select class="form-control " data-live-search="true" title="Please Select" 
+							name="rsHeaderId" id="rsHeaderId" required>
+							<option value="">Select Option</option>
+							<c:forEach items="${rsHeaderList}" var="rsHeaderList"> 
+								<option value="${rsHeaderList.rsHeaderId}" ><c:out value="${rsHeaderList.rsName}"/></option> 
+							</c:forEach>
+						 </select> 
+						</div>
+						 <div class="col-md-1"> </div>
+						 
+						  <div class="col-md-2">
+							<div class="col1title" align="left">Select Vehicle*: </div>
+						</div>
+						<div class="col-md-3">
+						
+					   									 
+					 	<select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="vehId" id="vehId" required> 
+							<option value="">Select Option</option>
+							 
+								<option value="1">MH-15-1889</option>
+							<option value="2">MH-15-1772</option> 
+							 
+						 </select>
+
+						</div>
+				 
+					</div>
 					<div class="colOuter">
 						<div align="center">
 							<input name="submit" class="buttonsaveorder" value="Submit"
@@ -281,51 +322,7 @@
 				 
 					</div>
 					
-					<%-- <div id="table-scroll" class="table-scroll">
-					<div id="faux-table" class="faux-table" aria="hidden"></div>
-					<div class="table-wrap">
-						<table id="table_grid" class="main-table">
-
-							<thead>
-								<tr class="bgpink">
-								
-									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
-									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
-									<th class="col-md-1">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${supplierList}" var="supplierList"
-									varStatus="count">
-									<tr>
-										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
-										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
-						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
-												 
-											</div></td>
-									</tr>
-								</c:forEach>
-						</table>
-
-					</div>
-				</div> --%>
+				 
 
 				</form>
 

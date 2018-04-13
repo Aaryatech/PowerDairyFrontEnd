@@ -70,13 +70,13 @@
 					
 						<div class="col-md -3">
 							
-								<div class="col1title" align="left"><h3> Approved Temporary Bill</h3></div>
+								<div class="col1title" align="left"><h3> Approve Bill</h3></div>
 								 
 						</div>
 						
 					<div class="colOuter">
 						<div class="col-md-3">
-							<div class="col1title" align="left"> Customer  : Customer Name </div>
+							<div class="col1title" align="left"> Customer  : Mahesh </div>
 							
 						</div>
 						  
@@ -85,7 +85,7 @@
 						</div>
 
 						<div class="col-md-3">
-							<div class="col1title" align="left">Select Vehicle: Vehicle Name </div>
+							<div class="col1title" align="left"> Vehicle No.: MH-15-1772 </div>
 							
 						</div>
 						  
@@ -95,11 +95,10 @@
 					  
 					 
 						<div class="col-md-2">
-							<div class="col1title" align="left"> Bill Date *: </div>
+							<div class="col1title" align="left"> Bill Date : ${date}</div>
 						</div>
 						<div class="col-md-2">
-								<input id="datepicker" placeholder="Bill Date" class="texboxitemcode texboxcal"
-															name="billDate" type="text" required>
+							 
 
 						</div>
 					</div>
@@ -122,11 +121,33 @@
 													<th class="col-md-1">Amount</th>
 													<th class="col-md-1">Tax%</th>
 													<th class="col-md-1">Tax Amt</th>
-													<th class="col-md-1">Total</th>
-													<th class="col-md-1">Action</th>
+													<th class="col-md-1">Total</th> 
 												</tr>
 											</thead>
 											<tbody>
+											
+											<tr>
+												<td class="col-md-1"><c:out value="${1}" /></td> 
+												<td class="col-md-1"><c:out value="1" /></td> 
+												<td class="col-md-1"><c:out value="Milk" /></td> 
+												<td class="col-md-1"><c:out value="90" /></td> 
+												<td class="col-md-1"><input type="text" min="0" max="500"
+																			class="form-control" name="discPer" id="discPer" value="0"
+																			onkeypress="onQty(event,1)"
+																			oninput="validity.valid||(value='');"></td>
+												<td class="col-md-1"><input type="text" min="0" max="500"
+																			class="form-control" name="discPer" id="discPer" value="0"
+																			onkeypress="onQty(event,1)"
+																			oninput="validity.valid||(value='');"></td>
+												<td class="col-md-1">50</td>
+												
+												<td><h4 id="discAmt${1}" >4500</h4></td>
+												
+												<td><h4 id="discAmt${1}" >12</h4></td>
+												<td><h4 id="discAmt${1}" >540</h4></td>
+												<td><h4 id="discAmt${1}" >5040</h4></td>
+												 
+												</tr>
 
 											</tbody>
 
@@ -134,12 +155,14 @@
 									</div>
 								</div>
 								
+								
+								
 								<div class="row">
 									<div class="col-md-4">
 										<h4 class="col-md-7">
 											<b>Amount:-</b>
 										</h4>
-										<h4 class="col-md-5" id="totalSum">00</h4>
+										<h4 class="col-md-5" id="totalSum">4500</h4>
 										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText">
 									</div>
 
@@ -148,7 +171,7 @@
 											<b>Tax Total:-</b>
 										</h4>
 
-										<h4 class="col-md-5" id="taxtotal">00</h4>
+										<h4 class="col-md-5" id="taxtotal">540</h4>
 										<input type="hidden" class="form-control" id="taxtotalText" name="taxtotalText">
 									</div>
 
@@ -157,13 +180,20 @@
 											<b>Grand Total:-</b>
 										</h4>
 
-										<h4 class="col-md-5" id="grandTotal">00</h4>
+										<h4 class="col-md-5" id="grandTotal">5040</h4>
 										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
 									</div>
 
 									<div class="clearfix"></div>
 									 
 								</div>
+								
+								<div class="colOuter">
+						 
+					</div> 
+					<div class="colOuter">
+						 
+					</div> 
 					  
 					  <div class="colOuter">
 						<div class="col-md-2">
@@ -210,7 +240,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="opnQty" class="form-control"
-								placeholder="Opening Amt" name="opnQty"   type="number" required>
+								placeholder="Opening Tray Qty" name="opnQty"   type="number" required>
 
 						</div>
  
@@ -252,7 +282,7 @@
 						</div>
 						
 						 <div class="col-md-2">
-							<div class="col1title" align="left">Remark*: </div>
+							<div class="col1title" align="left">Remark : </div>
 						</div>
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
@@ -260,6 +290,20 @@
 
 						</div>
  
+					</div>
+					
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Vehicle In KM*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="balQty" class="form-control"
+								placeholder="Vehicle In KM" name="balQty"   type="number" required>
+
+						</div>
+						<div class="col-md-1"> 
+						</div>
+						 
 					</div>
 						 
 					<div class="colOuter">

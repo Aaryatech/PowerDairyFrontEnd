@@ -63,71 +63,120 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertCategory">
+					action="${pageContext.request.contextPath}/insertSupplier">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
 					
 						<div class="col-md -3">
 							
-								<div class="col1title" align="left"><h3>Add Category</h3></div>
-								 
+								<div class="col1title" align="left"><h3>All Bills</h3></div>
+								 <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/tempBill"><input type="button" value="Add New Bill" class="btn btn-info">
+										</a>
+					</div>
 						</div>
 						
+						
 					<div class="colOuter">
+						<div class="col-md-1">
+							<div class="col1title" align="left"> Bill Date: </div>
+						</div>
 						<div class="col-md-2">
-							<div class="col1title" align="left">Category Name*: </div>
+								<input id="datepicker" value="${toDay}" placeholder="Bill Date" class="texboxitemcode texboxcal"
+															name="billDate" type="text" required>
+							
+						</div>
+						
+						<div class="col-md-1"> 
+						<input type="button" class="btn additem_btn" value="Search" onclick="search();"
+												id="b1"/>
+						</div>
+ 					  
+					</div> 
+					
+					<div class="colOuter">
+						<div class="col-md-3">
+							<div class="col1title" align="left">Bill Count (Generated/Pending) : 1/1</div>
+						</div>
+						 
+						
+						<div class="col-md-1"> 
+						</div>
+
+						<div class="col-md-2">
+							<div class="col1title" align="left">Total Bill AMT : 5040</div>
 						</div>
 						<div class="col-md-3">
-							<input id="catName" class="form-control"
-								placeholder="Category Name" name="catName" type="text" required>
-								<input id="catId" class="form-control"
-								  name="catId"  type="hidden" >
+							 
 
 						</div>
-						 </div>
-						 
-					  
-					<div class="colOuter">
-						<div align="center">
-							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
-								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
-						</div>
-				 
-					</div>
+					 
+					</div> 
 					
-					 <div id="table-scroll" class="table-scroll">
+					 <div class="colOuter"> 
+					</div>
+					 <div class="colOuter"> 
+					</div>
+					 
+					 
+					
+				 
+					
+				 
+					 
+				 
+					 
+					 <div class="colOuter"> 
+					</div>
+					<div id="table-scroll" class="table-scroll">
 									<div id="faux-table" class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
 										<table id="table_grid1" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
-													<th class="col-sm-1">Sr no.</th>
-													<th class="col-md-1">Category Name</th>  
+													<th class=col-md-1>Sr No </th>
+													<th class=col-md-1>Bill Id </th>
+													<th class="col-md-1">Customer Name </th>
+													<th class="col-md-1">Vehicle Name</th>
+													<th class="col-md-1">Total Km</th>   
+													<th class="col-md-1">Bill Amount</th>
+													<th class="col-md-1">Collection</th> 
 													<th class="col-md-1">Action</th>
 												</tr>
 											</thead>
 											<tbody>
-											
-											<c:forEach items="${itemCategoryList}" var="itemCategoryList"
-									varStatus="count">
-									<tr>
-										 <td class="col-md-1"><c:out value="${count.index+1}" /></td>
-										  
-											 
-										 <td class="col-md-1"><c:out value="${itemCategoryList.catName}" /></td> 	 
-										
-									 <td><a href="${pageContext.request.contextPath}/deleteCategory/${itemCategoryList.catId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a></td>
-										 
-									</tr>
-								</c:forEach>
-
+											<tr>
+												<td class="col-md-1"><c:out value="${1}" /></td> 
+												<td class="col-md-1"><c:out value="-" /></td> 
+												<td class="col-md-1"><c:out value="Mahesh" /></td> 
+												<td class="col-md-1"><c:out value="MH-15-1772" /></td> 
+												<td class="col-md-1"><c:out value="-" /></td>
+												<td class="col-md-1"><c:out value="5040" /></td>
+												<td class="col-md-1"><c:out value="-" /></td>
+												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${1}">
+												<input type="button" class="btn additem_btn" value="Details" id="b1"/></a>
+												
+												<a href="${pageContext.request.contextPath}/creditNote/${1}">
+												<input type="button" class="btn additem_btn" value="CRN" id="b2"/></a></td>
+												</tr>
 											</tbody>
 
 										</table>
 									</div>
 								</div>
+					 
+						 
+					<!-- <div class="colOuter">
+						<div align="center">
+							<input name="submit" class="buttonsaveorder" value="Submit"
+								type="submit" align="center">
+								<input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled>
+						</div>
+				 
+					</div> -->
+					
+					 
 
 				</form>
 

@@ -1,10 +1,14 @@
 package com.dairypower.admin.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,6 +16,26 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Scope("session")
 public class BillController {
+	
+	
+	@RequestMapping(value = "/showAllTempAndSettleBill", method = RequestMethod.GET)
+	public ModelAndView showAllTempAndSettleBill(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("bill/listOfAllBill");
+		try
+		{
+			 Date date = new Date();
+			 
+			 SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			 model.addObject("toDay", sf.format(date));
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
 	
 	@RequestMapping(value = "/tempBill", method = RequestMethod.GET)
 	public ModelAndView purchaseBill(HttpServletRequest request, HttpServletResponse response) {
@@ -29,19 +53,21 @@ public class BillController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/approvedTempBill", method = RequestMethod.GET)
-	public ModelAndView approvedTempBill(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/approvedTempBill/{tempId}", method = RequestMethod.GET)
+	public ModelAndView approvedTempBill(@PathVariable int tempId, HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("bill/billDetail");
 		try
 		{
+			Date date = new Date();
 			 
-			
+			 SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			 model.addObject("date", sf.format(date)); 
 		}catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-
+		
 		return model;
 	}
 	
@@ -61,8 +87,8 @@ public class BillController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/creditNote", method = RequestMethod.GET)
-	public ModelAndView creditNote(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/creditNote/{tempId}", method = RequestMethod.GET)
+	public ModelAndView creditNote(@PathVariable int tempId, HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("bill/creditNote");
 		try
