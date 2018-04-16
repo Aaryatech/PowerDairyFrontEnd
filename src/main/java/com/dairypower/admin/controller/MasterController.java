@@ -42,6 +42,8 @@ public class MasterController {
 		{
 			List<CustomerType> customerTypeList = rest.getForObject(Constants.url + "/master/getAllCustType", List.class);
 			List<RSHeader> rsHeaderList = rest.getForObject(Constants.url + "/master/getAllRsHeader", List.class);
+			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			model.addObject("vehicleList", vehicleList);
 			
 			model.addObject("customerTypeList", customerTypeList);
 			model.addObject("rsHeaderList", rsHeaderList);
@@ -52,6 +54,69 @@ public class MasterController {
 		}
 
 		return model;
+	}
+	
+	@RequestMapping(value = "/listOfCustomers", method = RequestMethod.GET)
+	public ModelAndView listOfCustomers(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/listOfCustomers");
+		try
+		{
+			List<Customer> customerList = rest.getForObject(Constants.url + "/master/getAllCustomer", List.class);
+		 
+			model.addObject("customerList", customerList);
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+	
+	@RequestMapping(value = "/editCustomer/{custId}", method = RequestMethod.GET)
+	public ModelAndView editCustomer(@PathVariable int custId, HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/addCustmer");
+		try
+		{
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("custId", custId); 
+			Customer customer = rest.postForObject(Constants.url + "/master/getCustomerById",map, Customer.class);
+			
+			List<CustomerType> customerTypeList = rest.getForObject(Constants.url + "/master/getAllCustType", List.class);
+			List<RSHeader> rsHeaderList = rest.getForObject(Constants.url + "/master/getAllRsHeader", List.class);
+			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			model.addObject("vehicleList", vehicleList);
+			model.addObject("customer", customer);
+			model.addObject("customerTypeList", customerTypeList);
+			model.addObject("rsHeaderList", rsHeaderList);
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+	
+	@RequestMapping(value = "/deleteCustomer/{custId}", method = RequestMethod.GET)
+	public String deleteCustomer(@PathVariable int custId, HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("custId", custId); 
+			Info info = rest.postForObject(Constants.url + "/master/deleteCustomer",map, Info.class);
+			
+			 System.out.println("Info " + info);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/listOfCustomers";
 	}
 	
 	@RequestMapping(value = "/insertCustomer", method = RequestMethod.POST)
@@ -105,7 +170,7 @@ public class MasterController {
 			insert.setCratesOpBal(openigCap);
 			insert.setCratesCap(creditCap);
 			insert.setVehId(vehId); 
-			Info info = rest.postForObject(Constants.url + "postSuppllier",insert,
+			Info info = rest.postForObject(Constants.url + "/master/saveCustomer",insert,
 					Info.class);
 			
 			System.out.println("info " +  info); 
@@ -115,7 +180,7 @@ public class MasterController {
 			e.printStackTrace();
 		}
 
-		return "redirect:/addCustomer";
+		return "redirect:/listOfCustomers";
 	}
 	
 	@RequestMapping(value = "/addItem", method = RequestMethod.GET)
@@ -144,10 +209,20 @@ public class MasterController {
 	
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)
 	public ModelAndView addCategory(HttpServletRequest request, HttpServletResponse response) {
-
+		
+		
 		ModelAndView model = new ModelAndView("masters/addCategory");
-		List<ItemCategory> itemCategoryList =  rest.getForObject(Constants.url + "/master/getAllCategories", List.class);
-		model.addObject("itemCategoryList", itemCategoryList);
+		try
+		{
+			List<ItemCategory> itemCategoryList =  rest.getForObject(Constants.url + "/master/getAllCategories", List.class);
+			model.addObject("itemCategoryList", itemCategoryList);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		
+		
 		 
 		return model;
 	}
@@ -207,9 +282,14 @@ public class MasterController {
 	public ModelAndView addVehicle(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("masters/addVehicle");
-		
-		List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
-		model.addObject("vehicleList", vehicleList);
+		try
+		{
+			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			model.addObject("vehicleList", vehicleList);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		 
 		return model;
 	}
@@ -273,9 +353,15 @@ public class MasterController {
 	public ModelAndView addUom(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("masters/addUom");
+		try
+		{
+			List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
+			model.addObject("uomlist", uomlist);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		
-		List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
-		model.addObject("uomlist", uomlist);
 		 
 		return model;
 	}

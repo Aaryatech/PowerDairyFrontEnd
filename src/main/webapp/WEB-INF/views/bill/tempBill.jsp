@@ -13,7 +13,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -66,22 +70,32 @@
 					action="${pageContext.request.contextPath}/insertSupplier">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
+						
+						<div class="order-left"> 
+								<h2 class="pageTitle">Bill</h2> 
+								
+								 
+						</div>
+						
+						 <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/showAllTempAndSettleBill"><input type="button" value="All Bills" class="btn btn-info">
+										</a>
+					</div>
 
 					
-						<div class="col-md -3">
+						<!-- <div class="col-md -3">
 							
 								<div class="col1title" align="left"><h3>Bill</h3></div>
 								 
-						</div>
+						</div> -->
 						
 					<div class="colOuter">
 						<div class="col-md-2">
 							<div class="col1title" align="left">Select Customer *: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="custId" id="custId" required>
-							<option value="">Select Option</option>
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="custId" id="custId" required> 
 							<option value="1">Mahesh</option>
 							<option value="2">Sachin</option> 
 						 </select>
@@ -96,9 +110,8 @@
 							<div class="col1title" align="left">Select Vehicle *: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="vehId" id="vehId" required>
-							<option value="">Select Option</option>
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="vehId" id="vehId" required> 
 							<option value="1">MH-15-1889</option>
 							<option value="2">MH-15-1772</option> 
 						 </select>
@@ -109,11 +122,11 @@
 					
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Tray Opening Qty *: </div>
+							<div class="col1title" align="left">Creates Opening Qty *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="opnQty" class="form-control"
-								placeholder="Tray Opening Qty" name="opnQty"   type="number" required>
+							<input id="opnQty" class="form-control" style="text-align: left;"
+								placeholder="Creates Opening Qty" name="opnQty"   type="number" disabled>
 
 						</div>
 						
@@ -126,7 +139,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="issueQty" class="form-control"
-								placeholder="Issue Qty" name="issueQty"   type="number" required>
+								placeholder="Issue Qty" name="issueQty" style="text-align: left;"  type="number" required>
 
 						</div>
 					 
@@ -138,12 +151,13 @@
 						</div>
 						<div class="col-md-3">
 							<input id="opnQty" class="form-control"
-								placeholder="Vehicle Out KM" name="opnQty"   type="number" required>
+								placeholder="Vehicle Out KM" name="opnQty" style="text-align: left;" type="number" disabled>
 
 						</div>
 						
 						<div class="col-md-1">
-							 
+							 <input type="button" class="btn additem_btn" value="Adjust KM" onclick="addItem();"
+												id="b2"/>
 						</div>
  
 					</div> 
@@ -152,55 +166,56 @@
 					</div>
 					 <div class="colOuter"> 
 					</div>
-					 
-					<div class="colOuter">
-						 
-						<div class="col-md-2">
-							<div class="col1title" align="left">Select Item *: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="itemId" id="itemId" required>
-							<option value="">Select Option</option>
-							<option value="1">Milk</option>
-							<option value="2">Dahi</option> 
-						 </select>
-
-						</div>
-						<div class="col-md-1"> </div>
-						<div class="col-md-2">
-							<div class="col1title" align="left">Select Batch *: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="batchId" id="batchId" required>
-							<option value="">Select Option</option>
-							 
-						 </select>
-
-						</div>
-				 
-					</div>
 					
-					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty"   type="number" required>
-
-						</div>
-						<div class="col-md-1">
+					<div>
+												<div class="shInnerwidth">
+													<table width="100%" border="0" cellspacing="0"
+														cellpadding="0" class="table">
+														<tr>
+															<td align="center" valign="middle" style="padding: 0px;">
+																<table width="100%" border="0" cellspacing="0"
+																	cellpadding="0">
+																	<tr class="bgpink"> 
+																		<td class="col-md-2">Item Name</td> 
+																		<td class="col-md-2">Batch No</td>
+																		<td class="col-md-2">Qty</td>
+																		 
+																	</tr>
+																	<tr>
+																		 
+																		<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
+															name="itemId" id="itemId"  > 
+																<option value="1">Milk</option>
+																<option value="2">Dahi</option> 
+															 </select> <input name="item_name1" id="item_name1"
+																			type="hidden" value="" /></td>
+																		 	 
+															
+															<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="batchId" id="batchId" required> 
 							 
-						</div>
- 
-					</div>
-					
-				 
-					 
-					 <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  >
-					 
+						 </select></td>
+																			
+																		<td class="col-md-2"><input id="qty" style="text-align: left;" class="form-control"
+								placeholder="Qty" name="qty"   type="number"  ></td>
+																			
+																		  
+																		 
+																		 <td ><input type="button" class="btn additem_btn" value="Add Item" onclick="addItem();"
+												id="b1"/> </td>
+												
+												
+												</tr>
+												 
+																</table>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+											</div>
+					  
+					  
 					 <div class="colOuter"> 
 					</div>
 					<div id="table-scroll" class="table-scroll">

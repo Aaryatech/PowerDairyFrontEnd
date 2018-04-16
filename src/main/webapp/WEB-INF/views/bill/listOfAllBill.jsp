@@ -67,15 +67,14 @@
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
-					
-						<div class="col-md -3">
-							
-								<div class="col1title" align="left"><h3>All Bills</h3></div>
-								 <div class="col1title" align="right"> 
+					<div class="order-left">
+					<h2 class="pageTitle">All Bills </h2> 
+				</div>
+				 <div class="col1title" align="right"> 
 						<a href="${pageContext.request.contextPath}/tempBill"><input type="button" value="Add New Bill" class="btn btn-info">
 										</a>
 					</div>
-						</div>
+						 
 						
 						
 					<div class="colOuter">

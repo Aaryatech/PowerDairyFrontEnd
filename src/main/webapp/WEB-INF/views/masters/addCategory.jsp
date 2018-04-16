@@ -80,7 +80,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="catName" class="form-control"
-								placeholder="Category Name" name="catName" type="text" required>
+								placeholder="Category Name" style="text-align: left;" name="catName" type="text" required>
 								<input id="catId" class="form-control"
 								  name="catId"  type="hidden" >
 

@@ -69,7 +69,7 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
+					action="${pageContext.request.contextPath}/insertCustomer">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
@@ -86,9 +86,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="custName" class="form-control"
-								placeholder="Customer Name" name="custName" type="text" required>
+								placeholder="Customer Name" value="${customer.custName}" style="text-align: left;" name="custName" type="text" required>
 								<input id="custId" class="form-control"
-								  name="custId"  type="hidden" >
+								  name="custId" value="${customer.custId}" type="hidden" >
 
 						</div>
 						<div class="col-md-1">
@@ -99,8 +99,8 @@
 							<div class="col1title" align="left">Customer Address*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="custAdd" class="form-control"
-								placeholder="Customer Address"  name="custAdd" type="text" required>
+							<input id="custAdd" class="form-control" style="text-align: left;"
+								placeholder="Customer Address" value="${customer.custAddress}" name="custAdd" type="text" required>
 
 						</div>
 					 
@@ -114,12 +114,20 @@
 							<div class="col1title" align="left">Customer Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="custType" id="custType" required>
-							<option value="">Select Option</option>
 							<c:forEach items="${customerTypeList}" var="customerTypeList"> 
-								<option value="${customerTypeList.custTypeId}" ><c:out value="${customerTypeList.custTypeName}"/></option> 
+							<c:choose>
+								<c:when test="${customerTypeList.custTypeId==customer.custType}">
+								<option value="${customerTypeList.custTypeId}" selected><c:out value="${customerTypeList.custTypeName}"/></option>
+								</c:when>
+								<c:otherwise>
+								<option value="${customerTypeList.custTypeId}" ><c:out value="${customerTypeList.custTypeName}"/></option>
+								</c:otherwise>
+							</c:choose> 
 							</c:forEach>
+							 
+							 
 						 </select>
 
 						</div>
@@ -129,7 +137,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="mob" class="form-control"
-								placeholder="Mobile No" name="mob" pattern="^\d{10}$" type="text" required>
+								placeholder="Mobile No" name="mob" style="text-align: left;" value="${customer.custMobNo}" pattern="^\d{10}$" type="text" required>
 
 						</div>
 				 
@@ -141,7 +149,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="landlineNo" class="form-control"
-								placeholder="Landline No" name="landlineNo" pattern="^\d{10}$" type="text" required>
+								placeholder="Landline No" name="landlineNo" style="text-align: left;" value="${customer.custLandlineNo}" pattern="^\d{10}$" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -153,7 +161,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="email" class="form-control"
-								placeholder="Email" name="email" type="email" required>
+								placeholder="Email" name="email" type="email" style="text-align: left;" value="${customer.custEmailId}" required>
 
 						</div>
 				 
@@ -165,7 +173,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="root" class="form-control"
-								placeholder="Customer Root" name="root" type="text" required>
+								placeholder="Customer Root" name="root" style="text-align: left;" value="${customer.custRoot}" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -177,7 +185,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="accNo" class="form-control"
-								placeholder="Account No" name="accNo" pattern="\d+" type="text" required>
+								placeholder="Account No" name="accNo" style="text-align: left;" value="${customer.custBankAccNo}" pattern="\d+" type="text" required>
 
 						</div>
 				 
@@ -185,11 +193,11 @@
 					
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Ifsc Code*: </div>
+							<div class="col1title" align="left">IFSC Code*: </div>
 						</div>
 						<div class="col-md-3">
 							<input id="ifsc" class="form-control"
-								placeholder="Ifsc Code" name="ifsc" type="text" required>
+								placeholder="Ifsc Code" name="ifsc" style="text-align: left;" value="${customer.custBankIfsc}" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -201,7 +209,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="bankName" class="form-control"
-								placeholder="Bank Name" name="bankName" type="text" required>
+								placeholder="Bank Name" name="bankName" style="text-align: left;" value="${customer.custBankName}" type="text" required>
 
 						</div>
 				 
@@ -209,11 +217,35 @@
 					
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">GSTN No*: </div>
+							<div class="col1title" align="left">Pan No*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="panNo" class="form-control"
+								placeholder="Pan No" name="panNo" style="text-align: left;" value="${customer.cratesOpBal}" type="text" required>
+
+						</div>
+						<div class="col-md-1">
+							 
+						</div>
+
+						<div class="col-md-2">
+							<div class="col1title" align="left">FSSAI No* </div>
+						</div>
+						<div class="col-md-3">
+							<input id="fssaiNo" class="form-control"
+								placeholder="FSSAI No" name="fssaiNo" style="text-align: left;" value="${customer.cratesCap}" type="text" required>
+
+						</div>
+				 
+					</div> 
+					
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">GST No*: </div>
 						</div>
 						<div class="col-md-3">
 							<input id="gstnNo" class="form-control"
-								placeholder="GSTN No" name="gstnNo" type="text" required>
+								placeholder="GSTN No" name="gstnNo" style="text-align: left;" value="${customer.custGstNo}" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -225,7 +257,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="cap" class="form-control"
-								placeholder="Cap" name="cap" pattern="[+-]?([0-9]*[.])?[0-9]+" type="text" required>
+								placeholder="Cap" name="cap" value="${customer.custCap}" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" type="text" required>
 
 						</div>
 				 
@@ -237,7 +269,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="custRef" class="form-control"
-								placeholder="Customer Reference" name="custRef" type="text" required>
+								placeholder="Customer Reference" value="${customer.custReference}"   style="text-align: left;" name="custRef" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -249,7 +281,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="refMo" class="form-control"
-								placeholder="Ref. Mobile No" name="refMo" pattern="^\d{10}$" type="text" required>
+								placeholder="Ref. Mobile No" name="refMo"  style="text-align: left;" value="${customer.refMobNo}" pattern="^\d{10}$" type="text" required>
 
 						</div>
 				 
@@ -261,7 +293,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="openigCap" class="form-control"
-								placeholder="Customer Reference" name="openigCap" type="number" required>
+								placeholder="Opening Cap" name="openigCap" style="text-align: left;" value="${customer.cratesOpBal}" type="number" required>
 
 						</div>
 						<div class="col-md-1">
@@ -273,7 +305,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="creditCap" class="form-control"
-								placeholder="Creadit Cap" name="creditCap" type="number" required>
+								placeholder="Creadit Cap" name="creditCap" style="text-align: left;" value="${customer.cratesCap}" type="number" required>
 
 						</div>
 				 
@@ -285,12 +317,19 @@
 							<div class="col1title" align="left">Rate Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control " data-live-search="true" title="Please Select" 
+							<select class="selectpicker " data-live-search="true" title="Please Select" 
 							name="rsHeaderId" id="rsHeaderId" required>
-							<option value="">Select Option</option>
-							<c:forEach items="${rsHeaderList}" var="rsHeaderList"> 
+						 <c:forEach items="${rsHeaderList}" var="rsHeaderList"> 
+							<c:choose>
+								<c:when test="${rsHeaderList.rsHeaderId==customer.rsHeaderId}">
+								<option value="${rsHeaderList.rsHeaderId}" selected><c:out value="${rsHeaderList.rsName}"/></option> 
+								</c:when>
+								<c:otherwise>
 								<option value="${rsHeaderList.rsHeaderId}" ><c:out value="${rsHeaderList.rsName}"/></option> 
+								</c:otherwise>
+							</c:choose> 
 							</c:forEach>
+							 
 						 </select> 
 						</div>
 						 <div class="col-md-1"> </div>
@@ -303,10 +342,18 @@
 					   									 
 					 	<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="vehId" id="vehId" required> 
-							<option value="">Select Option</option>
+							 <c:forEach items="${vehicleList}" var="vehicleList"> 
+							<c:choose>
+								<c:when test="${vehicleList.vehId==customer.vehId}">
+								<option value="${vehicleList.vehId}" selected><c:out value="${vehicleList.vehName}"/></option>  
+								</c:when>
+								<c:otherwise>
+								<option value="${vehicleList.vehId}" ><c:out value="${vehicleList.vehName}"/></option>  
+								</c:otherwise>
+							</c:choose> 
+							</c:forEach>
 							 
-								<option value="1">MH-15-1889</option>
-							<option value="2">MH-15-1772</option> 
+							 
 							 
 						 </select>
 

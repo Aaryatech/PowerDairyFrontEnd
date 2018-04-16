@@ -80,7 +80,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="uomName" class="form-control"
-								placeholder="UOM Name" name="uomName" type="text" required>
+								placeholder="UOM Name" style="text-align: left;" name="uomName" type="text" required>
 								<input id="uomId" class="form-control"
 								  name="uomId"  type="hidden" >
 
@@ -92,7 +92,7 @@
 							<div class="col1title" align="left">UOM Description*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="uomDesc" class="form-control"
+							<input id="uomDesc" style="direction: rtl; text-align: left;" class="form-control"
 								placeholder="UOM Description" name="uomDesc" type="text" required>
 								 
 

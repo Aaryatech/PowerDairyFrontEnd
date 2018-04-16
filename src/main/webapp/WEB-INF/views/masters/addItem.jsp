@@ -13,7 +13,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -79,7 +83,7 @@
 							<div class="col1title" align="left">Item Name*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="itemName" class="form-control"
+							<input id="itemName" style="text-align: left;" class="form-control"
 								placeholder="Item Name" name="itemName" type="text" required>
 								<input id="itemId" class="form-control"
 								  name="itemId"  type="hidden" >
@@ -91,9 +95,9 @@
 							<div class="col1title" align="left">Select Category*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="catId" id="catId" required>
-							<option value="">Select Option</option>
+							 
 							<option value="1">abc</option>
 							<option value="2">pqr</option> 
 						 </select>
@@ -110,7 +114,7 @@
 							<div class="col1title" align="left">Item Code*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="itemCode" class="form-control"
+							<input id="itemCode" style="text-align: left;" class="form-control"
 								placeholder="Item Code" name="itemCode" type="text" required>
 
 						</div>
@@ -122,7 +126,7 @@
 							<div class="col1title" align="left"> HSN Code*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="hsnCode" class="form-control"
+							<input id="hsnCode" style="text-align: left;" class="form-control"
 								placeholder="HSN Code" name="hsnCode" type="text" required>
 
 						</div>
@@ -131,11 +135,34 @@
 					</div>
 					
 					<div class="colOuter">
+					
+					<div class="col-md-2">
+							<div class="col1title" align="left">Minimum Stock Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="sgst" class="form-control" style="text-align: left;"
+								placeholder="Minimum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
+
+						</div>
+						<div class="col-md-1"> </div>
+						<div class="col-md-2">
+							<div class="col1title" align="left">Maximum Stock Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="sgst" class="form-control" style="text-align: left;"
+								placeholder="Maximum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
+
+						</div>
+						 
+				 
+					</div>
+					
+					<div class="colOuter">
 					<div class="col-md-2">
 							<div class="col1title" align="left">Hub Expiry Days*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="hubExprDays" class="form-control"
+							<input id="hubExprDays" style="text-align: left;" class="form-control"
 								placeholder="Hub Expiry Days" name="hubExprDays"   type="number" required>
 
 						</div>
@@ -144,7 +171,7 @@
 							<div class="col1title" align="left">Retail Expiry Days*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="retailExprDays" class="form-control"
+							<input id="retailExprDays" style="text-align: left;" class="form-control"
 								placeholder="Retail Expiry Days" name="retailExprDays"   type="number" required>
 
 						</div>
@@ -159,7 +186,7 @@
 							<div class="col1title" align="left">SGST %*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="sgst" class="form-control"
+							<input id="sgst" class="form-control" style="text-align: left;"
 								placeholder="SGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
 
 						</div>
@@ -168,7 +195,7 @@
 							<div class="col1title" align="left">CGST %*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="cgst" class="form-control"
+							<input id="cgst" class="form-control" style="text-align: left;"
 								placeholder="CGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="cgst" type="text" required>
 
 						</div>
@@ -182,7 +209,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="igst" class="form-control"
-								placeholder="IGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="igst" type="text" required>
+								placeholder="IGST" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="igst" type="text" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -191,14 +218,29 @@
 							<div class="col1title" align="left">Select UOM*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="uomId" id="uomId" required>
-							<option value="">Select Option</option>
+						 
 							<option value="1">abc</option>
 							<option value="2">pqr</option> 
 						 </select>
 
 						</div>
+				 
+					</div>
+					
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Purchase Rate*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="purchaseRate" class="form-control"
+								placeholder="Purchase Rate" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="purchaseRate" type="text" required>
+
+						</div>
+						<div class="col-md-1"> </div>
+
+						 
 				 
 					</div>
 					

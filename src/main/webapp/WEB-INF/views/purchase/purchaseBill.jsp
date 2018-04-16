@@ -13,7 +13,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -68,11 +72,24 @@
 						value="search_result">
 
 					
-						<div class="col-md -3">
-							
-								<div class="col1title" align="left"><h3> Purchase Bill</h3></div>
+						<div class="order-left"> 
+								<h2 class="pageTitle"> Purchase Bill</h2> 
+								
+								<%--  <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/purchaseHistory"><input type="button" value="Purchase History" class="btn btn-info">
+										</a>
+					</div> --%>
 								 
 						</div>
+						
+						 <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/purchaseHistory"><input type="button" value="Purchase History" class="btn btn-info">
+										</a>
+					</div>
+					
+					<div class="colOuter">
+						 
+					</div> 
 						
 					<div class="colOuter">
 						<div class="col-md-2">
@@ -80,7 +97,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="invoiceNo" class="form-control"
-								placeholder="Invoice No" name="invoiceNo" type="text" required>
+								style="text-align: left;" placeholder="Invoice No" name="invoiceNo" type="text" required>
 							 
 
 						</div>
@@ -92,25 +109,125 @@
 							<div class="col1title" align="left">Invoice Date*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="datepicker" placeholder="Invoice Date" class="texboxitemcode texboxcal"
-															name="billDate" type="text" required>
+							<input id="datepicker"  placeholder="Invoice Date" class="texboxitemcode texboxcal"
+															name="invoiceDate" type="text" required>
 
 						</div>
 					 
 					</div> 
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Creates In Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="cratesReceivedQty" class="form-control"
+								style="text-align: left;" placeholder="Creates In Qty" name="cratesReceivedQty" type="number" required>
+							 
+
+						</div>
+						<div class="col-md-1">
+							 
+						</div>
+						
+						<div class="col-md-2">
+							<div class="col1title" align="left">Remark: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="remark" class="form-control"
+								style="text-align: left;" placeholder="Remark" name="remark" type="text"  >
+							 
+
+						</div>
+ 
+					</div> 
 					
 					 <div class="colOuter"> 
 					</div>
+					 <div class="colOuter"> 
+					</div>
+					
+					<div>
+												<div class="shInnerwidth">
+													<table width="100%" border="0" cellspacing="0"
+														cellpadding="0" class="table">
+														<tr>
+															<td align="center" valign="middle" style="padding: 0px;">
+																<table width="100%" border="0" cellspacing="0"
+																	cellpadding="0">
+																	<tr class="bgpink"> 
+																		<td class="col-md-2">Item Name</td>
+																		<td class="col-md-2" >Manufacture Date</td>
+																		<td>Batch No</td>
+																		<td>Qty</td>
+																		<td>Short No</td>
+																		<td>Extra No</td>
+																		<td>Leakage No</td> 
+																	</tr>
+																	<tr>
+																		 
+																		<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
+															name="itemId" id="itemId"  > 
+																<option value="1">Milk</option>
+																<option value="2">Dahi</option> 
+															 </select> <input name="item_name1" id="item_name1"
+																			type="hidden" value="" /></td>
+																			
+																			<td class="col-md-2"><input id="datepicker"  placeholder="Manufacture Date" class="texboxitemcode texboxcal"
+															name="manufactureDate" type="text" required></td>
+															
+															<td><input id="batchNo" style="text-align: left;" class="form-control"
+								placeholder="Batch No" name="batchNo"   type="text"  ></td>
+																			
+																		<td><input id="qty" style="text-align: left;" class="form-control"
+								placeholder="Qty" name="qty"   type="number"  ></td>
+																			
+																		<td><input id="shortNo" style="text-align: left;" class="form-control"
+								placeholder="Short No" name="shortNo"   type="number"  ></td>
+								
+																		<td><input id="extraNo" style="text-align: left;" class="form-control"
+								placeholder="Extra No" name="extraNo"   type="number"  ></td>
+								
+																		<td><input id="leakageQty" style="text-align: left;" class="form-control"
+								placeholder="Leakage Qty " name="leakageQty" type="number"  ></td>
+																		
+																		 
+																		 <td ><input type="button" class="btn additem_btn" value="Add Item" onclick="addItem();"
+												id="b1"/> </td>
+												
+												
+												</tr>
+												<tr>
+												<td class="col-md-2"> </td>
+															
+															<td> </td>
+																			
+																		<td>Stock </td>
+																			
+																		<td>Qty</td>
+								
+																		<td>Total </td>
+								
+																		<td> </td>
+																		
+																		 
+																		 <td > </td>
+																	</tr>
+																</table>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+											</div>
 					 
-					<div class="colOuter">
+					<!-- <div class="colOuter">
 						 
 						<div class="col-md-2">
-							<div class="col1title" align="left">Select Item *: </div>
+							<div class="col1title" align="left">Select Item : </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="itemId" id="itemId" required>
-							<option value="">Select Option</option>
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="itemId" id="itemId"  > 
 							<option value="1">Milk</option>
 							<option value="2">Dahi</option> 
 						 </select>
@@ -118,23 +235,23 @@
 						</div>
 						<div class="col-md-1"> </div>
 						<div class="col-md-2">
-							<div class="col1title" align="left">Qty*: </div>
+							<div class="col1title" align="left">Batch No : </div>
 						</div>
 						<div class="col-md-3">
-							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty"   type="number" required>
+							<input id="batchNo" style="text-align: left;" class="form-control"
+								placeholder="Batch No" name="batchNo"   type="text"  >
 
 						</div>
 				 
-					</div>
+					</div> -->
 					
-					<div class="colOuter">
+					<!-- <div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Short No*: </div>
+							<div class="col1title" align="left">Qty: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="shortNo" class="form-control"
-								placeholder="Short No" name="shortNo"   type="number" required>
+							<input id="qty" style="text-align: left;" class="form-control"
+								placeholder="Qty" name="qty"   type="number"  >
 
 						</div>
 						<div class="col-md-1">
@@ -142,29 +259,79 @@
 						</div>
 
 						<div class="col-md-2">
-							<div class="col1title" align="left"> Extra No*: </div>
+							<div class="col1title" align="left">Short No: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="extraNo" class="form-control"
-								placeholder="Extra No" name="extraNo"   type="number" required>
+							<input id="shortNo" style="text-align: left;" class="form-control"
+								placeholder="Short No" name="shortNo"   type="number"  >
 
 						</div>
 				 
-					</div>
+					</div> -->
 					
-					<div class="colOuter">
+					<!-- <div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left"> Extra No: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="extraNo" style="text-align: left;" class="form-control"
+								placeholder="Extra No" name="extraNo"   type="number"  >
+
+						</div>
+						
+						<div class="col-md-1">
+							 
+						</div>
+
 						<div class="col-md-2">
 							<div class="col1title" align="left"> Leakage Qty : </div>
 						</div>
 						<div class="col-md-3">
-							<input id="leakageQty" class="form-control"
-								placeholder="Leakage Qty " name="leakageQty" type="number" required>
+							<input id="leakageQty" style="text-align: left;" class="form-control"
+								placeholder="Leakage Qty " name="leakageQty" type="number"  >
 
 						</div>
 					  
-					</div>
+					</div> -->
+					
+					<!-- <div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left"> Manufacture Date: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="datepicker"  placeholder="Manufacture Date" class="texboxitemcode texboxcal"
+															name="manufactureDate" type="text" required>
+
+						</div>
+						
+						<div class="col-md-1"> 
+						</div>
+ 
+					</div> -->
+					
+				<!-- 	<div class="row">
+									<div class="col-md-4">
+										 
+									</div>
+
+									<div class="col-md-4">
+										 
+									</div>
+
+									<div class="col-md-4">
+										<h4 class="col-md-7" style="margin-top: 5px">
+											<b>Grand Total:-</b>
+										</h4>
+
+										<h4 class="col-md-5" id="grandTotal">00</h4>
+										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
+									</div>
+
+									<div class="clearfix"></div>
+									 
+								</div> -->
 					 
-					 <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  >
+					<!--  <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  > -->
 					 
 					 <div class="colOuter"> 
 					</div>
@@ -193,36 +360,7 @@
 									</div>
 								</div>
 								
-								<div class="row">
-									<div class="col-md-4">
-										<h4 class="col-md-7">
-											<b>Amount:-</b>
-										</h4>
-										<h4 class="col-md-5" id="totalSum">00</h4>
-										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText">
-									</div>
-
-									<div class="col-md-4">
-										<h4 class="col-md-7" style="margin-top: 5px">
-											<b>Tax Total:-</b>
-										</h4>
-
-										<h4 class="col-md-5" id="taxtotal">00</h4>
-										<input type="hidden" class="form-control" id="taxtotalText" name="taxtotalText">
-									</div>
-
-									<div class="col-md-4">
-										<h4 class="col-md-7" style="margin-top: 5px">
-											<b>Grand Total:-</b>
-										</h4>
-
-										<h4 class="col-md-5" id="grandTotal">00</h4>
-										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
-									</div>
-
-									<div class="clearfix"></div>
-									 
-								</div>
+								 
 					  
 						 
 					<div class="colOuter">

@@ -92,7 +92,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="creditNo" class="form-control"
-								placeholder="Bill No" name="creditNo"   type="number" required disabled>
+								placeholder="Bill No" name="creditNo"  style="text-align: left;" type="text" required disabled>
 
 						</div>
 					 
@@ -104,7 +104,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="creditNo" class="form-control"
-								placeholder="Credit No" name="creditNo"   type="number" required>
+								placeholder="Credit No" name="creditNo" style="text-align: left;"  type="number" required>
 
 						</div>
 						

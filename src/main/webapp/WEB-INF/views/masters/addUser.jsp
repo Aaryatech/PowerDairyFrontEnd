@@ -13,7 +13,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -80,7 +84,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="userName" class="form-control"
-								placeholder="Item Name" name="userName" type="text" required>
+								placeholder="Item Name" style="text-align: left;" name="userName" type="text" required>
 								<input id="userId" class="form-control"
 								  name="userId"  type="hidden" >
 
@@ -93,7 +97,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="mob" class="form-control"
-								placeholder="Mobile No" name="mob" pattern="^\d{10}$" type="text" required>
+								placeholder="Mobile No" name="mob" style="text-align: left;" pattern="^\d{10}$" type="text" required>
 
 						</div>
 					 
@@ -106,7 +110,7 @@
 							<div class="col1title" align="left">User Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
+							<select class="selectpicker s" data-live-search="true" title="Please Select" 
 							name="typeId" id="typeId" required>
 							<option value="">Select Option</option>
 							<option value="1">Admin</option>

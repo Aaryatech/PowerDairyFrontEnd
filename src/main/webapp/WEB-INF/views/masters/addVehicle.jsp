@@ -13,7 +13,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -80,7 +84,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="vehicleName" class="form-control"
-								placeholder="Vehicle No" name="vehicleName" type="text" required>
+								placeholder="Vehicle No" style="text-align: left;" name="vehicleName" type="text" required>
 								<input id="vehId" class="form-control"
 								  name="vehId"  type="hidden" >
 
@@ -91,9 +95,8 @@
 							<div class="col1title" align="left">Select Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control" data-live-search="true" title="Please Select" 
-							name="vehType" id="vehType" required>
-							<option value="">Select Option</option>
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							name="vehType" id="vehType" required> 
 							<option value="1">abc</option>
 							<option value="2">pqr</option> 
 						 </select>
@@ -110,7 +113,7 @@
 							<div class="col1title" align="left">Vehicle Opening Km*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="vehOpeningKm" class="form-control"
+							<input id="vehOpeningKm" style="text-align: left;" class="form-control"
 								placeholder="Vehicle Opening Km" name="vehOpeningKm" type="number" required>
 
 						</div>
@@ -122,8 +125,8 @@
 							<div class="col1title" align="left"> Opening Km Date*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="datepicker" class="texboxitemcode texboxcal"
-								  name="openingKmDate" type="text" required>
+							<input id="datepicker" style="text-align: left;" class="texboxitemcode texboxcal"
+								 placeholder="Opening Km Date" name="openingKmDate" type="text" required>
 
 						</div>
 						

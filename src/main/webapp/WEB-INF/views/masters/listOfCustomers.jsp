@@ -13,11 +13,7 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -67,137 +63,58 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
+					action="${pageContext.request.contextPath}/insertVehicle">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
 					
 						<div class="col-md -3">
 							
-								<div class="col1title" align="left"><h3> Return To Manufacture</h3></div>
-								 
+								<div class="col1title" align="left"><h3>Customers List</h3></div>
+								<div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/addCustomer"><input type="button" value="Add New Customer" class="btn btn-info">
+										</a>
+								 </div>
 						</div>
 						  
-					<div class="colOuter">
-						 
-						<div class="col-md-2">
-							<div class="col1title" align="left">Select Item *: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="selectpicker" data-live-search="true" title="Please Select" 
-							name="itemId" id="itemId" required> 
-							<option value="1">Milk</option>
-							<option value="2">Dahi</option> 
-						 </select>
-
-						</div>
-						<div class="col-md-1"> </div>
-						<div class="col-md-2">
-							<div class="col1title" align="left">Return Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty" style="text-align: left;"  type="number" required>
-
-						</div>
-				 
-					</div>
 					
-					<div class="colOuter">
-						 
-						<div class="col-md-2">
-							<div class="col1title" align="left">Remark*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="remark" class="form-control"
-								placeholder="Remark" name="remark" style="text-align: left;"  type="text" required>
-
-						</div>
- 
-					</div>
-					
-				 
-					 
-					 <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  >
-					 
-					 <div class="colOuter"> 
-					</div>
-					<div id="table-scroll" class="table-scroll">
+					 <div id="table-scroll" class="table-scroll">
 									<div id="faux-table" class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
 										<table id="table_grid1" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
 													<th class="col-sm-1">Sr no.</th>
-													<th class="col-md-1">Batch No</th>
-													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Return Qty</th> 
+													<th class="col-md-1">Customer Name</th> 
+													<th class="col-md-1">Mobile No</th> 
+													<th class="col-md-1">E-mail</th>
+													<th class="col-md-1">GST No</th>
 													<th class="col-md-1">Action</th>
 												</tr>
 											</thead>
 											<tbody>
+											
+											<c:forEach items="${customerList}" var="customerList"
+									varStatus="count">
+									<tr>
+										 <td class="col-md-1"><c:out value="${count.index+1}" /></td>
+										   
+										<td class="col-md-1"><c:out value="${customerList.custName}" /></td>		 
+										<td class="col-md-1"><c:out value="${customerList.custMobNo}" /></td>	
+										<td class="col-md-1"><c:out value="${customerList.custEmailId}" /></td>	
+										<td class="col-md-1"><c:out value="${customerList.custGstNo}" /></td>	
+									 <td><a href="${pageContext.request.contextPath}/editCustomer/${customerList.custId}"><abbr title="Edit"><i id="edit'+key+'" onclick="edit('+key+')" class="fa fa-edit"></i> </abbr></a>
+									 <a href="${pageContext.request.contextPath}/deleteCustomer/${customerList.custId}"><abbr title="Delete"><i  class="fa fa-trash"></i></abbr></a>
+									 </td>
+										 
+									</tr>
+								</c:forEach>
 
 											</tbody>
 
 										</table>
 									</div>
 								</div>
-					  
-						 
-					<div class="colOuter">
-						<div align="center">
-							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
-								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
-						</div>
-				 
-					</div>
-					
-					<%-- <div id="table-scroll" class="table-scroll">
-					<div id="faux-table" class="faux-table" aria="hidden"></div>
-					<div class="table-wrap">
-						<table id="table_grid" class="main-table">
-
-							<thead>
-								<tr class="bgpink">
-								
-									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
-									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
-									<th class="col-md-1">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${supplierList}" var="supplierList"
-									varStatus="count">
-									<tr>
-										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
-										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
-						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
-												 
-											</div></td>
-									</tr>
-								</c:forEach>
-						</table>
-
-					</div>
-				</div> --%>
 
 				</form>
 

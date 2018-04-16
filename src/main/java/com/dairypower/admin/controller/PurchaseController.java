@@ -28,5 +28,21 @@ public class PurchaseController {
 
 		return model;
 	}
+	
+	@RequestMapping(value = "/purchaseHistory", method = RequestMethod.GET)
+	public ModelAndView purchaseHistory(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("purchase/purchaseHistory");
+		try
+		{
+			 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
 
 }

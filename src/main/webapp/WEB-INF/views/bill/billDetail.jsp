@@ -200,7 +200,7 @@
 							<div class="col1title" align="left"> Collected Amt *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="collectAmt" class="form-control"
+							<input id="collectAmt" style="text-align: left;" class="form-control"
 								placeholder="Collected Amt" name="collectAmt"   type="number" required>
 
 						</div>
@@ -211,96 +211,122 @@
 							<div class="col1title" align="left"> Outstanding Amt *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="outstandingAmt" class="form-control"
-								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" required>
+						Previous Out Standing + Current Out Standing
+							<!-- <input id="outstandingAmt" style="text-align: left;" class="form-control"
+								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" disabled> -->
 
 						</div>
+						 
  
 					</div>
 					
 					<div class="colOuter">
+						
 						<div class="col-md-2">
-							<div class="col1title" align="left">Payment Mode*: </div>
+							<div class="col1title" align="left">Received Creates Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control s" data-live-search="true" title="Please Select" 
-							name="payMode" id="payMode" required>
-							<option value="">Select Option</option>
-							<option value="1">Cash</option>
-							<option value="2">Online</option> 
-						 </select>
+							<input id="recCreatesQty" class="form-control" style="text-align: left;"
+								placeholder="Received Creates Qty" name="recCreatesQty"   type="number" required>
 
 						</div>
 						
 						<div class="col-md-1"> 
 						</div>
-						
 						<div class="col-md-2">
-							<div class="col1title" align="left"> Opening Tray Qty: </div>
+							<div class="col1title" align="left">Creates Balance Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="opnQty" class="form-control"
-								placeholder="Opening Tray Qty" name="opnQty"   type="number" required>
+						Opening Qty + Issue Qty - Recieved Qty
+							<!-- <input id="balQty" class="form-control"
+								placeholder="Balance Qty" name="balQty" style="text-align: left;"  type="number" disabled> -->
 
 						</div>
- 
-					</div>
+						
 					
+					 </div>
 					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Issue Qty: </div>
+					<div class="col-md-2">
+							<div class="col1title" align="left">Vehicle In KM*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="issueQty" class="form-control"
-								placeholder="Issue Qty" name="issueQty"   type="number" required>
+							<input id="vehInKm" class="form-control" style="text-align: left;"
+								placeholder="Vehicle In KM" name="vehInKm"   type="number" required>
 
-						</div>
-						<div class="col-md-1"> 
 						</div>
 						
-						<div class="col-md-2">
-							<div class="col1title" align="left"> Received Tray Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="recTrayQty" class="form-control"
-								placeholder="Received Tray Qty " name="recTrayQty"   type="number" required>
-
-						</div>
- 
-					</div>
-					
-					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Balance Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="balQty" class="form-control"
-								placeholder="Balance Qty" name="balQty"   type="number" required>
-
-						</div>
 						<div class="col-md-1"> 
-						</div>
-						
+								</div>
 						 <div class="col-md-2">
 							<div class="col1title" align="left">Remark : </div>
 						</div>
 						<div class="col-md-3">
-							<input id="remark" class="form-control"
+							<input id="remark" class="form-control" style="text-align: left;"
 								placeholder="Remark" name="remark"   type="text" required>
-
-						</div>
  
 					</div>
-					
-					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Vehicle In KM*: </div>
+						<div class="col-md-1"> 
 						</div>
-						<div class="col-md-3">
-							<input id="balQty" class="form-control"
-								placeholder="Vehicle In KM" name="balQty"   type="number" required>
+						
+						
 
 						</div>
+						
+						<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Payment Mode*: </div>
+						</div>
+						<div class="col-md-3">
+							<select class="form-control" onchange="selectionCurrency()" data-live-search="true" title="Please Select" 
+							name="payMode" id="payMode" required> 
+							<option value="1">Check</option> 
+							<option value="2">Cash</option>
+							
+						 </select>
+
+						</div>
+						<div class="col-md-1"> 
+								</div>
+							<div class="col-md-2">
+									<div class="col1title" align="left">Check No : </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="checkNo" class="form-control"
+										placeholder="Check No" name="checkNo" style="text-align: left;"  type="text" required> 
+		
+								</div>
+								 
+
+						</div>
+ 				<div id="currencyTable" style="display: none">
+					<div id="table-scroll" class="table-scroll">
+									<div id="faux-table" width=100% class="faux-table" aria="hidden"></div>
+									<div class="table-wrap table-wrap-custbill">
+										<table id="table_grid1" width=100% class="main-table small-td">
+											<thead>
+												<tr class="bgpink">
+													<th width="10">Sr no.</th>
+													<th width="10">Currency</th>
+													<th width="10">Qty</th>
+													<th width="10">Total Value</th> 
+												</tr>
+											</thead>
+											<tbody>
+											
+											<tr>
+												 
+												 
+												</tr>
+
+											</tbody>
+
+										</table>
+									</div>
+								</div>
+					</div>
+					<div class="colOuter">
+						
 						<div class="col-md-1"> 
 						</div>
 						 
@@ -348,57 +374,26 @@
 
 
 <script>
-function edit(suppId) {
  
+
+function selectionCurrency() {
+//alert("ala");
+	var payMode = document.getElementById("payMode").value;
+	//alert("payMode" + payMode);
+    if(payMode==2)
+    	{
+    	document.getElementById("checkNo").disabled=true;
+    	 
+    	$("#currencyTable").show();
+    	}
+    else
+    	{
+    	document.getElementById("checkNo").disabled=false;
+    	 
+    	$("#currencyTable").hide();
+    	}
 	  
-	$('#loader').show();
-
-	$
-			.getJSON(
-					'${editFrSupplier}',
-
-					{
-						 
-						suppId : suppId, 
-						ajax : 'true'
-
-					},
-					function(data) { 
-						
-						document.getElementById("suppId").value=data.suppId;
-						document.getElementById("suppName").value=data.suppName;  
-						document.getElementById("suppAdd").value=data.suppAddr;
-						document.getElementById("city").value=data.suppCity;
-						document.getElementById("mob").value=data.mobileNo;
-						document.getElementById("email").value=data.email;
-						document.getElementById("gstnNo").value=data.gstnNo;
-						document.getElementById("panNo").value=data.panNo;
-						document.getElementById("liceNo").value=data.suppFdaLic;
-						document.getElementById("creditDays").value=data.suppCreditDays;
-						document.getElementById("isSameState").value=data.isSameState; 
-						document.getElementById("cancel").disabled=false;
-					});
-
- 
-	   
-
-}
-
-function cancel1() {
-
-    //alert("cancel");
-	document.getElementById("suppId").value="";
-	document.getElementById("suppName").value="";  
-	document.getElementById("suppAdd").value="";
-	document.getElementById("city").value="";
-	document.getElementById("mob").value="";
-	document.getElementById("email").value="";
-	document.getElementById("gstnNo").value="";
-	document.getElementById("panNo").value="";
-	document.getElementById("liceNo").value="";
-	document.getElementById("creditDays").value="";
-	document.getElementById("isSameState").value=""; 
-	document.getElementById("cancel").disabled=false;
+	 
 
 }
 (function() {
