@@ -80,9 +80,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="uomName" class="form-control"
-								placeholder="UOM Name" style="text-align: left;" name="uomName" type="text" required>
+								placeholder="UOM Name" style="text-align: left;" name="uomName" type="text"value="${uom.uomName}" required>
 								<input id="uomId" class="form-control"
-								  name="uomId"  type="hidden" >
+								  name="uomId"  value="${uom.uomId}" type="hidden" >
 
 						</div>
 						 </div>
@@ -93,7 +93,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="uomDesc" style="direction: rtl; text-align: left;" class="form-control"
-								placeholder="UOM Description" name="uomDesc" type="text" required>
+								placeholder="UOM Description" name="uomDesc" value="${uom.uomDescription}" type="text" required>
 								 
 
 						</div>
@@ -132,7 +132,11 @@
 										 <td class="col-md-1"><c:out value="${uomlist.uomName}" /></td>
 										<td class="col-md-1"><c:out value="${uomlist.uomDescription}" /></td>		 
 										
-									 <td><a href="${pageContext.request.contextPath}/deleteUom/${uomlist.uomId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a></td>
+									 <td>
+									 <a href="${pageContext.request.contextPath}/editUom/${uomlist.uomId}"><abbr title="Edit"><i  class="fa fa-edit"></i></abbr></a>&nbsp;&nbsp;
+									 <a href="${pageContext.request.contextPath}/deleteUom/${uomlist.uomId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a>
+									
+									 </td>
 										 
 									</tr>
 								</c:forEach>

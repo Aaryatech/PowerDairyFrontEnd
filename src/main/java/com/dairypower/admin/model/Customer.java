@@ -1,5 +1,5 @@
 package com.dairypower.admin.model;
- 
+
 
 public class Customer {
 	
@@ -14,6 +14,8 @@ public class Customer {
 	private String custBankAccNo; 
 	private String custBankIfsc; 
 	private String custBankName; 
+    private String panNo;
+	private String fssaiNo;
 	private float custCap; 
 	private String custGstNo; 
 	private String custReference; 
@@ -24,6 +26,21 @@ public class Customer {
 	private int cratesCap; 
 	private int vehId; 
 	private int isUsed;
+	private float outstandingAmt;
+	
+	
+	public String getPanNo() {
+		return panNo;
+	}
+	public String getFssaiNo() {
+		return fssaiNo;
+	}
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
+	public void setFssaiNo(String fssaiNo) {
+		this.fssaiNo = fssaiNo;
+	}
 	public int getCustId() {
 		return custId;
 	}
@@ -149,6 +166,13 @@ public class Customer {
 	}
 	public void setIsUsed(int isUsed) {
 		this.isUsed = isUsed;
+	}
+	
+	public float getOutstandingAmt() {
+		return outstandingAmt;
+	}
+	public void setOutstandingAmt(float outstandingAmt) {
+		this.outstandingAmt = outstandingAmt;
 	}
 	@Override
 	public String toString() {

@@ -145,11 +145,11 @@
 					
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Landline No*: </div>
+							<div class="col1title" align="left">Landline No: </div>
 						</div>
 						<div class="col-md-3">
 							<input id="landlineNo" class="form-control"
-								placeholder="Landline No" name="landlineNo" style="text-align: left;" value="${customer.custLandlineNo}" pattern="^\d{10}$" type="text" required>
+								placeholder="Landline No" name="landlineNo" style="text-align: left;" value="${customer.custLandlineNo}" pattern="^\d{10}$" type="text" >
 
 						</div>
 						<div class="col-md-1">
@@ -221,7 +221,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="panNo" class="form-control"
-								placeholder="Pan No" name="panNo" style="text-align: left;" value="${customer.cratesOpBal}" type="text" required>
+								placeholder="Pan No" name="panNo" style="text-align: left;" value="${customer.panNo}" type="text" required>
 
 						</div>
 						<div class="col-md-1">
@@ -233,7 +233,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="fssaiNo" class="form-control"
-								placeholder="FSSAI No" name="fssaiNo" style="text-align: left;" value="${customer.cratesCap}" type="text" required>
+								placeholder="FSSAI No" name="fssaiNo" style="text-align: left;" value="${customer.fssaiNo}" type="text" required>
 
 						</div>
 				 

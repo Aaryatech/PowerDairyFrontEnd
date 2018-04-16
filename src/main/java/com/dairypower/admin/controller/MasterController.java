@@ -137,6 +137,8 @@ public class MasterController {
 			String ifsc = request.getParameter("ifsc");
 			String bankName = request.getParameter("bankName");
 			String gstnNo = request.getParameter("gstnNo");
+			String panNo = request.getParameter("panNo");
+			String fssaiNo = request.getParameter("fssaiNo");
 			float cap = Float.parseFloat(request.getParameter("cap")); 
 			String custRef = request.getParameter("custRef");
 			String refMo = request.getParameter("refMo");
@@ -163,6 +165,8 @@ public class MasterController {
 			insert.setCustBankIfsc(ifsc);
 			insert.setCustBankName(bankName);
 			insert.setCustCap(cap);
+			insert.setFssaiNo(fssaiNo);
+			insert.setPanNo(panNo);
 			insert.setCustGstNo(gstnNo);
 			insert.setCustReference(custRef);
 			insert.setRefMobNo(refMo);
@@ -226,6 +230,26 @@ public class MasterController {
 		 
 		return model;
 	}
+	@RequestMapping(value = "/editCategory/{catId}", method = RequestMethod.GET)
+	public ModelAndView editCategory(@PathVariable int catId,HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		ModelAndView model = new ModelAndView("masters/addCategory");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("catId", catId);
+			ItemCategory catRes =  rest.postForObject(Constants.url + "/master/getCategoryById",map, ItemCategory.class);
+			model.addObject("category", catRes);
+			
+			List<ItemCategory> itemCategoryList =  rest.getForObject(Constants.url + "/master/getAllCategories", List.class);
+			model.addObject("itemCategoryList", itemCategoryList);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return model;
+	}
 	
 	@RequestMapping(value = "/insertCategory", method = RequestMethod.POST)
 	public String insertCategory(HttpServletRequest request, HttpServletResponse response) {
@@ -284,6 +308,7 @@ public class MasterController {
 		ModelAndView model = new ModelAndView("masters/addVehicle");
 		try
 		{
+			
 			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
 			model.addObject("vehicleList", vehicleList);
 		}catch(Exception e)
@@ -293,7 +318,25 @@ public class MasterController {
 		 
 		return model;
 	}
-	
+	@RequestMapping(value = "/editVehicle/{vehId}", method = RequestMethod.GET)
+	public ModelAndView editVehicle(@PathVariable int vehId,HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/addVehicle");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("vehId", vehId);
+			 Vehicle vehicleRes = rest.postForObject(Constants.url + "/master/getVehicleById",map, Vehicle.class);
+			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			model.addObject("vehicleList", vehicleList);
+			model.addObject("vehicle",vehicleRes);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		 
+		return model;
+	}
 	@RequestMapping(value = "/insertVehicle", method = RequestMethod.POST)
 	public String insertVehicle(HttpServletRequest request, HttpServletResponse response) {
 
@@ -355,6 +398,26 @@ public class MasterController {
 		ModelAndView model = new ModelAndView("masters/addUom");
 		try
 		{
+			List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
+			model.addObject("uomlist", uomlist);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		 
+		return model;
+	}
+	@RequestMapping(value = "/editUom/{uomId}", method = RequestMethod.GET)
+	public ModelAndView editUom(@PathVariable int uomId,HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/addUom");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("uomId", uomId);
+			Uom uomRes =  rest.postForObject(Constants.url + "/master/getUomById",map, Uom.class);
+			model.addObject("uom", uomRes);
 			List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
 			model.addObject("uomlist", uomlist);
 		}catch(Exception e)

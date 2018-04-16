@@ -64,10 +64,7 @@
 				 
 				<form name="frm_search" id="frm_search" method="post"
 					action="${pageContext.request.contextPath}/insertCategory">
-					<input type="hidden" name="mod_ser" id="mod_ser"
-						value="search_result">
-
-					
+				
 						<div class="col-md -3">
 							
 								<div class="col1title" align="left"><h3>Add Category</h3></div>
@@ -80,9 +77,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="catName" class="form-control"
-								placeholder="Category Name" style="text-align: left;" name="catName" type="text" required>
+								placeholder="Category Name" style="text-align: left;" name="catName" type="text" value="${category.catName}" required>
 								<input id="catId" class="form-control"
-								  name="catId"  type="hidden" >
+								  name="catId"  type="hidden" value="${category.catId}">
 
 						</div>
 						 </div>
@@ -118,7 +115,8 @@
 											 
 										 <td class="col-md-1"><c:out value="${itemCategoryList.catName}" /></td> 	 
 										
-									 <td><a href="${pageContext.request.contextPath}/deleteCategory/${itemCategoryList.catId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a></td>
+									 <td><a href="${pageContext.request.contextPath}/editCategory/${itemCategoryList.catId}"><abbr title="Edit"><i  class="fa fa-edit"></i></abbr></a>&nbsp;&nbsp;
+									 <a href="${pageContext.request.contextPath}/deleteCategory/${itemCategoryList.catId}"><abbr title="Delete"><i  class="fa fa-trash"></i></abbr></a></td>
 										 
 									</tr>
 								</c:forEach>

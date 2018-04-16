@@ -13,11 +13,10 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+<!--     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script> -->
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
@@ -84,9 +83,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="vehicleName" class="form-control"
-								placeholder="Vehicle No" style="text-align: left;" name="vehicleName" type="text" required>
+								placeholder="Vehicle Name" style="text-align: left;" name="vehicleName" type="text" value="${vehicle.vehName}" required>
 								<input id="vehId" class="form-control"
-								  name="vehId"  type="hidden" >
+								  name="vehId"  type="hidden" value="${vehicle.vehId}" >
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -95,10 +94,23 @@
 							<div class="col1title" align="left">Select Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Please Select" class="form-control"
 							name="vehType" id="vehType" required> 
+							<c:choose>
+							<c:when test="${vehicle.vehType==1}">
+							<option value="1" selected>abc</option>
+							<option value="2">pqr</option>
+							</c:when>
+							<c:when test="${vehicle.vehType==2}">
+							<option value="1" >abc</option>
+							<option value="2" selected>pqr</option>
+							</c:when>
+							<c:otherwise>
 							<option value="1">abc</option>
-							<option value="2">pqr</option> 
+							<option value="2">pqr</option>
+							</c:otherwise>
+							</c:choose>
+							 
 						 </select>
 
 						</div>
@@ -114,7 +126,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="vehOpeningKm" style="text-align: left;" class="form-control"
-								placeholder="Vehicle Opening Km" name="vehOpeningKm" type="number" required>
+								placeholder="Vehicle Opening Km" name="vehOpeningKm" type="number"value="${vehicle.vehOpKms}" required>
 
 						</div>
 
@@ -126,7 +138,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="datepicker" style="text-align: left;" class="texboxitemcode texboxcal"
-								 placeholder="Opening Km Date" name="openingKmDate" type="text" required>
+								 placeholder="Opening Km Date" name="openingKmDate" type="text"value="${vehicle.vehOpKmsDate}" required>
 
 						</div>
 						
@@ -168,7 +180,9 @@
 										<td class="col-md-1"><c:out value="${vehicleList.vehType}" /></td>		 
 										<td class="col-md-1"><c:out value="${vehicleList.vehOpKms}" /></td>	
 										<td class="col-md-1"><c:out value="${vehicleList.vehOpKmsDate}" /></td>	
-									 <td><a href="${pageContext.request.contextPath}/deleteVehicle/${vehicleList.vehId}"><abbr title="Delete"><i onclick="del('+key+')" class="fa fa-trash"></i></abbr></a></td>
+									 <td>
+									 <a href="${pageContext.request.contextPath}/editVehicle/${vehicleList.vehId}"><abbr title="Edit"><i  class="fa fa-edit"></i></abbr></a> 
+									 <a href="${pageContext.request.contextPath}/deleteVehicle/${vehicleList.vehId}"><abbr title="Delete"><i class="fa fa-trash"></i></abbr></a></td>
 										 
 									</tr>
 								</c:forEach>
