@@ -12,9 +12,9 @@
  --%>
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
-<c:url var="addItemInPurchaseBill" value="/addItemInPurchaseBill"></c:url>
-<c:url var="editItemInPurchaseBill" value="/editItemInPurchaseBill"></c:url>
-<c:url var="deleteItemInPurchaseBill" value="/deleteItemInPurchaseBill"></c:url>
+<c:url var="addItemInEditPurchaseBill" value="/addItemInEditPurchaseBill"></c:url>
+<c:url var="editItemInEditPurchaseBill" value="/editItemInEditPurchaseBill"></c:url>
+<c:url var="deleteItemInEditPurchaseBill" value="/deleteItemInEditPurchaseBill"></c:url>
 
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -99,7 +99,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="invoiceNo" class="form-control"
-								style="text-align: left;" placeholder="Invoice No" name="invoiceNo" type="number" required>
+								style="text-align: left;" placeholder="Invoice No" value="${getPoHeader.poId}" name="invoiceNo" type="number" required>
 							 
 
 						</div>
@@ -111,7 +111,7 @@
 							<div class="col1title" align="left">Invoice Date*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="datepicker"  placeholder="Invoice Date" class="texboxitemcode texboxcal"
+							<input id="datepicker" value="${getPoHeader.poDate}" placeholder="Invoice Date" class="texboxitemcode texboxcal"
 															name="invoiceDate" type="text" required>
 
 						</div>
@@ -123,7 +123,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="cratesReceivedQty" class="form-control"
-								style="text-align: left;" placeholder="Creates In Qty" name="cratesReceivedQty" type="number" required>
+								style="text-align: left;" value="${getPoHeader.cratesRecievedQty}" placeholder="Creates In Qty" name="cratesReceivedQty" type="number" required>
 							 
 
 						</div>
@@ -137,7 +137,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
-								style="text-align: left;" placeholder="Remark" name="remark" type="text"  >
+								style="text-align: left;" value="${getPoHeader.poRemarks}" placeholder="Remark" name="remark" type="text"  >
 							 
 
 						</div>
@@ -247,6 +247,32 @@
 												</tr>
 											</thead>
 											<tbody>
+											<c:forEach items="${getPoHeader.poDetailList}" var="poDetailList"
+									varStatus="count">
+									<tr>
+										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
+										  
+										  <td class="col-md-1"><c:out
+												value="${poDetailList.batchNo}" /></td>
+												 
+										<td class="col-md-1"><c:out
+												value="${poDetailList.itemName}" /></td>
+												  
+										<td class="col-md-1" ><c:out
+												value="${poDetailList.mfgDate}" /></td>
+										<td class="col-md-1" ><c:out
+												value="${poDetailList.itemQty}" /></td>
+										<td class="col-md-1" ><c:out
+												value="${poDetailList.rate}" /></td> 
+										<td class="col-md-1" ><c:out
+												value="${poDetailList.itemQty*poDetailList.rate}" /></td>
+										<td>
+													<span  class="glyphicon glyphicon-edit" onclick="edit(${count.index})" ></span> 
+													<span class="glyphicon glyphicon-remove" onclick="deleteItem(${count.index})"></span>
+													</td> 
+										 
+									</tr>
+								</c:forEach>
 
 											</tbody>
 
@@ -365,7 +391,7 @@ function addItem( ) {
 
 	$
 			.getJSON(
-					'${addItemInPurchaseBill}',
+					'${addItemInEditPurchaseBill}',
 
 					{
 						 
@@ -394,7 +420,8 @@ function addItem( ) {
 								data,
 								function(key, itemList) {
 									
-									 
+								if(itemList.isUsed==0)
+									{
 									var tr = $('<tr></tr>');
 										tr.append($('<td class="col-sm-1"></td>').html(key+1));
 										tr.append($('<td class="col-md-1"></td>').html(itemList.batchNo));
@@ -415,6 +442,7 @@ function addItem( ) {
 										document.getElementById("extraNo").value="";
 										document.getElementById("leakageQty").value="";
 										document.getElementById("datepicker1").value="";
+									}
 
 								})
 						
@@ -434,7 +462,7 @@ function edit(index) {
 
 	$
 			.getJSON(
-					'${editItemInPurchaseBill}',
+					'${editItemInEditPurchaseBill}',
 
 					{
 						 
@@ -468,7 +496,7 @@ function deleteItem(index) {
 
 	$
 			.getJSON(
-					'${deleteItemInPurchaseBill}',
+					'${deleteItemInEditPurchaseBill}',
 
 					{
 						 
@@ -490,7 +518,8 @@ function deleteItem(index) {
 								data,
 								function(key, itemList) {
 									
-									 
+									if(itemList.isUsed==0)
+									{ 
 									var tr = $('<tr></tr>');
 										tr.append($('<td class="col-sm-1"></td>').html(key+1));
 										tr.append($('<td class="col-md-1"></td>').html(itemList.batchNo));
@@ -511,6 +540,7 @@ function deleteItem(index) {
 										document.getElementById("extraNo").value="";
 										document.getElementById("leakageQty").value="";
 										document.getElementById("datepicker1").value="";
+									}
 
 								})
 						

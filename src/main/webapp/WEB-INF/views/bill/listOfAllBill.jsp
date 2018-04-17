@@ -98,17 +98,16 @@
 						<div class="col-md-3">
 							<div class="col1title" align="left">Bill Count (Generated/Pending) : 1/1</div>
 						</div>
-						 
-						
-						<div class="col-md-1"> 
-						</div>
-
+						  
 						<div class="col-md-2">
 							<div class="col1title" align="left">Total Bill AMT : 5040</div>
 						</div>
+						<div class="col-md-2">
+							<div class="col1title" align="left">Total Outstanding AMT : 00</div>
+						</div>
+						
 						<div class="col-md-3">
-							 
-
+							<div class="col1title" align="left">Total Outstanding Creates : 00</div>
 						</div>
 					 
 					</div> 

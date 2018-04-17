@@ -15,8 +15,7 @@
 <div class="wrapper">
 
 	<!--topHeader-->
-	<c:url var="getOtherBillBetweenDate" value="/getOtherBillBetweenDate" />
-	<c:url var="frSupplierList" value="/frSupplierList" />
+	<c:url var="getPurchaseBillbetweenDate" value="/getPurchaseBillbetweenDate" /> 
 	<jsp:include page="/WEB-INF/views/include/logo.jsp"></jsp:include>
 
 
@@ -58,14 +57,18 @@
 						<div class="col-md-2" align="left">From:</div>
 						<div class="col-md-2">
 							<input id="datepicker" class="texboxitemcode texboxcal"
-								value="${cDate}" name="from_Date" type="text">
+								value="${fromDate}" name="from_Date" type="text">
+								
+								<input id="toDay" class="texboxitemcode texboxcal"
+								value="${fromDate}" name="toDay" type="hidden">
 						</div>
 						<div class="col-md-1" align="left"></div>
 						 
 						<div class="col-md-1" align="left">TO:</div>
 						<div class="col-md-2">
 							<input id="datepicker2" class="texboxitemcode texboxcal"
-								value="${cDate}" name="to_Date" type="text">
+								value="${toDate}" name="to_Date" type="text">
+								 
 						</div>
 						
 						<div class="col-md-1" align="left"></div>
@@ -103,12 +106,27 @@
 											<th class="col-md-1">Invoice No</th>
 											<th class="col-md-1">Date</th>   
 											<th class="col-md-1"  >Grand Total</th> 
-											<th class="col-md-1"  >Remark</th> 
-											<th class="col-md-1" >Action</th>
-
+											<th class="col-md-1"  >Remark</th>  
+											<th class="col-md-1"  >Action</th> 
 										</tr>
 									</thead>
 									<tbody>
+									
+									<c:forEach items="${getPoHeaderList}" var="getPoHeaderList"
+													varStatus="count">
+													  
+													<tr>
+												     
+														<td ><c:out value="${count.index+1}" /></td> 
+														<td ><c:out value="${getPoHeaderList.poId}" /></td>
+														<td ><c:out value="${getPoHeaderList.poDate}" /></td> 
+														<td ><c:out value="${getPoHeaderList.poTotal}" /></td>
+												 	 	<td  ><c:out value="${getPoHeaderList.poRemarks}" /> </td>
+												 	 	 <td  ><a href="${pageContext.request.contextPath}/editPurchaseBill/${getPoHeaderList.poHeaderId}" class="action_btn" ><span class="glyphicon glyphicon-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/${getPoHeaderList.poHeaderId}" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a>  
+												 	 	  </td>
+													</tr>
+																 
+												</c:forEach> 
  
 									</tbody>
 
@@ -188,36 +206,24 @@ jQuery(document).ready(function() {
 function serchOtherBill()
 {
 	var fromDate=document.getElementById("datepicker").value;
-	var toDate=document.getElementById("datepicker2").value; 
-	var suppId=document.getElementById("suppId").value;
+	var toDate=document.getElementById("datepicker2").value;  
+	var toDay=document.getElementById("toDay").value; 
 	$
 	.getJSON(
-			'${getOtherBillBetweenDate}',
+			'${getPurchaseBillbetweenDate}',
 
 			{
 				 
 				fromDate : fromDate,
-				toDate : toDate, 
-				suppId : suppId,
+				toDate : toDate,  
 			
 				ajax : 'true'
 
 			},
 			function(data) {
 				
-				$
-				.getJSON(
-						'${frSupplierList}',
-
-						{
-							  
-							ajax : 'true'
-
-						},
-						function(supplierList) {
-							 
-							var len=supplierList.length; 
-							var suppName;
+				  	 
+						 
 				$('#table_grid td').remove(); 
 				  
 			  $.each(
@@ -227,30 +233,27 @@ function serchOtherBill()
 
 								var tr = $('<tr></tr>');
 								 
-							  	tr.append($('<td></td>').html(key+1));
-							  	tr.append($('<td></td>').html(itemList.invoiceNo));
-							  	tr.append($('<td></td>').html(itemList.billDate)); 
-							  	for(var i=0;i<len;i++)
-							  		{
-							  			if(supplierList[i].suppId==itemList.suppId)
-							  				{
-							  				suppName=supplierList[i].suppName;
-							  				}
-							  		}
-							  	tr.append($('<td></td>').html(suppName)); 
-							  	tr.append($('<td style="text-align:right;"></td>').html(itemList.discAmt)); 
-							  	tr.append($('<td style="text-align:right;"></td>').html(itemList.taxableAmt)); 
-							  	tr.append($('<td style="text-align:right;"></td>').html(itemList.totalTax));
-							  	tr.append($('<td style="text-align:right;"></td>').html(itemList.grandTotal));
-							  	tr.append($('<td style="text-align:center;"></td>').html('<a href="${pageContext.request.contextPath}/viewOtherBillDetail/'+itemList.billNo+'" class="action_btn" '+
-										'title="Detail"><i class="fa fa-list"></i></abbr></a>'));
+								tr.append($('<td ></td>').html(key+1));
+								tr.append($('<td ></td>').html(itemList.poId));
+							  	tr.append($('<td ></td>').html(itemList.poDate));
+							  	tr.append($('<td  ></td>').html(itemList.poTotal));
+							  	tr.append($('<td  ></td>').html(itemList.poRemarks)); 
+							  	if(toDay!=itemList.poDate)
+						  		{
+						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
+						  		}
+						  	else
+						  		{
+						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/editPurchaseBill/'+itemList.poHeaderId+'" class="action_btn" ><span class="glyphicon glyphicon-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
+						  		}
+							  
 							  	
 							    $('#table_grid tbody').append(tr);
 
 								 
 
 							})  
-						});
+					 
 				
 			});
 	
