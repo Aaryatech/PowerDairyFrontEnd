@@ -38,6 +38,7 @@ public class PurchaseController {
 	RestTemplate rest = new RestTemplate();
 	List<GetPoDetail> addItemInPurchaseBill = new ArrayList<GetPoDetail>();
 	List<GetPoDetail> editPurchaseBillList = new ArrayList<GetPoDetail>();
+	GetPoHeader   editPoHeader = new GetPoHeader();
 	List<GetItem> itemList = new ArrayList<GetItem>();
 	
 	@RequestMapping(value = "/purchaseBill", method = RequestMethod.GET)
@@ -307,14 +308,14 @@ public class PurchaseController {
 			  
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 			 map.add("poHeaderId",poHeaderId); 
-			  GetPoHeader   getPoHeader =  rest.postForObject(Constants.url + "/getPoHeaderDetails",map, GetPoHeader .class);
-			 model.addObject("getPoHeader", getPoHeader); 
+			   editPoHeader =  rest.postForObject(Constants.url + "/getPoHeaderDetails",map, GetPoHeader .class);
+			 model.addObject("getPoHeader", editPoHeader); 
 			 
 			 GetItem[] Item =  rest.getForObject(Constants.url + "/master/getAllItems", GetItem[].class);
 				itemList = new ArrayList<GetItem>(Arrays.asList(Item));
 				model.addObject("itemList", itemList);
 			 
-			   editPurchaseBillList = getPoHeader.getPoDetailList();
+			   editPurchaseBillList = editPoHeader.getPoDetailList();
 			 
 		}catch(Exception e)
 		{
@@ -437,6 +438,71 @@ public class PurchaseController {
 		}
 
 		return editPurchaseBillList;
+	}
+	
+	@RequestMapping(value = "/submitEditPurchaseBill", method = RequestMethod.POST)
+	public String submitEditPurchaseBill(HttpServletRequest request, HttpServletResponse response) {
+
+	 
+		SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date();
+		
+		
+		
+		try {
+				  
+				String invoiceNo = request.getParameter("invoiceNo");
+				String invoiceDate = request.getParameter("invoiceDate");
+				String remark = request.getParameter("remark");  
+				int recievedCreates = Integer.parseInt(request.getParameter("cratesReceivedQty"));
+				PoHeader insert = new PoHeader();
+				insert.setPoHeaderId(editPoHeader.getPoHeaderId());
+				insert.setPoDate(invoiceDate);
+				insert.setPoId(Integer.parseInt(invoiceNo));
+				insert.setPoRemarks(remark);
+				insert.setCratesRecievedQty(recievedCreates);
+				insert.setPoDatetime(time.format(date));
+				
+				List<PoDetail> poDetailList = new ArrayList<>();
+				float poTotal = 0;
+				for(int i=0;i<editPurchaseBillList.size();i++)
+				{
+					PoDetail poDetail = new PoDetail();
+					poDetail.setPoDetailId(editPurchaseBillList.get(i).getPoDetailId());
+					poDetail.setPoHeaderId(editPurchaseBillList.get(i).getPoHeaderId());
+					poDetail.setBatchNo(editPurchaseBillList.get(i).getBatchNo());
+					poDetail.setItemId(editPurchaseBillList.get(i).getItemId());
+					poDetail.setItemQty(editPurchaseBillList.get(i).getItemQty()); 
+					poDetail.setRate(editPurchaseBillList.get(i).getRate());
+					poDetail.setShortNo(editPurchaseBillList.get(i).getShortNo());
+					poDetail.setExtraNo(editPurchaseBillList.get(i).getExtraNo());
+					poDetail.setPoLeakageQty(editPurchaseBillList.get(i).getPoLeakageQty());
+					poDetail.setMfgDate(editPurchaseBillList.get(i).getMfgDate());
+					poDetail.setPackingDate("");
+					poDetail.setIsUsed(editPurchaseBillList.get(i).getIsUsed());
+					poDetailList.add(poDetail);
+					if(poDetail.getIsUsed()==0)
+					{
+						float total = poDetail.getRate()*poDetail.getItemQty(); 
+						poTotal = poTotal + total;
+					}
+				}
+				insert.setPoTotal(poTotal);
+				insert.setPoDetailList(poDetailList);
+				insert.setUserId(1);
+				PoHeader  poHeader =  rest.postForObject(Constants.url + "/savePo",insert, PoHeader .class);
+				
+				System.out.println("PoHeader " + poHeader);
+				
+				
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+
+		return "redirect:/purchaseHistory";
 	}
 
 }

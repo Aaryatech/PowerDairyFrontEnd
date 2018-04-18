@@ -53,6 +53,22 @@
 						Return Manufacture<span></span>
 					</div></a></li>
 					
+					<li><a href="${pageContext.request.contextPath}/getCurrentStock"><div
+						class="img">
+						<i class="fa fa-file-pdf-o icon"></i>
+					</div>
+					<div class="title">
+						Get Current Stock<span></span>
+					</div></a></li>
+					
+					<li><a href="${pageContext.request.contextPath}/showItemStock"><div
+						class="img">
+						<i class="fa fa-file-pdf-o icon"></i>
+					</div>
+					<div class="title">
+						Insert Or Edit Stock<span></span>
+					</div></a></li>
+					
 					<%-- <li><a href="${pageContext.request.contextPath}/creditNote"><div
 						class="img">
 						<i class="fa fa-file-pdf-o icon"></i>

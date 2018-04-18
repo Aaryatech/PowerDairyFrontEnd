@@ -71,7 +71,7 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertPurchaseBill">
+					action="${pageContext.request.contextPath}/submitEditPurchaseBill">
 				 
 					
 						<div class="order-left"> 
