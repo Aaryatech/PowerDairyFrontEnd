@@ -1,11 +1,20 @@
 package com.dairypower.admin.model;
- 
+
+import java.util.List;
 
 public class RSHeader {
 	 
 	private int rsHeaderId;  
 	private String rsName;  
 	private int isUsed;
+	List<RsDetail> rsDetailList;
+	
+	public List<RsDetail> getRsDetailList() {
+		return rsDetailList;
+	}
+	public void setRsDetailList(List<RsDetail> rsDetailList) {
+		this.rsDetailList = rsDetailList;
+	}
 	public int getRsHeaderId() {
 		return rsHeaderId;
 	}

@@ -1,5 +1,7 @@
 package com.dairypower.admin.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +21,16 @@ import org.springframework.web.servlet.ModelAndView;
 import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.model.Customer;
 import com.dairypower.admin.model.CustomerType;
+import com.dairypower.admin.model.GetItem;
+import com.dairypower.admin.model.GetUser;
 import com.dairypower.admin.model.Info;
+import com.dairypower.admin.model.Item;
 import com.dairypower.admin.model.ItemCategory;
 import com.dairypower.admin.model.RSHeader;
+import com.dairypower.admin.model.RsDetail;
 import com.dairypower.admin.model.Uom;
+import com.dairypower.admin.model.User;
+import com.dairypower.admin.model.UserType;
 import com.dairypower.admin.model.Vehicle; 
  
  
@@ -186,14 +194,74 @@ public class MasterController {
 
 		return "redirect:/listOfCustomers";
 	}
-	
+	@RequestMapping(value = "/insertItem", method = RequestMethod.POST)
+	public String insertItem(HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			
+			String itemId = request.getParameter("itemId");
+			String itemName = request.getParameter("itemName"); 
+			int itemCatId =Integer.parseInt(request.getParameter("catId"));
+			String  itemCode = request.getParameter("itemCode");
+			String hsnCode = request.getParameter("hsnCode");
+			int minQty = Integer.parseInt(request.getParameter("min_qty"));
+			int maxQty = Integer.parseInt(request.getParameter("max_qty"));
+			int hubExpDays = Integer.parseInt( request.getParameter("hubExprDays"));
+			int retailExpDays =Integer.parseInt(request.getParameter("retailExprDays"));
+			float sgstPer = Float.parseFloat(request.getParameter("sgst"));
+			float cgstPer = Float.parseFloat(request.getParameter("cgst"));
+			float igstPer = Float.parseFloat(request.getParameter("igst"));
+			
+			int uomId =Integer.parseInt(request.getParameter("uomId"));
+			float purchaseRate =Float.parseFloat(request.getParameter("purchaseRate"));
+		
+			
+			Item item = new Item();
+			if(itemId==null || itemId=="")
+				item.setItemId(0);
+			else
+				item.setItemId(Integer.parseInt(itemId));
+
+			item.setItemCatId(itemCatId);
+			item.setItemName(itemName);
+			item.setUomId(uomId);
+			item.setPurchaseRate(purchaseRate);
+			item.setMinQty(minQty);
+			item.setMaxQty(maxQty);
+			item.setHubExpDays(hubExpDays);
+			item.setRetailExpDays(retailExpDays);
+			item.setHsnCode(hsnCode);
+			item.setSgstPer(sgstPer);
+			item.setIgstPer(igstPer);
+			item.setCgstPer(cgstPer);
+			item.setIsUsed(0);
+			item.setItemCode(itemCode);
+			
+			Info info = rest.postForObject(Constants.url + "/master/saveItem",item,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/showItemList";
+	}
 	@RequestMapping(value = "/addItem", method = RequestMethod.GET)
 	public ModelAndView addItem(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("masters/addItem");
 		try
 		{
-			 
+			List<ItemCategory> itemCategoryList =  rest.getForObject(Constants.url + "/master/getAllCategories", List.class);
+			model.addObject("itemCategoryList", itemCategoryList);
+			List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
+			model.addObject("uomList", uomlist);
+
 			
 		}catch(Exception e)
 		{
@@ -202,12 +270,37 @@ public class MasterController {
 
 		return model;
 	}
-	
+	@RequestMapping(value = "/showItemList", method = RequestMethod.GET)
+	public ModelAndView showItemList(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/itemList");
+		try
+		{
+
+			List<GetItem> itemList =  rest.getForObject(Constants.url + "/master/getAllItems", List.class);
+			model.addObject("itemList", itemList); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	public ModelAndView addUser(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("masters/addUser");
-		 
+		 try
+		 {
+				List<GetUser> userlist =  rest.getForObject(Constants.url + "/master/getAllUsers", List.class);
+                System.err.println(userlist.toString());
+				model.addObject("userList", userlist); 
+				List<UserType> userTypeList =  rest.getForObject(Constants.url + "/master/getAllUserType", List.class);
+				model.addObject("userTypeList", userTypeList); 
+		 }catch (Exception e) {
+			e.printStackTrace();
+		}
 		return model;
 	}
 	
@@ -225,9 +318,6 @@ public class MasterController {
 			e.printStackTrace();
 		}
 
-		
-		
-		 
 		return model;
 	}
 	@RequestMapping(value = "/editCategory/{catId}", method = RequestMethod.GET)
@@ -250,7 +340,50 @@ public class MasterController {
 		}
 		return model;
 	}
-	
+	@RequestMapping(value = "/editUser/{userId}", method = RequestMethod.GET)
+	public ModelAndView editUser(@PathVariable int userId,HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		ModelAndView model = new ModelAndView("masters/addUser");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("userId", userId);
+			User userRes =  rest.postForObject(Constants.url + "/master/getUserById",map, User.class);
+			model.addObject("user", userRes);
+			List<GetUser> userList =  rest.getForObject(Constants.url + "/master/getAllUsers", List.class);
+
+			model.addObject("userList", userList); 
+			List<UserType> userTypeList =  rest.getForObject(Constants.url + "/master/getAllUserType", List.class);
+			model.addObject("userTypeList", userTypeList); 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return model;
+	}
+	@RequestMapping(value = "/editItem/{itemId}", method = RequestMethod.GET)
+	public ModelAndView editItem(@PathVariable int itemId,HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		ModelAndView model = new ModelAndView("masters/addItem");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("itemId", itemId);
+			GetItem getItemRes =  rest.postForObject(Constants.url + "/master/getItemById",map, GetItem.class);
+			model.addObject("item", getItemRes);
+			List<ItemCategory> itemCategoryList =  rest.getForObject(Constants.url + "/master/getAllCategories", List.class);
+			model.addObject("itemCategoryList", itemCategoryList);
+			List<Uom> uomlist =  rest.getForObject(Constants.url + "/master/getAllUom", List.class);
+			model.addObject("uomList", uomlist);
+
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return model;
+	}
 	@RequestMapping(value = "/insertCategory", method = RequestMethod.POST)
 	public String insertCategory(HttpServletRequest request, HttpServletResponse response) {
 
@@ -300,6 +433,46 @@ public class MasterController {
 
 		return "redirect:/addCategory";
 	}
+	@RequestMapping(value = "/deleteItem/{itemId}", method = RequestMethod.GET)
+	public String deleteItem(@PathVariable int itemId, HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("itemId", itemId);
+			Info info = rest.postForObject(Constants.url + "/master/deleteItem",map,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/showItemList";
+	}
+	@RequestMapping(value = "/deleteUser/{userId}", method = RequestMethod.GET)
+	public String deleteUser(@PathVariable int userId, HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("userId", userId);
+			Info info = rest.postForObject(Constants.url + "/master/deleteUser",map,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/addUser";
+	}
 	
 	
 	@RequestMapping(value = "/addVehicle", method = RequestMethod.GET)
@@ -308,7 +481,6 @@ public class MasterController {
 		ModelAndView model = new ModelAndView("masters/addVehicle");
 		try
 		{
-			
 			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
 			model.addObject("vehicleList", vehicleList);
 		}catch(Exception e)
@@ -369,6 +541,39 @@ public class MasterController {
 		}
 
 		return "redirect:/addVehicle";
+	}
+	@RequestMapping(value = "/insertUser", method = RequestMethod.POST)
+	public String insertUser(HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			String userId = request.getParameter("userId");
+			String userName = request.getParameter("userName");  
+			String userMobNo =request.getParameter("mob");
+			int userTypeId = Integer.parseInt(request.getParameter("typeId"));
+			
+			User user = new User();
+			if(userId==null || userId=="")
+				user.setUserId(0);
+			else
+				user.setUserId(Integer.parseInt(userId));
+		    user.setUserMobNo(userMobNo);
+		    user.setUserName(userName); 
+		    user.setUserTypeId(userTypeId);
+		    user.setIsUsed(0);
+		    
+			Info info = rest.postForObject(Constants.url + "/master/saveUser",user,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/addUser";
 	}
 	
 	@RequestMapping(value = "/deleteVehicle/{vehId}", method = RequestMethod.GET)
@@ -481,5 +686,58 @@ public class MasterController {
 
 		return "redirect:/addUom";
 	}
-	
+	@RequestMapping(value = "/addRateStructure", method = RequestMethod.GET)
+	public ModelAndView addRateStructure(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/addRs");
+		try
+		{	List<GetItem> itemList =  rest.getForObject(Constants.url + "/master/getAllItems", List.class);
+	       	model.addObject("itemList", itemList); 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		 
+		return model;
+	}
+	@RequestMapping(value = "/saveRs", method = RequestMethod.POST)
+	public String saveRs(HttpServletRequest request, HttpServletResponse response) {
+
+		try
+		{
+			String rsName = request.getParameter("rsName");
+			
+		    GetItem[] itemList =  rest.getForObject(Constants.url + "/master/getAllItems", GetItem[].class);
+		    ArrayList<GetItem> allItems=new ArrayList<GetItem>(Arrays.asList(itemList));
+		
+		    RSHeader rsHeader=new RSHeader();
+		    rsHeader.setRsHeaderId(0);
+		    rsHeader.setRsName(rsName);
+		    rsHeader.setIsUsed(0);
+		    List<RsDetail> rsDetails=new ArrayList<RsDetail>();
+		    for(GetItem item:allItems)
+		    {
+				int rate = Integer.parseInt(request.getParameter("rate"+item.getItemId()));
+
+		    	RsDetail rsDetailRes=new RsDetail();
+		    	rsDetailRes.setRsDetailId(0);
+		    	rsDetailRes.setRsHeaderId(0);
+		    	rsDetailRes.setItemId(item.getItemId());
+		    	rsDetailRes.setRate(rate);
+		    	rsDetails.add(rsDetailRes);
+		    }
+		System.err.println(rsDetails.toString());
+		rsHeader.setRsDetailList(rsDetails);
+			Info info = rest.postForObject(Constants.url + "/master/saveRs",rsHeader,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/addRateStructure";
+	}
 }

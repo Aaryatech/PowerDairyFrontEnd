@@ -67,11 +67,8 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
-					<input type="hidden" name="mod_ser" id="mod_ser"
-						value="search_result">
-
-					
+					action="${pageContext.request.contextPath}/insertUser">
+				
 						<div class="col-md -3">
 							
 								<div class="col1title" align="left"><h3>Add User</h3></div>
@@ -84,9 +81,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="userName" class="form-control"
-								placeholder="Item Name" style="text-align: left;" name="userName" type="text" required>
+								placeholder="Item Name" style="text-align: left;" name="userName" type="text" value="${user.userName}" required>
 								<input id="userId" class="form-control"
-								  name="userId"  type="hidden" >
+								  name="userId"  type="hidden" value="${user.userId}" >
 
 						</div>
 						 </div>
@@ -97,7 +94,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="mob" class="form-control"
-								placeholder="Mobile No" name="mob" style="text-align: left;" pattern="^\d{10}$" type="text" required>
+								placeholder="Mobile No" name="mob" style="text-align: left;" pattern="^\d{10}$" type="text" value="${user.userMobNo}" required>
 
 						</div>
 					 
@@ -110,20 +107,24 @@
 							<div class="col1title" align="left">User Type*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="selectpicker s" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="typeId" id="typeId" required>
 							<option value="">Select Option</option>
-							<option value="1">Admin</option>
-							<option value="2">Counter</option> 
+							<c:forEach items="${userTypeList}" var="userTypeList">
+							<c:choose>
+							<c:when test="${userTypeList.userTypeId==user.userTypeId}">
+							<option value="${userTypeList.userTypeId}" selected>${userTypeList.userType}</option>
+							</c:when>
+							<c:otherwise>
+						    <option value="${userTypeList.userTypeId}">${userTypeList.userType}</option>
+							</c:otherwise></c:choose>
+							</c:forEach>
 						 </select>
 
 						</div>
 						<div class="col-md-1"> </div>
 						 
-				 
 					</div>
-					 
-						 
 					<div class="colOuter">
 						<div align="center">
 							<input name="submit" class="buttonsaveorder" value="Submit"
@@ -133,7 +134,7 @@
 				 
 					</div>
 					
-					<%-- <div id="table-scroll" class="table-scroll">
+					 <div id="table-scroll" class="table-scroll">
 					<div id="faux-table" class="faux-table" aria="hidden"></div>
 					<div class="table-wrap">
 						<table id="table_grid" class="main-table">
@@ -142,33 +143,27 @@
 								<tr class="bgpink">
 								
 									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
+									<th class="col-md-1">User Name</th> 
 									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
+									<th class="col-md-1">User Type</th>
 									<th class="col-md-1">Action</th>
 								</tr>
 							</thead>
 							<tbody>
 
-								<c:forEach items="${supplierList}" var="supplierList"
+								<c:forEach items="${userList}" var="userList"
 									varStatus="count">
 									<tr>
 										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
 										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
+												value="${userList.userName}" /></td>
 										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
+												value="${userList.userMobNo}" /></td>
 										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
+												value="${userList.userType}" /></td>
 										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
+						<a href="${pageContext.request.contextPath}/editUser/${userList.userId}"><abbr title='Edit'><i class='fa fa-edit'></i> </abbr></a>
+						<a href="${pageContext.request.contextPath}/deleteUser/${userList.userId}" onClick="return confirm('Are you sure want to delete this record');"  >
 						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
 												 
 											</div></td>
@@ -177,7 +172,7 @@
 						</table>
 
 					</div>
-				</div> --%>
+				</div>
 
 				</form>
 

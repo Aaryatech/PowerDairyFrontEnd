@@ -424,9 +424,9 @@
 						 <a href="${pageContext.request.contextPath}/addCategory"><i class="fa fa-files-o icon"></i> Category Masters</a>
 						  <a href="${pageContext.request.contextPath}/addVehicle"><i class="fa fa-files-o icon"></i> Vehicle Masters</a>
 						<a href="${pageContext.request.contextPath}/listOfCustomers"><i class="fa fa-files-o icon"></i> Customer Masters</a>
-						<a href="${pageContext.request.contextPath}/addItem"><i class="fa fa-files-o icon"></i> Item Masters</a> 
+						<a href="${pageContext.request.contextPath}/showItemList"><i class="fa fa-files-o icon"></i> Item Masters</a> 
 						  <a href="${pageContext.request.contextPath}/addUser"><i class="fa fa-files-o icon"></i> User Masters</a>
-						
+						  <a href="${pageContext.request.contextPath}/addRateStructure"><i class="fa fa-files-o icon"></i>Add Rate Structure</a>
 								
 						</div>
 						

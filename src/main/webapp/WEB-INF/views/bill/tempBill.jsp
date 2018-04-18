@@ -43,9 +43,12 @@
 <div class="wrapper">
 
 	<!--topHeader-->
-	<c:url var="findAddOnRate" value="/getAddOnRate" />
-	<c:url var="findItemsByCatId" value="/getFlavourBySpfId" />
-	<c:url var="findAllMenus" value="/getAllTypes" />
+	<c:url var="getCustomer" value="/getCustomer" />
+	<c:url var="getVehicle" value="/getVehicle" />
+	<c:url var="getBatchList" value="/getBatchList" />
+	<c:url var="insertItemDetail" value="/insertItemDetail" />
+    <c:url var="insertTempBill" value="/insertTempBill" />
+	
 	<jsp:include page="/WEB-INF/views/include/logo.jsp"></jsp:include>
 
 
@@ -95,9 +98,10 @@
 						</div>
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" title="Please Select" 
-							name="custId" id="custId" required> 
-							<option value="1">Mahesh</option>
-							<option value="2">Sachin</option> 
+							name="custId" id="custId"  onchange="onCustomerChange(this.value)" required>
+							<c:forEach items="${customerList}" var="customerList">
+								<option value="${customerList.custId}">${customerList.custName}</option>
+							</c:forEach> 
 						 </select>
 
 						</div>
@@ -110,10 +114,11 @@
 							<div class="col1title" align="left">Select Vehicle *: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="selectpicker" data-live-search="true" title="Please Select" 
-							name="vehId" id="vehId" required> 
-							<option value="1">MH-15-1889</option>
-							<option value="2">MH-15-1772</option> 
+							<select class="selectpicker" data-live-search="true" title="Select Vehicle" 
+							name="vehId" id="vehId" onchange="onVehicleChange(this.value)" required> 
+						<c:forEach items="${vehicleList}" var="vehicleList">
+								<option value="${vehicleList.vehId}">${vehicleList.vehName}</option>
+							</c:forEach> 
 						 </select>
 
 						</div>
@@ -125,8 +130,8 @@
 							<div class="col1title" align="left">Creates Opening Qty *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="opnQty" class="form-control" style="text-align: left;"
-								placeholder="Creates Opening Qty" name="opnQty"   type="number" disabled>
+							<input id="cratesOpnQty" class="form-control" style="text-align: left;"
+								placeholder="Creates Opening Qty" name="cratesOpnQty"   type="number" disabled>
 
 						</div>
 						
@@ -135,11 +140,11 @@
 						</div>
 
 						<div class="col-md-2">
-							<div class="col1title" align="left">Issue Qty *: </div>
+							<div class="col1title" align="left">Crates Issue Qty *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="issueQty" class="form-control"
-								placeholder="Issue Qty" name="issueQty" style="text-align: left;"  type="number" required>
+							<input id="cratesIssueQty" class="form-control"
+								placeholder="Issue Qty" name="cratesIssueQty" style="text-align: left;"  type="number" min="0" required>
 
 						</div>
 					 
@@ -150,8 +155,8 @@
 							<div class="col1title" align="left">Vehicle Out KM*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="opnQty" class="form-control"
-								placeholder="Vehicle Out KM" name="opnQty" style="text-align: left;" type="number" disabled>
+							<input id="vehOutKm" class="form-control"
+								placeholder="Vehicle Out KM" name="vehOutKm" style="text-align: left;" type="number" readonly>
 
 						</div>
 						
@@ -184,15 +189,15 @@
 																	<tr>
 																		 
 																		<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
-															name="itemId" id="itemId"  > 
-																<option value="1">Milk</option>
-																<option value="2">Dahi</option> 
-															 </select> <input name="item_name1" id="item_name1"
-																			type="hidden" value="" /></td>
+															name="itemId" id="itemId" onchange="onItemChange(this.value)" > 
+															<c:forEach items="${itemList}" var="item">
+															<option value="${item.itemId}">${item.itemName}</option>
+															</c:forEach>
+															 </select> </td>
 																		 	 
 															
 															<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
-							name="batchId" id="batchId" required> 
+							name="batch_no" id="batch_no" required> 
 							 
 						 </select></td>
 																			
@@ -201,7 +206,7 @@
 																			
 																		  
 																		 
-																		 <td ><input type="button" class="btn additem_btn" value="Add Item" onclick="addItem();"
+	<td ><input type="button" class="btn additem_btn" value="Add Item" onclick="insertItem();"
 												id="b1"/> </td>
 												
 												
@@ -228,6 +233,7 @@
 													<th class="col-md-1">Batch No</th>
 													<th class="col-md-2">Item Name</th>
 													<th class="col-md-1">Qty</th>   
+													<th class="col-md-1">Rate</th>   
 													<th class="col-md-1">Amount</th>
 													<th class="col-md-1">Tax%</th>
 													<th class="col-md-1">Tax Amt</th>
@@ -248,7 +254,7 @@
 											<b>Amount:-</b>
 										</h4>
 										<h4 class="col-md-5" id="totalSum">00</h4>
-										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText">
+										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText" id="">
 									</div>
 
 									<div class="col-md-4">
@@ -256,8 +262,8 @@
 											<b>Tax Total:-</b>
 										</h4>
 
-										<h4 class="col-md-5" id="taxtotal">00</h4>
-										<input type="hidden" class="form-control" id="taxtotalText" name="taxtotalText">
+										<h4 class="col-md-5" id="taxTotal">00</h4>
+										<input type="hidden" class="form-control" id="taxTotalText" name="taxtotalText">
 									</div>
 
 									<div class="col-md-4">
@@ -276,7 +282,7 @@
 					<div class="colOuter">
 						<div align="center">
 							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
+								type="button" align="center" onclick="saveTempBill()">
 								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
 						</div>
 				 
@@ -359,57 +365,173 @@
 
 
 <script>
-function edit(suppId) {
+function onCustomerChange(custId) {
  
-	  
-	$('#loader').show();
-
-	$
-			.getJSON(
-					'${editFrSupplier}',
-
+	$.getJSON(
+					'${getCustomer}',
 					{
-						 
-						suppId : suppId, 
+						custId : custId, 
 						ajax : 'true'
 
 					},
 					function(data) { 
 						
-						document.getElementById("suppId").value=data.suppId;
-						document.getElementById("suppName").value=data.suppName;  
-						document.getElementById("suppAdd").value=data.suppAddr;
-						document.getElementById("city").value=data.suppCity;
-						document.getElementById("mob").value=data.mobileNo;
-						document.getElementById("email").value=data.email;
-						document.getElementById("gstnNo").value=data.gstnNo;
-						document.getElementById("panNo").value=data.panNo;
-						document.getElementById("liceNo").value=data.suppFdaLic;
-						document.getElementById("creditDays").value=data.suppCreditDays;
-						document.getElementById("isSameState").value=data.isSameState; 
-						document.getElementById("cancel").disabled=false;
+						document.getElementById("cratesOpnQty").value=data.cratesOpBal;
+					
 					});
 
  
 	   
 
 }
+function onVehicleChange(vehId) {
+	 
+	$.getJSON(
+					'${getVehicle}',
+					{
+						vehId : vehId, 
+						ajax : 'true'
 
+					},
+					function(data) { 
+						
+						document.getElementById("vehOutKm").value=data.vehOpKms;
+					
+					});
+
+}
+
+function onItemChange(itemId)
+{
+	$.getJSON('${getBatchList}', {
+		itemId : itemId,
+		ajax : 'true' 
+    }, function(data) {
+	    var html;
+		var len = data.length;
+		for ( var i = 0; i < len; i++) {
+			html += '<option value="' + data[i].batchNo +'">'
+					+ data[i].batchNo+ '</option>';
+		}
+		html += '</option>';
+		$('#batch_no').html(html);
+		$('.selectpicker').selectpicker("refresh");
+       });
+
+}
+function insertItem()
+{
+	var itemId = $("#itemId").val();
+	var custId=$("#custId").val();
+	var qty=$('#qty').val();
+	var batchNo = $("#batch_no").val();
+	$.getJSON('${insertItemDetail}', {
+		
+		custId : custId,
+		itemId : itemId,
+		qty:qty,
+		batchNo:batchNo,		
+		ajax : 'true',
+	},  function(data) { 
+ 
+		var len = data.length;
+
+		$('#table_grid1 td').remove();
+         var totamount=0;var tottax=0;var grandtotal=0;
+		$.each(data,function(key, item) {
+
+			var tr = $('<tr></tr>');
+
+		  	tr.append($('<td></td>').html(key+1));
+
+		  	tr.append($('<td></td>').html(item.batchNo));
+
+		  	tr.append($('<td></td>').html(item.itemName));
+
+		  	tr.append($('<td></td>').html(item.billQty));
+		  	
+		  	tr.append($('<td></td>').html(item.rate));
+		  	var amount=item.rate*item.billQty;
+		  	totamount=totamount+amount;
+		  	tr.append($('<td></td>').html(amount));
+
+		  	var taxPer=item.cgstPer+item.sgstPer;
+		 
+		  	tr.append($('<td></td>').html((taxPer).toFixed(2)));
+		  	var taxAmt=(amount*taxPer)/100;
+		  	tr.append($('<td></td>').html(taxAmt.toFixed(2)));
+		 	tottax=tottax+taxAmt;
+		 	
+            var total=amount+taxAmt;
+            grandtotal=grandtotal+total;
+		  	tr.append($('<td></td>').html(total.toFixed(2)));
+
+		 	tr.append($('<td></td>').html("<a href='#' class='action_btn' onclick=editItemDetail("+key+")> <abbr title='edit'> <i class='fa fa-edit  fa-lg' ></i></abbr> </a> <a href='#' class='action_btn'onclick=deleteItemDetail("+key+ ")><abbr title='Delete'><i class='fa fa-trash-o  fa-lg'></i></abbr></a>"));
+		  
+			$('#table_grid1 tbody').append(tr);
+	 }); 
+	
+		document.getElementById("totalSum").innerHTML=totamount.toFixed(2);
+		document.getElementById("taxTotal").innerHTML=tottax.toFixed(2);  
+		document.getElementById("grandTotal").innerHTML=grandtotal.toFixed(2);
+		document.getElementById("totalSumText").value=totamount.toFixed(2);
+		document.getElementById("taxTotalText").value=tottax.toFixed(2);  
+		document.getElementById("grandTotalText").value=grandtotal.toFixed(2);
+		document.getElementById("qty").value=0;
+		$('#batch_no').html("");
+		$('.selectpicker').selectpicker("refresh");
+		
+
+	});
+	
+}
+function saveTempBill()
+{
+	var custId=$("#custId").val();alert(custId)
+	var vehId=$("#vehId").val();alert(vehId)
+	var cratesIssueQty=$("#cratesIssueQty").val();alert(cratesIssueQty)
+	var cratesOpnQty=$("#cratesOpnQty").val();alert(cratesOpnQty)
+	
+	var total=0; alert(total)
+	$.getJSON('${insertTempBill}', {
+		
+		custId : custId,
+		vehId:vehId,
+		total:total,
+		cratesOpnQty:cratesOpnQty,
+		cratesIssueQty:cratesIssueQty,
+		
+		ajax : 'true',
+	},  function(data) { 
+ 
+		var len = data.length;
+
+		$('#table_grid1 td').remove();
+		$.each(data,function(key, item) {
+
+			
+	 }); 
+	
+		document.getElementById("totalSum").innerHTML=0;
+		document.getElementById("taxTotal").innerHTML=0;  
+		document.getElementById("grandTotal").innerHTML=0;
+		document.getElementById("totalSumText").value=0;
+		document.getElementById("taxTotalText").value=0;  
+		document.getElementById("grandTotalText").value=0;
+		document.getElementById("qty").value=0;
+		$('#batch_no').html("");
+		$('.selectpicker').selectpicker("refresh");
+		
+
+	});
+	
+}
 function cancel1() {
 
     //alert("cancel");
-	document.getElementById("suppId").value="";
-	document.getElementById("suppName").value="";  
-	document.getElementById("suppAdd").value="";
-	document.getElementById("city").value="";
-	document.getElementById("mob").value="";
-	document.getElementById("email").value="";
-	document.getElementById("gstnNo").value="";
-	document.getElementById("panNo").value="";
-	document.getElementById("liceNo").value="";
-	document.getElementById("creditDays").value="";
-	document.getElementById("isSameState").value=""; 
-	document.getElementById("cancel").disabled=false;
+
+	document.getElementById("batch_no").value="";  
+	
 
 }
 (function() {
