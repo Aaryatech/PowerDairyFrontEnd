@@ -92,7 +92,7 @@
 							<div class="col1title" align="left">UOM Description*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="uomDesc" style="direction: rtl; text-align: left;" class="form-control"
+							<input id="uomDesc" style=" text-align: left;" class="form-control"
 								placeholder="UOM Description" name="uomDesc" value="${uom.uomDescription}" type="text" required>
 								 
 

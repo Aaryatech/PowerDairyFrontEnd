@@ -67,7 +67,7 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
+					action="${pageContext.request.contextPath}/insertItem">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
@@ -84,9 +84,9 @@
 						</div>
 						<div class="col-md-3">
 							<input id="itemName" style="text-align: left;" class="form-control"
-								placeholder="Item Name" name="itemName" type="text" required>
+								placeholder="Item Name" name="itemName" type="text" value="${item.itemName}" required>
 								<input id="itemId" class="form-control"
-								  name="itemId"  type="hidden" >
+								  name="itemId"  type="hidden" value="${item.itemId}">
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -95,17 +95,21 @@
 							<div class="col1title" align="left">Select Category*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="selectpicker" data-live-search="true" title="Please Select" 
+							<select class="selectpicker" data-live-search="true" title="Select Category" 
 							name="catId" id="catId" required>
-							 
-							<option value="1">abc</option>
-							<option value="2">pqr</option> 
-						 </select>
+							<c:forEach items="${itemCategoryList}" var="cat">
+							 <c:choose>
+							 <c:when test="${cat.catId==item.itemCatId}">
+							 <option value="${cat.catId}" selected>${cat.catName}</option>
+							 </c:when>
+							 <c:otherwise>
+							  <option value="${cat.catId}">${cat.catName}</option>
+							 </c:otherwise>
+							 </c:choose>
+							</c:forEach>
+							 </select>
 
 						</div>
-
-						
-					 
 					</div>
 					
 					<div class="colOuter">
@@ -115,7 +119,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="itemCode" style="text-align: left;" class="form-control"
-								placeholder="Item Code" name="itemCode" type="text" required>
+								placeholder="Item Code" name="itemCode" type="text" value="${item.itemCode}" required>
 
 						</div>
 
@@ -127,7 +131,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="hsnCode" style="text-align: left;" class="form-control"
-								placeholder="HSN Code" name="hsnCode" type="text" required>
+								placeholder="HSN Code" name="hsnCode" type="text" value="${item.hsnCode}" required>
 
 						</div>
 						
@@ -140,8 +144,8 @@
 							<div class="col1title" align="left">Minimum Stock Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="sgst" class="form-control" style="text-align: left;"
-								placeholder="Minimum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
+							<input id="min_qty" class="form-control" style="text-align: left;"
+								placeholder="Minimum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="min_qty" type="text" value="${item.minQty}" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -149,8 +153,8 @@
 							<div class="col1title" align="left">Maximum Stock Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="sgst" class="form-control" style="text-align: left;"
-								placeholder="Maximum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
+							<input id="max_qty" class="form-control" style="text-align: left;"
+								placeholder="Maximum Stock Qty" pattern="[+-]?([0-9]*[.])?[0-9]+" name="max_qty" type="text" value="${item.maxQty}" required>
 
 						</div>
 						 
@@ -163,7 +167,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="hubExprDays" style="text-align: left;" class="form-control"
-								placeholder="Hub Expiry Days" name="hubExprDays"   type="number" required>
+								placeholder="Hub Expiry Days" name="hubExprDays"  value="${item.hubExpDays}" type="number" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -172,7 +176,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="retailExprDays" style="text-align: left;" class="form-control"
-								placeholder="Retail Expiry Days" name="retailExprDays"   type="number" required>
+								placeholder="Retail Expiry Days" name="retailExprDays"   value="${item.retailExpDays}"  type="number" required>
 
 						</div>
 						
@@ -187,7 +191,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="sgst" class="form-control" style="text-align: left;"
-								placeholder="SGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" type="text" required>
+								placeholder="SGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="sgst" value="${item.sgstPer}" type="text" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -196,7 +200,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="cgst" class="form-control" style="text-align: left;"
-								placeholder="CGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="cgst" type="text" required>
+								placeholder="CGST" pattern="[+-]?([0-9]*[.])?[0-9]+" name="cgst" type="text" value="${item.cgstPer}" required>
 
 						</div>
 						 
@@ -209,7 +213,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="igst" class="form-control"
-								placeholder="IGST" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="igst" type="text" required>
+								placeholder="IGST" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="igst" value="${item.igstPer}" type="text" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -220,9 +224,16 @@
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" title="Please Select" 
 							name="uomId" id="uomId" required>
-						 
-							<option value="1">abc</option>
-							<option value="2">pqr</option> 
+						 	<c:forEach items="${uomList}" var="uom">
+							 <c:choose>
+							 <c:when test="${uom.uomId==item.uomId}">
+							 <option value="${uom.uomId}" selected>${uom.uomName}</option>
+							 </c:when>
+							 <c:otherwise>
+							  <option value="${uom.uomId}">${uom.uomName}</option>
+							 </c:otherwise>
+							 </c:choose>
+							</c:forEach>
 						 </select>
 
 						</div>
@@ -235,7 +246,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="purchaseRate" class="form-control"
-								placeholder="Purchase Rate" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="purchaseRate" type="text" required>
+								placeholder="Purchase Rate" style="text-align: left;" pattern="[+-]?([0-9]*[.])?[0-9]+" name="purchaseRate" type="text" value="${item.purchaseRate}" required>
 
 						</div>
 						<div class="col-md-1"> </div>
@@ -243,11 +254,6 @@
 						 
 				 
 					</div>
-					
-					 
-					
-					 
-					
 						 
 					<div class="colOuter">
 						<div align="center">
@@ -257,67 +263,8 @@
 						</div>
 				 
 					</div>
-					
-					<%-- <div id="table-scroll" class="table-scroll">
-					<div id="faux-table" class="faux-table" aria="hidden"></div>
-					<div class="table-wrap">
-						<table id="table_grid" class="main-table">
-
-							<thead>
-								<tr class="bgpink">
-								
-									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
-									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
-									<th class="col-md-1">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${supplierList}" var="supplierList"
-									varStatus="count">
-									<tr>
-										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
-										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
-						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
-												 
-											</div></td>
-									</tr>
-								</c:forEach>
-						</table>
-
-					</div>
-				</div> --%>
-
 				</form>
-
-				 
 			</div>
-			<!--tabNavigation-->
-			<!--<div class="order-btn"><a href="#" class="saveOrder">SAVE ORDER</a></div>-->
-			<%-- <div class="order-btn textcenter">
-						<a
-							href="${pageContext.request.contextPath}/showBillDetailProcess/${billNo}"
-							class="buttonsaveorder">VIEW DETAILS</a>
-						<!--<input name="" class="buttonsaveorder" value="EXPORT TO EXCEL" type="button">-->
-					</div> --%>
-
-
 		</div>
 		<!--rightSidebar-->
 

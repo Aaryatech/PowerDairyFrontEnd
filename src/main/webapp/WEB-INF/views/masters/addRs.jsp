@@ -48,7 +48,7 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertRates">
+					action="${pageContext.request.contextPath}/saveRs">
 				
 						<div class="col-md -3">
 							
@@ -90,7 +90,7 @@
 										
 										<td class="col-md-3"><c:out
 												value="${itemList.itemName}" /></td>
-	                                    <td class="col-md-1"style="text-align: center;"><input type="number" value="0" style="text-align: right;" name="rate${itemList.itemId}"id="rate${itemList.itemId}" ></td>
+	                                    <td class="col-md-1"style="text-align: center;"><input type="number" style="text-align: right;" name="rate${itemList.itemId}" value="0" id="rate${itemList.itemId}" min="0"/></td>
 									</tr>
 								</c:forEach>
 						</table>
@@ -99,7 +99,7 @@
 				</div><br>
 	             <div class="colOuter">
 						<div align="center">
-							<input name="submit" class="buttonsaveorder" value="Submit"
+							<input name="submit" class="buttonsaveorder" value="SAVE"
 								type="submit" align="center">
 						</div>
 				 
