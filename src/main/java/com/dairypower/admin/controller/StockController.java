@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -103,7 +104,7 @@ public class StockController {
 			 for(int i=0;i<stockDetailList.size();i++)
 			 {
 				  
-				stockDetailList.get(i).setClosingQty(Integer.parseInt(request.getParameter("qty"+i))); 
+				stockDetailList.get(i).setOpStock(Integer.parseInt(request.getParameter("qty"+i))); 
 				 
 			 }
 			 
@@ -224,7 +225,7 @@ public class StockController {
 				 for(int i=0;i<getCurrentStock.size();i++)
 				 {
 					 StockDetail stockDetail = new StockDetail();  
-					 stockDetail.setClosingQty(Integer.parseInt(request.getParameter("closingQty"+getCurrentStock.get(i).getItemId())));
+					 stockDetail.setOpStock(Integer.parseInt(request.getParameter("closingQty"+getCurrentStock.get(i).getItemId())));
 					 stockDetail.setItemId(getCurrentStock.get(i).getItemId());
 					 stockDetailList.add(stockDetail); 
 				 }
@@ -245,6 +246,37 @@ public class StockController {
 		
 
 		return "redirect:/getCurrentStock";
+	}
+	
+	@RequestMapping(value = "/getStockBetweenDate", method = RequestMethod.GET)
+	@ResponseBody
+	public List<GetCurrentStock> getStockBetweenDate(HttpServletRequest request, HttpServletResponse response) {
+
+		List<GetCurrentStock> stockBetweenDate = new ArrayList<GetCurrentStock>();
+		RestTemplate rest = new RestTemplate();
+		try {
+			 
+			 
+			 String fromDate = request.getParameter("fromDate");
+			 String toDate = request.getParameter("toDate");
+			 
+			 
+				 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+				 
+				 map.add("fromDate",DateConvertor.convertToYMD(fromDate));
+				 map.add("toDate",DateConvertor.convertToYMD(toDate));
+				 GetCurrentStock[] currentStock = rest.postForObject(Constants.url + "getStockBetweenDate",map,
+						  GetCurrentStock[].class); 
+				 stockBetweenDate = new ArrayList<GetCurrentStock>(Arrays.asList(currentStock));
+				 
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+
+		return stockBetweenDate;
 	}
 
 }

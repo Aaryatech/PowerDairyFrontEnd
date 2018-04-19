@@ -7,7 +7,8 @@ public class StockDetail  {
 	private int stockHeaderId; 
 	private int itemId; 
 	private int closingQty;
-
+	private int opStock;
+	
 	public int getStockDetailId() {
 		return stockDetailId;
 	}
@@ -40,10 +41,18 @@ public class StockDetail  {
 		this.closingQty = closingQty;
 	}
 
+	public int getOpStock() {
+		return opStock;
+	}
+
+	public void setOpStock(int opStock) {
+		this.opStock = opStock;
+	}
+
 	@Override
 	public String toString() {
 		return "StockDetail [stockDetailId=" + stockDetailId + ", stockHeaderId=" + stockHeaderId + ", itemId=" + itemId
-				+ ", closingQty=" + closingQty + "]";
+				+ ", closingQty=" + closingQty + ", opStock=" + opStock + "]";
 	}
 	
 	

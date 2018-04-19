@@ -244,21 +244,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		return model;
 	}
 	
-	@RequestMapping(value = "/returnManf", method = RequestMethod.GET)
-	public ModelAndView returnManf(HttpServletRequest request, HttpServletResponse response) {
-
-		ModelAndView model = new ModelAndView("bill/returnManf");
-		try
-		{
-			 
-			
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return model;
-	}
+	
 	
 	@RequestMapping(value = "/creditNote/{tempId}", method = RequestMethod.GET)
 	public ModelAndView creditNote(@PathVariable int tempId, HttpServletRequest request, HttpServletResponse response) {
