@@ -95,11 +95,11 @@
 						
 					<div class="colOuter">
 						<div class="col-md-2">
-							<div class="col1title" align="left">Invoice No*: </div>
+							<div class="col1title" align="left">PO No*: </div>
 						</div>
 						<div class="col-md-3">
 							<input id="invoiceNo" class="form-control"
-								style="text-align: left;" placeholder="Invoice No" name="invoiceNo" type="number" required>
+								style="text-align: left;" placeholder="PO No" name="invoiceNo" type="number" required>
 							 
 
 						</div>
@@ -108,10 +108,10 @@
 						</div>
 
 						<div class="col-md-2">
-							<div class="col1title" align="left">Invoice Date*: </div>
+							<div class="col1title" align="left">PO Date*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="datepicker"  placeholder="Invoice Date" class="texboxitemcode texboxcal"
+							<input id="datepicker"  placeholder="PO Date" class="texboxitemcode texboxcal"
 															name="invoiceDate" type="text" required>
 
 						</div>

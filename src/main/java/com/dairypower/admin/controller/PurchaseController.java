@@ -85,6 +85,7 @@ public class PurchaseController {
 				 getPoDetail.setItemId(itemId); 
 				 getPoDetail.setBatchNo(batchNo);
 				 getPoDetail.setItemQty(qty);
+				 getPoDetail.setBalance(qty);
 				 getPoDetail.setShortNo(shortNo);
 				 getPoDetail.setExtraNo(extraNo);
 				 getPoDetail.setPoLeakageQty(leakageQty);
@@ -108,6 +109,7 @@ public class PurchaseController {
 				 addItemInPurchaseBill.get(key).setItemId(itemId); 
 				 addItemInPurchaseBill.get(key).setBatchNo(batchNo);
 				 addItemInPurchaseBill.get(key).setItemQty(qty);
+				 addItemInPurchaseBill.get(key).setBalance(qty);
 				 addItemInPurchaseBill.get(key).setShortNo(shortNo);
 				 addItemInPurchaseBill.get(key).setExtraNo(extraNo);
 				 addItemInPurchaseBill.get(key).setPoLeakageQty(leakageQty);
@@ -203,6 +205,7 @@ public class PurchaseController {
 					poDetail.setBatchNo(addItemInPurchaseBill.get(i).getBatchNo());
 					poDetail.setItemId(addItemInPurchaseBill.get(i).getItemId());
 					poDetail.setItemQty(addItemInPurchaseBill.get(i).getItemQty()); 
+					poDetail.setBalance(addItemInPurchaseBill.get(i).getItemQty());
 					poDetail.setRate(addItemInPurchaseBill.get(i).getRate());
 					poDetail.setShortNo(addItemInPurchaseBill.get(i).getShortNo());
 					poDetail.setExtraNo(addItemInPurchaseBill.get(i).getExtraNo());
@@ -350,6 +353,7 @@ public class PurchaseController {
 				 getPoDetail.setItemId(itemId); 
 				 getPoDetail.setBatchNo(batchNo);
 				 getPoDetail.setItemQty(qty);
+				 getPoDetail.setBalance(qty);
 				 getPoDetail.setShortNo(shortNo);
 				 getPoDetail.setExtraNo(extraNo);
 				 getPoDetail.setPoLeakageQty(leakageQty);
@@ -368,11 +372,12 @@ public class PurchaseController {
 			 else
 			 {
 				 
-				 int key = Integer.parseInt(index);
+				 int key = Integer.parseInt(index); 
 				 System.out.println("edit Item" + key);
 				 editPurchaseBillList.get(key).setItemId(itemId); 
 				 editPurchaseBillList.get(key).setBatchNo(batchNo);
 				 editPurchaseBillList.get(key).setItemQty(qty);
+				 editPurchaseBillList.get(key).setBalance(qty);
 				 editPurchaseBillList.get(key).setShortNo(shortNo);
 				 editPurchaseBillList.get(key).setExtraNo(extraNo);
 				 editPurchaseBillList.get(key).setPoLeakageQty(leakageQty);
@@ -473,7 +478,8 @@ public class PurchaseController {
 					poDetail.setPoHeaderId(editPurchaseBillList.get(i).getPoHeaderId());
 					poDetail.setBatchNo(editPurchaseBillList.get(i).getBatchNo());
 					poDetail.setItemId(editPurchaseBillList.get(i).getItemId());
-					poDetail.setItemQty(editPurchaseBillList.get(i).getItemQty()); 
+					poDetail.setItemQty(editPurchaseBillList.get(i).getItemQty());
+					poDetail.setBalance(editPurchaseBillList.get(i).getBalance());
 					poDetail.setRate(editPurchaseBillList.get(i).getRate());
 					poDetail.setShortNo(editPurchaseBillList.get(i).getShortNo());
 					poDetail.setExtraNo(editPurchaseBillList.get(i).getExtraNo());

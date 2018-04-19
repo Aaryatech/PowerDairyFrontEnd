@@ -17,6 +17,7 @@ public class PoDetail  {
 	private int poLeakageQty;
 	private float rate;
 	private int isUsed;
+	private int balance;
 	
 	public int getPoDetailId() {
 		return poDetailId;
@@ -93,12 +94,19 @@ public class PoDetail  {
 	public void setIsUsed(int isUsed) {
 		this.isUsed = isUsed;
 	}
+	
+	public int getBalance() {
+		return balance;
+	}
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
 	@Override
 	public String toString() {
 		return "PoDetail [poDetailId=" + poDetailId + ", poHeaderId=" + poHeaderId + ", batchNo=" + batchNo
 				+ ", packingDate=" + packingDate + ", mfgDate=" + mfgDate + ", itemId=" + itemId + ", itemQty="
 				+ itemQty + ", shortNo=" + shortNo + ", extraNo=" + extraNo + ", poLeakageQty=" + poLeakageQty
-				+ ", rate=" + rate + ", isUsed=" + isUsed + "]";
+				+ ", rate=" + rate + ", isUsed=" + isUsed + ", balance=" + balance + "]";
 	}
 
 	 

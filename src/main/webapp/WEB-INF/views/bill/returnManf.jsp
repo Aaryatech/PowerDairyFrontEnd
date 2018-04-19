@@ -12,7 +12,9 @@
  --%>
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
-<c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
+<c:url var="getBatchListByitemId" value="/getBatchListByitemId"></c:url>
+<c:url var="checkBalance" value="/checkBalance" />
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -43,9 +45,8 @@
 <div class="wrapper">
 
 	<!--topHeader-->
-	<c:url var="findAddOnRate" value="/getAddOnRate" />
-	<c:url var="findItemsByCatId" value="/getFlavourBySpfId" />
-	<c:url var="findAllMenus" value="/getAllTypes" />
+	
+	 
 	<jsp:include page="/WEB-INF/views/include/logo.jsp"></jsp:include>
 
 
@@ -67,16 +68,20 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
+					action="${pageContext.request.contextPath}/submitReturnManufacture">
 					<input type="hidden" name="mod_ser" id="mod_ser"
 						value="search_result">
 
-					
-						<div class="col-md -3">
-							
-								<div class="col1title" align="left"><h3> Return To Manufacture</h3></div>
-								 
+					<div class="order-left"> 
+								<h2 class="pageTitle"> Return To Manufacture </h2> 
+								  
 						</div>
+						
+						 <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/manufactureReturnHistory"><input type="button" value="Return History" class="btn btn-info">
+										</a>
+					</div>
+						 
 						  
 					<div class="colOuter">
 						 
@@ -85,63 +90,58 @@
 						</div>
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" title="Please Select" 
-							name="itemId" id="itemId" required> 
-							<option value="1">Milk</option>
-							<option value="2">Dahi</option> 
-						 </select>
+														onchange="getBatchListByitemId();"	name="itemId" id="itemId" required > 
+														 
+																<c:forEach items="${itemList}" var="itemList">
+																	<option value="${itemList.itemId}">${itemList.itemName} &nbsp;&nbsp; ${itemList.itemCode}</option>
+																
+																</c:forEach>
+															 </select>
 
 						</div>
 						<div class="col-md-1"> </div>
+						
 						<div class="col-md-2">
-							<div class="col1title" align="left">Return Qty*: </div>
+							<div class="col1title" align="left">Select Batch *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty" style="text-align: left;"  type="number" required>
+							<select class="selectpicker" data-live-search="true" title="Please Select" 
+															name="batchNo" id="batchNo"  required> 
+														 
+																 
+															 </select>
 
 						</div>
+						
 				 
 					</div>
 					
 					<div class="colOuter">
-						 
+						 <div class="col-md-2">
+							<div class="col1title" align="left">Return Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="qty" class="form-control"
+								placeholder="Qty" name="qty" style="text-align: left;"  type="number" onchange="checkBalance();" required>
+
+						</div>
+						 <div class="col-md-1"></div>
 						<div class="col-md-2">
-							<div class="col1title" align="left">Remark*: </div>
+							<div class="col1title" align="left">Remark : </div>
 						</div>
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
-								placeholder="Remark" name="remark" style="text-align: left;"  type="text" required>
+								placeholder="Remark" name="remark" style="text-align: left;"  type="text"  >
 
 						</div>
  
 					</div>
 					
-				 
-					 
-					 <input type="button" class="buttonsaveorder" value="Add Item" id="addItem" onclick="addItem()"  >
+				  
 					 
 					 <div class="colOuter"> 
 					</div>
-					<div id="table-scroll" class="table-scroll">
-									<div id="faux-table" class="faux-table" aria="hidden"></div>
-									<div class="table-wrap table-wrap-custbill">
-										<table id="table_grid1" class="main-table small-td">
-											<thead>
-												<tr class="bgpink">
-													<th class="col-sm-1">Sr no.</th>
-													<th class="col-md-1">Batch No</th>
-													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Return Qty</th> 
-													<th class="col-md-1">Action</th>
-												</tr>
-											</thead>
-											<tbody>
-
-											</tbody>
-
-										</table>
-									</div>
-								</div>
+					 
 					  
 						 
 					<div class="colOuter">
@@ -152,52 +152,7 @@
 						</div>
 				 
 					</div>
-					
-					<%-- <div id="table-scroll" class="table-scroll">
-					<div id="faux-table" class="faux-table" aria="hidden"></div>
-					<div class="table-wrap">
-						<table id="table_grid" class="main-table">
-
-							<thead>
-								<tr class="bgpink">
-								
-									<th class="col-sm-1">Sr No</th>
-									<th class="col-md-1">Name</th> 
-									<th class="col-md-1">Address</th>
-									<th class="col-md-1">City</th> 
-									<th class="col-md-1">Mobile</th>
-									<th class="col-md-1">Email</th>
-									<th class="col-md-1">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<c:forEach items="${supplierList}" var="supplierList"
-									varStatus="count">
-									<tr>
-										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppName}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppAddr}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.suppCity}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.mobileNo}" /></td>
-										<td class="col-md-1"><c:out
-												value="${supplierList.email}" /></td>
-										<td class="col-md-1"><div >
-												<abbr title='Edit'><i onclick="edit(${supplierList.suppId})" class='fa fa-edit'></i> </abbr>
-						<a href="${pageContext.request.contextPath}/deleteSupplier/${supplierList.suppId}" onClick="return confirm('Are you sure want to delete this record');"   >
-						<abbr title='Delete'><i  class='fa fa-trash'></i></abbr></a>
-												 
-											</div></td>
-									</tr>
-								</c:forEach>
-						</table>
-
-					</div>
-				</div> --%>
+				 
 
 				</form>
 
@@ -230,35 +185,36 @@
 
 
 <script>
-function edit(suppId) {
+function getBatchListByitemId() {
  
-	  
+	var itemId = document.getElementById("itemId").value;
 	$('#loader').show();
 
 	$
 			.getJSON(
-					'${editFrSupplier}',
+					'${getBatchListByitemId}',
 
 					{
 						 
-						suppId : suppId, 
+						itemId : itemId, 
 						ajax : 'true'
 
 					},
 					function(data) { 
-						
-						document.getElementById("suppId").value=data.suppId;
-						document.getElementById("suppName").value=data.suppName;  
-						document.getElementById("suppAdd").value=data.suppAddr;
-						document.getElementById("city").value=data.suppCity;
-						document.getElementById("mob").value=data.mobileNo;
-						document.getElementById("email").value=data.email;
-						document.getElementById("gstnNo").value=data.gstnNo;
-						document.getElementById("panNo").value=data.panNo;
-						document.getElementById("liceNo").value=data.suppFdaLic;
-						document.getElementById("creditDays").value=data.suppCreditDays;
-						document.getElementById("isSameState").value=data.isSameState; 
-						document.getElementById("cancel").disabled=false;
+						 
+						var html;
+						var len = data.length;
+						for ( var i = 0; i < len; i++) {
+							 
+								html += '<option value="' + data[i].poDetailId + '">'
+								+ data[i].batchNo + '&nbsp;&nbsp; &nbsp;Qty = '+data[i].balance+'</option>';
+							 
+							
+						}
+						html += '</option>';
+						$('#batchNo').html(html);
+						$('.selectpicker').selectpicker('refresh');
+						 
 					});
 
  
@@ -266,23 +222,40 @@ function edit(suppId) {
 
 }
 
-function cancel1() {
+function checkBalance() {
+	
+	var batchNo = document.getElementById("batchNo").value;
+	var qty = document.getElementById("qty").value;
+	
+	$('#loader').show();
 
-    //alert("cancel");
-	document.getElementById("suppId").value="";
-	document.getElementById("suppName").value="";  
-	document.getElementById("suppAdd").value="";
-	document.getElementById("city").value="";
-	document.getElementById("mob").value="";
-	document.getElementById("email").value="";
-	document.getElementById("gstnNo").value="";
-	document.getElementById("panNo").value="";
-	document.getElementById("liceNo").value="";
-	document.getElementById("creditDays").value="";
-	document.getElementById("isSameState").value=""; 
-	document.getElementById("cancel").disabled=false;
+	$
+			.getJSON(
+					'${checkBalance}',
+
+					{
+						 
+						batchNo : batchNo,
+						qty : qty,
+						ajax : 'true'
+
+					},
+					function(flag) { 
+						 
+						 if(flag==0)
+							 {
+							 alert("Your Enter Qty Greater Than Batch Balance Qty ");
+							 document.getElementById("qty").value = "";
+							 }
+						 
+					});
+
+
+    
 
 }
+
+ 
 (function() {
   var fauxTable = document.getElementById("faux-table");
   var mainTable = document.getElementById("table_grid");
