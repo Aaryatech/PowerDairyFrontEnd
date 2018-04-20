@@ -15,6 +15,7 @@
 <c:url var="addItemInPurchaseBill" value="/addItemInPurchaseBill"></c:url>
 <c:url var="editItemInPurchaseBill" value="/editItemInPurchaseBill"></c:url>
 <c:url var="deleteItemInPurchaseBill" value="/deleteItemInPurchaseBill"></c:url>
+<c:url var="getCurrentStockByItemId" value="/getCurrentStockByItemId"></c:url>
 
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -138,6 +139,8 @@
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
 								style="text-align: left;" placeholder="Remark" name="remark" type="text"  >
+								
+							<input id="stockDate" value="${stockDate}" name="stockDate" type="hidden"  >
 							 
 
 						</div>
@@ -145,6 +148,15 @@
 					</div> 
 					
 					 <div class="colOuter"> 
+					 <input id="itemQty"  
+								  name="itemQty" value="0" type="hidden"  >
+					 
+					<input id="itemTotalStock"  
+								  name="itemTotalStock" value="0" type="hidden"  >
+					<input id="itemStock"  
+								  name="itemStock" value="0" type="hidden"  >
+								  
+								  
 					</div>
 					 <div class="colOuter"> 
 					</div>
@@ -168,7 +180,7 @@
 																	</tr>
 																	<tr>
 																		 
-																		<td class="col-md-2"><select class="selectpicker" data-live-search="true" title="Please Select" 
+																		<td class="col-md-2"><select class="selectpicker" data-live-search="true" onchange="getCurrentStockByItem()" title="Please Select" 
 															name="itemId" id="itemId"  > 
 														 
 																<c:forEach items="${itemList}" var="itemList">
@@ -184,7 +196,7 @@
 															<td><input id="batchNo" style="text-align: left;" class="form-control"
 								placeholder="Batch No" name="batchNo"   type="text"  ></td>
 																			
-																		<td><input id="qty" style="text-align: left;" class="form-control"
+																		<td><input id="qty" style="text-align: left;" onchange="addQtyInStock();" class="form-control"
 								placeholder="Qty" name="qty"   type="number"  ></td>
 																			
 																		<td><input id="shortNo" style="text-align: left;" class="form-control"
@@ -206,12 +218,13 @@
 												<td class="col-md-2"> </td>
 															
 															<td> </td>
+																		<td  >Stock Calculation</td>
+																		
+																		<td id="stock">Stock </td>
 																			
-																		<td>Stock </td>
-																			
-																		<td>Qty</td>
+																		<td id="enterQty">Qty</td>
 								
-																		<td>Total </td>
+																		<td id="totalStock">Total </td>
 								
 																		<td> </td>
 																		
@@ -259,10 +272,21 @@
 						 
 					<div class="colOuter">
 						<div align="center">
+						
+						<c:choose>
+							<c:when test="${today==stockDate }">
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center">
-								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
-						</div>
+							</c:when>
+							<c:otherwise>
+							
+							<input name="submit" class="buttonsaveorder" value="Submit"
+								type="submit" align="center" disabled>
+								Please Complete The Day End Process.....
+							</c:otherwise>
+						</c:choose>
+							 
+					</div>
 				 
 					</div>
 					
@@ -415,6 +439,8 @@ function addItem( ) {
 										document.getElementById("extraNo").value="";
 										document.getElementById("leakageQty").value="";
 										document.getElementById("datepicker1").value="";
+										 document.getElementById("itemQty").value=0; 
+										  $("#enterQty").html(0);
 
 								})
 						
@@ -520,6 +546,60 @@ function deleteItem(index) {
 					});
 
 }
+
+function getCurrentStockByItem() {
+
+	var itemId = $("#itemId").val();
+	var stockDate = $("#stockDate").val();
+	var itemQty = parseInt($("#itemQty").val());
+	
+	$('#loader').show();
+
+	$
+			.getJSON(
+					'${getCurrentStockByItemId}',
+
+					{
+						 
+						 
+						itemId : itemId, 
+						stockDate : stockDate,
+						ajax : 'true'
+
+					},
+					function(data) { 
+						
+						  var total = parseInt(data.openingStock+data.totalPurchase-data.totalSale+data.returnQty-data.hubReturnQty);
+						  var totalStock = total+itemQty;
+						  document.getElementById("itemQty").value=itemQty;  
+							document.getElementById("itemStock").value=total;
+							document.getElementById("itemTotalStock").value=totalStock;
+							document.getElementById("itemQty").value=itemQty;
+							
+							  $("#stock").html(total);
+								$("#enterQty").html(itemQty);  
+								$("#totalStock").html(totalStock);
+								
+						 
+					});
+
+}
+
+  function addQtyInStock() {
+
+	 
+	var qty = parseInt($("#qty").val()); 
+	var itemStock = parseInt($("#itemStock").val());
+	var itemTotalStock = $("#itemTotalStock").val();
+	 
+							 
+								$("#enterQty").html(qty);  
+								var totalStock =  parseInt(itemStock+qty);
+								$("#totalStock").html(totalStock);
+								document.getElementById("itemQty").value=qty;
+			 
+}  
+
 (function() {
   var fauxTable = document.getElementById("faux-table");
   var mainTable = document.getElementById("table_grid");

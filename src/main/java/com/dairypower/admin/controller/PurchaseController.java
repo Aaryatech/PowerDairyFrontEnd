@@ -23,12 +23,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.common.DateConvertor;
+import com.dairypower.admin.model.GetCurrentStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Item;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.PoHeader;
+import com.dairypower.admin.model.StockHeader;
 import com.dairypower.admin.model.Vehicle; 
 
 @Controller
@@ -52,12 +54,55 @@ public class PurchaseController {
 			itemList = new ArrayList<GetItem>(Arrays.asList(Item));
 			model.addObject("itemList", itemList);
 			
+			
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			Date today = new Date();
+			model.addObject("today", sf.format(today));
+			
+			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
+					StockHeader.class); 
+			model.addObject("stockDate", stockHeader.getDate());
+			
 		}catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 
 		return model;
+	}
+	
+	@RequestMapping(value = "/getCurrentStockByItemId", method = RequestMethod.GET)
+	@ResponseBody
+	public GetCurrentStock getCurrentStockByItemId(HttpServletRequest request, HttpServletResponse response) {
+
+		GetCurrentStock getCurrentStockbyItemId = new GetCurrentStock();
+		try
+		{
+			 int itemId  = Integer.parseInt(request.getParameter("itemId"));
+			 String stockDate = request.getParameter("stockDate");
+			 
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+			 map.add("date",DateConvertor.convertToYMD(stockDate));
+			 map.add("itemId", itemId);
+			 GetCurrentStock[] currentStock = rest.postForObject(Constants.url + "getCurrentStockByItemId",map,
+					  GetCurrentStock[].class); 
+			 List<GetCurrentStock> getCurrentStock = new ArrayList<GetCurrentStock>(Arrays.asList(currentStock));
+			 getCurrentStockbyItemId = getCurrentStock.get(0);
+			 
+			 for(int i = 0; i<addItemInPurchaseBill.size();i++)
+			 {
+				 if(getCurrentStockbyItemId.getItemId()==addItemInPurchaseBill.get(i).getItemId())
+				 {
+					 getCurrentStockbyItemId.setOpeningStock(getCurrentStockbyItemId.getOpeningStock()+addItemInPurchaseBill.get(i).getItemQty());
+				 }
+			 }
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return getCurrentStockbyItemId;
 	}
 	
 	@RequestMapping(value = "/addItemInPurchaseBill", method = RequestMethod.GET)
