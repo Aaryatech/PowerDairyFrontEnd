@@ -117,7 +117,7 @@
 						</div>
 					 
 					</div>
-					 
+					
 					<div id="table-scroll" class="table-scroll" id="currentStockTable">
 									<div id="faux-table" class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
@@ -153,6 +153,49 @@
 	                                   
 									</tr>
 								</c:forEach>
+
+											</tbody>
+
+										</table>
+									</div>
+								</div>
+								 <div class="col-md -3">
+							
+								<div class="col1title" align="left"><h3>Get Crates Current Stock</h3></div>
+								 
+						</div>
+								<div id="table-scroll" class="table-scroll" id="currentStockTable">
+									<div id="faux-table" class="faux-table" aria="hidden"></div>
+									<div class="table-wrap table-wrap-custbill">
+										<table id="table_grid" class="main-table small-td">
+											<thead>
+												<tr class="bgpink">
+								 
+									<th class="col-md-1">Opening Stock +</th>
+									<th class="col-md-1">Total Received By Purchase+</th>
+									<th class="col-md-1">Issue Qty -</th>
+									<th class="col-md-1">Total Return By Customer+</th>
+									<th class="col-md-1"> Return To MFG-</th>
+									<th class="col-md-1">=Closing Qty</th>
+								
+								</tr>
+											</thead>
+											<tbody>
+											 
+									<tr>
+										 
+										 <td class="col-md-1"><c:out value="${getCratesStock.cratesOpQty}" /></td>
+										 <td class="col-md-1"><c:out value="${getCratesStock.cratesReceivedQtyBypurchase}" /></td>
+										 <td class="col-md-1"><c:out value="${getCratesStock.cratesIssued}" /></td>
+										 <td class="col-md-1"><c:out value="${getCratesStock.cratesReceivedBycustomer}" /></td>
+											<td class="col-md-1"><c:out value="${getCratesStock.cratesReturnQtyTomfg}" /></td>
+											
+											
+											<td class="col-md-1" ><input id="closingCratesQty" class="form-control"
+								placeholder="Qty"   name="closingCratesQty" value="${getCratesStock.cratesOpQty+getCratesStock.cratesReceivedQtyBypurchase-getCratesStock.cratesIssued+getCratesStock.cratesReceivedBycustomer-getCratesStock.cratesReturnQtyTomfg}"   style="text-align: left;"  type="number"  readonly="readonly">		
+	                                   
+									</tr>
+								 
 
 											</tbody>
 

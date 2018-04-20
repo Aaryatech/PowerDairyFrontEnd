@@ -20,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.dairypower.admin.common.Constants;
+import com.dairypower.admin.common.DateConvertor;
+import com.dairypower.admin.model.GetCratesStock;
+import com.dairypower.admin.model.GetCurrentStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
@@ -42,6 +45,22 @@ public class ReturnManufactureController {
 		ModelAndView model = new ModelAndView("bill/returnManf");
 		try
 		{
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			Date today = new Date();
+			model.addObject("today", sf.format(today));
+			
+			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
+					StockHeader.class); 
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+			 map.add("date",DateConvertor.convertToYMD(stockHeader.getDate()));
+			 
+			  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
+					  GetCratesStock.class); 
+			  model.addObject("stockDate", stockHeader.getDate());
+			  int totalCrates = getCratesStock.getCratesOpQty()+getCratesStock.getCratesReceivedQtyBypurchase()-getCratesStock.getCratesIssued()+
+					  getCratesStock.getCratesReceivedBycustomer()-getCratesStock.getCratesReturnQtyTomfg();
+			  model.addObject("crateStock", totalCrates);
+			
 			List<GetItem> itemList = new ArrayList<GetItem>();
 			GetItem[] Item =  rest.getForObject(Constants.url + "/master/getAllItems", GetItem[].class);
 			itemList = new ArrayList<GetItem>(Arrays.asList(Item));
@@ -120,12 +139,14 @@ public class ReturnManufactureController {
 			
 			int detailNo = Integer.parseInt(request.getParameter("batchNo"));
 			int qty = Integer.parseInt(request.getParameter("qty"));
+			int cratesQty = Integer.parseInt(request.getParameter("cratesQty"));
 			int itemId = Integer.parseInt(request.getParameter("itemId"));
 			String remark = request.getParameter("remark");
 			
 			MfgReturn mfgReturn = new MfgReturn();
 			mfgReturn.setItemId(itemId);
 			mfgReturn.setReturnQty(qty);
+			mfgReturn.setCratesReturnQty(cratesQty);
 			mfgReturn.setRemark(remark);
 			mfgReturn.setDate(sf.format(date));
 			mfgReturn.setDatetime(time.format(date));

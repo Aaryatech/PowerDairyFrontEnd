@@ -125,7 +125,22 @@
 								placeholder="Qty" name="qty" style="text-align: left;"  type="number" onchange="checkBalance();" required>
 
 						</div>
-						 <div class="col-md-1"></div>
+						<div class="col-md-1"></div>
+						 <div class="col-md-2">
+							<div class="col1title" align="left">Return Crates Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="cratesQty" class="form-control"
+								placeholder="Return Crates Qty" name="cratesQty" style="text-align: left;"  type="number" onchange="checkCratesStock();"  required>
+							<input id="crateStock"  
+								placeholder="crateStock" value="${crateStock }" name="crateStock"    type="hidden"   >
+						</div>
+ 
+					</div>
+					
+					<div class="colOuter">
+						
+					 
 						<div class="col-md-2">
 							<div class="col1title" align="left">Remark : </div>
 						</div>
@@ -137,7 +152,7 @@
  
 					</div>
 					
-				  
+				 
 					 
 					 <div class="colOuter"> 
 					</div>
@@ -146,8 +161,19 @@
 						 
 					<div class="colOuter">
 						<div align="center">
+						<c:choose>
+							<c:when test="${today==stockDate }">
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center">
+							</c:when>
+							<c:otherwise>
+							
+							<input name="submit" class="buttonsaveorder" value="Submit"
+								type="submit" align="center" disabled>
+								Please Complete The Day End Process.....
+							</c:otherwise>
+						</c:choose>
+							
 								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
 						</div>
 				 
@@ -219,6 +245,20 @@ function getBatchListByitemId() {
 
  
 	   
+
+}
+
+
+function checkCratesStock() {
+	
+	var crateStock = document.getElementById("crateStock").value;
+	var cratesQty = document.getElementById("cratesQty").value;
+	
+	if(cratesQty>crateStock) 
+		{
+		alert("Please You Dont Have Crates ");
+		document.getElementById("cratesQty").value="";
+		}
 
 }
 

@@ -1,6 +1,7 @@
 package com.dairypower.admin.model;
 
 import java.util.List;
+ 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -10,6 +11,8 @@ public class StockHeader  {
 	private int stockHeaderId; 
 	private String date; 
 	private int status; 
+	private int cratesOpQty; 
+	private int cratesCloseQty;
     List<StockDetail> stockDetailList;
 	
 	
@@ -45,11 +48,29 @@ public class StockHeader  {
 		this.status = status;
 	}
 
+	public int getCratesOpQty() {
+		return cratesOpQty;
+	}
+
+	public void setCratesOpQty(int cratesOpQty) {
+		this.cratesOpQty = cratesOpQty;
+	}
+
+	public int getCratesCloseQty() {
+		return cratesCloseQty;
+	}
+
+	public void setCratesCloseQty(int cratesCloseQty) {
+		this.cratesCloseQty = cratesCloseQty;
+	}
+
 	@Override
 	public String toString() {
 		return "StockHeader [stockHeaderId=" + stockHeaderId + ", date=" + date + ", status=" + status
-				+ ", stockDetailList=" + stockDetailList + "]";
+				+ ", cratesOpQty=" + cratesOpQty + ", cratesCloseQty=" + cratesCloseQty + ", stockDetailList="
+				+ stockDetailList + "]";
 	}
-	
+
+	 
 	
 }

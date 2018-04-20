@@ -65,6 +65,15 @@
 								placeholder="Stock Date" value="${date}" name="date"  style="text-align: left;"  type="text" readonly="readonly">
 
 						</div>
+						<div class="col-md-1"></div>
+						<div class="col-md-2">
+							<div class="col1title" align="left">Crates Opening: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="cratesOpn" class="form-control"
+								placeholder="cratesOpn" value="${cratesOpn}" name="cratesOpn"  style="text-align: left;"  type="text"  required="required">
+
+						</div>
 					 
 					</div>
 					<div id="table-scroll" class="table-scroll">

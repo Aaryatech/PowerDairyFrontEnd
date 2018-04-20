@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.common.DateConvertor;
+import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetCurrentStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.StockDetail;
@@ -47,6 +48,8 @@ public class StockController {
 		RestTemplate rest = new RestTemplate();
 		try {
 			 String date;
+			 int cratesOpn=0;
+			 
 			  stockHeader = rest.getForObject(Constants.url + "/getStock",
 					 StockHeader.class); 
 			System.out.println("stockHeader " + stockHeader); 
@@ -65,6 +68,7 @@ public class StockController {
 				stockDetailList = new ArrayList<StockDetail>(Arrays.asList(itemStockDetail));
 				 
 				date = stockHeader.getDate();
+				cratesOpn = stockHeader.getCratesOpQty();
 			}
 			else
 			{
@@ -84,6 +88,7 @@ public class StockController {
 			model.addObject("stockDetailList",stockDetailList);
 			model.addObject("itemList",itemList);
 			model.addObject("date",date);
+			model.addObject("cratesOpn",cratesOpn);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -100,6 +105,8 @@ public class StockController {
 		 
 		RestTemplate rest = new RestTemplate();
 		try {
+			 int cratesOpn = Integer.parseInt(request.getParameter("cratesOpn"));
+			 
 			 
 			 for(int i=0;i<stockDetailList.size();i++)
 			 {
@@ -111,7 +118,7 @@ public class StockController {
 			  if(stockHeader.getStockHeaderId()!=0)
 			 {
 				 stockHeader.setStockDetailList(stockDetailList);
-				 
+				 stockHeader.setCratesOpQty(cratesOpn); 
 				 StockHeader edit = rest.postForObject(Constants.url + "saveStock",stockHeader,
 						 StockHeader.class); 
 				 System.out.println("Edit "+edit);
@@ -122,6 +129,7 @@ public class StockController {
 				 stockHeader = new StockHeader();
 				 stockHeader.setDate(request.getParameter("date"));
 				 stockHeader.setStockDetailList(stockDetailList); 
+				 stockHeader.setCratesOpQty(cratesOpn); 
 				 StockHeader insert = rest.postForObject(Constants.url + "saveStock",stockHeader,
 						 StockHeader.class); 
 				 System.out.println("insert "+insert);
@@ -156,6 +164,10 @@ public class StockController {
 				 GetCurrentStock[] currentStock = rest.postForObject(Constants.url + "getCurrentStock",map,
 						  GetCurrentStock[].class); 
 				  getCurrentStock = new ArrayList<GetCurrentStock>(Arrays.asList(currentStock));
+				  
+				  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
+						  GetCratesStock.class); 
+				  
 				 SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
 					Date date = new Date();
 					Calendar c = Calendar.getInstance();
@@ -164,6 +176,7 @@ public class StockController {
 					date=c.getTime();
 					c.add(Calendar.DATE, -1);
 					Date yesterDay=c.getTime();
+				model.addObject("getCratesStock",getCratesStock);
 				model.addObject("currentStockList",getCurrentStock); 
 				model.addObject("stockDate",updateStatus.getDate());
 				model.addObject("tommorowDate",sf.format(date));
@@ -195,6 +208,8 @@ public class StockController {
 			date=c.getTime();
 			System.out.println(date);
 			
+			int cratesStock = Integer.parseInt(request.getParameter("closingCratesQty"));
+			
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 			 map.add("stockId",updateStatus.getStockHeaderId());
 			 StockDetail[] StockDetailList = rest.postForObject(Constants.url + "getStockDetailForUpdate",map,
@@ -209,6 +224,7 @@ public class StockController {
 			
 			updateStatus.setStatus(1);
 			updateStatus.setStockDetailList(updateStockDetailList);
+			updateStatus.setCratesCloseQty(cratesStock);
 			
 			StockHeader udateStockStatus = rest.postForObject(Constants.url + "saveStock",updateStatus,
 					StockHeader.class); 
@@ -217,6 +233,7 @@ public class StockController {
 			 {
 				 StockHeader stockHeader = new StockHeader();
 				 stockHeader.setDate(sf.format(date));
+				 stockHeader.setCratesOpQty(cratesStock);
 				 List<StockDetail> stockDetailList = new ArrayList<StockDetail>();
 				 
 				 
