@@ -2,9 +2,8 @@ package com.dairypower.admin.model;
 
 import java.util.List;
 
-public class BillHeader{
+public class GetBillHeader{
 	
-
 	private int billTempId;
 	
 	private int billId;
@@ -13,7 +12,11 @@ public class BillHeader{
 	
 	private int custId;
 	
+	private String custName;
+	
 	private int vehId;
+	
+	private String vehName;
 	
 	private float collectedAmt;
 	
@@ -34,11 +37,11 @@ public class BillHeader{
 	private String remarks;
 	
 	private int isSettled;
-	
-	List<BillDetail> billDetailList;
-	
-	
 
+ 
+	List<GetBillDetail> getBillDetailList;
+	
+	
 	public float getGrandTotal() {
 		return grandTotal;
 	}
@@ -47,12 +50,20 @@ public class BillHeader{
 		this.grandTotal = grandTotal;
 	}
 
-	public List<BillDetail> getBillDetailList() {
-		return billDetailList;
+	public List<GetBillDetail> getGetBillDetailList() {
+		return getBillDetailList;
 	}
 
-	public void setBillDetailList(List<BillDetail> billDetailList) {
-		this.billDetailList = billDetailList;
+	public void setGetBillDetailList(List<GetBillDetail> getBillDetailList) {
+		this.getBillDetailList = getBillDetailList;
+	}
+
+	public String getBillDate() {
+		return billDate;
+	}
+
+	public void setBillDate(String billDate) {
+		this.billDate = billDate;
 	}
 
 	public int getBillTempId() {
@@ -70,13 +81,6 @@ public class BillHeader{
 	public void setBillId(int billId) {
 		this.billId = billId;
 	}
-	public String getBillDate() {
-		return billDate;
-	}
-
-	public void setBillDate(String billDate) {
-		this.billDate = billDate;
-	}
 
 	public int getCustId() {
 		return custId;
@@ -86,12 +90,28 @@ public class BillHeader{
 		this.custId = custId;
 	}
 
+	public String getCustName() {
+		return custName;
+	}
+
+	public void setCustName(String custName) {
+		this.custName = custName;
+	}
+
 	public int getVehId() {
 		return vehId;
 	}
 
 	public void setVehId(int vehId) {
 		this.vehId = vehId;
+	}
+
+	public String getVehName() {
+		return vehName;
+	}
+
+	public void setVehName(String vehName) {
+		this.vehName = vehName;
 	}
 
 	public float getCollectedAmt() {
@@ -125,8 +145,6 @@ public class BillHeader{
 	public void setCratesOpBal(int cratesOpBal) {
 		this.cratesOpBal = cratesOpBal;
 	}
-
-	
 
 	public int getCratesIssued() {
 		return cratesIssued;
@@ -170,14 +188,13 @@ public class BillHeader{
 
 	@Override
 	public String toString() {
-		return "BillHeader [billTempId=" + billTempId + ", billId=" + billId + ", billDate=" + billDate + ", custId="
-				+ custId + ", vehId=" + vehId + ", collectedAmt=" + collectedAmt + ", outstandingAmt=" + outstandingAmt
-				+ ", collectionPaymode=" + collectionPaymode + ", cratesOpBal=" + cratesOpBal + ", cratesIssued="
-				+ cratesIssued + ", cratesReceived=" + cratesReceived + ", cratesClBal=" + cratesClBal + ", remarks="
-				+ remarks + ", isSettled=" + isSettled + "]";
+		return "GetBillHeader [billTempId=" + billTempId + ", billId=" + billId + ", billDate=" + billDate + ", custId="
+				+ custId + ", custName=" + custName + ", vehId=" + vehId + ", vehName=" + vehName + ", collectedAmt="
+				+ collectedAmt + ", outstandingAmt=" + outstandingAmt + ", collectionPaymode=" + collectionPaymode
+				+ ", cratesOpBal=" + cratesOpBal + ", cratesIssued=" + cratesIssued + ", cratesRecieved="
+				+ cratesReceived + ", cratesClBal=" + cratesClBal + ", remarks=" + remarks + ", isSettled=" + isSettled
+				+ "]";
 	}
-
-    
 	
 	
 

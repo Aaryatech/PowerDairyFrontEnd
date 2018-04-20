@@ -4,12 +4,20 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<style type="text/css">
+.table-scroll table {
+    width:30%;
+    /* margin: auto; */
+    border-collapse: separate;
+    border-spacing: 0;
+}
+</style>
  
 
 </head>
 <body>
- --%>
+
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
@@ -28,6 +36,7 @@
 				dateFormat : 'dd-mm-yy'
 			});
 		});
+		
 	</script>
 <!--datepicker-->
 
@@ -63,9 +72,9 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
-					<input type="hidden" name="mod_ser" id="mod_ser"
-						value="search_result">
+					action="${pageContext.request.contextPath}/approveBill">
+					<input type="hidden" name="billTempId" id="billTempId"
+						value="${billHeader.billTempId}">
 
 					
 						<div class="col-md -3">
@@ -76,7 +85,7 @@
 						
 					<div class="colOuter">
 						<div class="col-md-3">
-							<div class="col1title" align="left"> Customer  : Mahesh </div>
+							<div class="col1title" align="left"> Customer  : ${billHeader.custName} </div>
 							
 						</div>
 						  
@@ -85,17 +94,13 @@
 						</div>
 
 						<div class="col-md-3">
-							<div class="col1title" align="left"> Vehicle No.: MH-15-1772 </div>
+							<div class="col1title" align="left"> Vehicle No.:  ${billHeader.vehName} </div>
 							
 						</div>
-						  
-					</div> 
-					
-					 <div class="colOuter"> 
-					  
+						 
 					 
 						<div class="col-md-2">
-							<div class="col1title" align="left"> Bill Date : ${date}</div>
+							<div class="col1title" align="left"> Bill Date : ${billHeader.billDate}</div>
 						</div>
 						<div class="col-md-2">
 							 
@@ -105,6 +110,9 @@
 					   
 					 <div class="colOuter"> 
 					</div>
+				                         	<c:set var="totalSum" value=""/>
+											<c:set var="taxTotal" value=""/>
+											<c:set var="grandTotal" value=""/>
 					<div id="table-scroll" class="table-scroll">
 									<div id="faux-table" class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
@@ -114,7 +122,7 @@
 													<th class="col-sm-1">Sr no.</th>
 													<th class="col-md-1">Batch No</th>
 													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Temp Qty</th> 
+													<th class="col-md-1">Issue Qty</th> 
 													<th class="col-md-1">Return Qty</th>  
 													<th class="col-md-1">Leakage Qty</th> 
 													<th class="col-md-1">Rate </th> 
@@ -126,29 +134,52 @@
 											</thead>
 											<tbody>
 											
-											<tr>
-												<td class="col-md-1"><c:out value="${1}" /></td> 
-												<td class="col-md-1"><c:out value="1" /></td> 
-												<td class="col-md-1"><c:out value="Milk" /></td> 
-												<td class="col-md-1"><c:out value="90" /></td> 
+                                                  <c:forEach items="${billDetails}" var="billDetail" varStatus="count">
+                                            <input type="hidden" name="keySize" id="keySize" value="${keySize}"/>
+                                                  
+                                                   <input type="hidden" name="billQty${count.index}" id="billQty${count.index}" value="${billDetail.billQty}"/>
+												
+												<input type="hidden" name="cgstPer${count.index}" id="cgstPer${count.index}" value="${billDetail.cgstPer}"/>
+												<input type="hidden" name="rate${count.index}" id="rate${count.index}" value="${billDetail.rate}"/>
+												<input type="hidden" name="sgstPer${count.index}" id="sgstPer${count.index}"value="${billDetail.sgstPer}"/>
+                                                  <tr>
+                                                  
+												<td class="col-md-1"><c:out value="${count.index+1}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.batchNo}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.itemName}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.billQty}" /></td> 
 												<td class="col-md-1"><input type="text" min="0" max="500"
-																			class="form-control" name="discPer" id="discPer" value="0"
-																			onkeypress="onQty(event,1)"
+																			class="form-control" name="returnQty${count.index}" id="returnQty${count.index}" value="0"
+																			onblur="onReturnQty(this.value,${count.index})"
 																			oninput="validity.valid||(value='');"></td>
 												<td class="col-md-1"><input type="text" min="0" max="500"
-																			class="form-control" name="discPer" id="discPer" value="0"
-																			onkeypress="onQty(event,1)"
+																			class="form-control" name="leakageQty${count.index}" id="leakageQty${count.index}" value="0"
+																			onblur="onLeakageQty(this.value,${count.index})"
 																			oninput="validity.valid||(value='');"></td>
-												<td class="col-md-1">50</td>
-												
-												<td><h4 id="discAmt${1}" >4500</h4></td>
-												
-												<td><h4 id="discAmt${1}" >12</h4></td>
-												<td><h4 id="discAmt${1}" >540</h4></td>
-												<td><h4 id="discAmt${1}" >5040</h4></td>
+												 <c:set var="taxPer"   value="${billDetail.cgstPer+billDetail.sgstPer}"/>
 												 
+												 <c:set var="baseRate"   value="${(billDetail.rate*100)/(100 + taxPer)}"/>
+												<td class="col-md-1" id="baseRate${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${baseRate}"/></td>
+												 <c:set var="taxableAmt"   value="${baseRate*billDetail.billQty}"/>
+												 	 <c:set var="cgstRs"   value="${(taxableAmt*billDetail.cgstPer)/100}"/>
+												 	 <c:set var="sgstRs"   value="${(taxableAmt*billDetail.sgstPer)/100}"/>
+												 	 <c:set var="totalTax"   value="${(cgstRs+sgstRs)}"/>
+												
+													<c:set var="totalSum" value="${totalSum+taxableAmt}"/>
+													<c:set var="taxTotal" value="${taxTotal+totalTax}"/>
+													<c:set var="tota" value="${taxableAmt+totalTax}"/>
+													<c:set var="grandTotal" value="${grandTotal+tota}"/>
+													<input type="hidden" name="taxAmtVar${count.index}" id="taxAmtVar${count.index}" value="${taxableAmt}"/>
+													<input type="hidden" name="taxPerVar${count.index}" id="taxPerVar${count.index}" value="${taxPer}"/>
+													<input type="hidden" name="totalTaxVar${count.index}" id="totalTaxVar${count.index}" value="${totalTax}"/>
+													<input type="hidden" name="grandAmtVar${count.index}" id="grandAmtVar${count.index}" value="${taxableAmt+totalTax}"/>
+												<td id="taxAmt${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${taxableAmt}"/></td>
+												<td id="taxPer${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${taxPer}"/></td>
+											    <td id="totalTax${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${totalTax}"/></td>
+												<td id="grandAmt${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${taxableAmt+totalTax}"/></td>
 												</tr>
-
+                                                 
+                                                  </c:forEach>
 											</tbody>
 
 										</table>
@@ -162,8 +193,8 @@
 										<h4 class="col-md-7">
 											<b>Amount:-</b>
 										</h4>
-										<h4 class="col-md-5" id="totalSum">4500</h4>
-										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText">
+										<h4 class="col-md-5" id="totalSum"><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${totalSum}"/></h4>
+										<input type="hidden" class="form-control" id="totalSumText" name="totalSumText"  value = "${totalSum}"/>
 									</div>
 
 									<div class="col-md-4">
@@ -171,8 +202,8 @@
 											<b>Tax Total:-</b>
 										</h4>
 
-										<h4 class="col-md-5" id="taxtotal">540</h4>
-										<input type="hidden" class="form-control" id="taxtotalText" name="taxtotalText">
+										<h4 class="col-md-5" id="taxTotal"><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${taxTotal}"/></h4>
+										<input type="hidden" class="form-control" id="taxTotalText" name="taxTotalText" value="${taxTotal}">
 									</div>
 
 									<div class="col-md-4">
@@ -180,8 +211,8 @@
 											<b>Grand Total:-</b>
 										</h4>
 
-										<h4 class="col-md-5" id="grandTotal">5040</h4>
-										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
+										<h4 class="col-md-5" id="grandTotal"><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${grandTotal}"/></h4>
+										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText" value="${grandTotal}">
 									</div>
 
 									<div class="clearfix"></div>
@@ -200,8 +231,8 @@
 							<div class="col1title" align="left"> Collected Amt *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="collectAmt" style="text-align: left;" class="form-control"
-								placeholder="Collected Amt" name="collectAmt"   type="number" required>
+							<input id="collectedAmt" style="text-align: right;" class="form-control"
+								placeholder="Collected Amt" name="collectedAmt"  value="0" type="number" onblur="calRemainingAmt(this.value)" required>
 
 						</div>
 						<div class="col-md-1"> 
@@ -211,9 +242,10 @@
 							<div class="col1title" align="left"> Outstanding Amt *: </div>
 						</div>
 						<div class="col-md-3">
-						Previous Out Standing + Current Out Standing
-							<!-- <input id="outstandingAmt" style="text-align: left;" class="form-control"
-								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" disabled> -->
+							 <input id="outstandingAmt" style="text-align: right;" class="form-control"
+								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" value="${customer.outstandingAmt+grandTotal}" readonly> 
+ <input id="remAmt" style="text-align: right;" class="form-control"
+						name="remAmt"   type="hidden" value="${customer.outstandingAmt}"> 
 
 						</div>
 						 
@@ -226,8 +258,8 @@
 							<div class="col1title" align="left">Received Creates Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="recCreatesQty" class="form-control" style="text-align: left;"
-								placeholder="Received Creates Qty" name="recCreatesQty"   type="number" required>
+							<input id="recCreatesQty" class="form-control" style="text-align: right;"
+								placeholder="Received Creates Qty" name="recCreatesQty"   type="number"  value="0" onblur="calBalanceCrates(this.value)" required>
 
 						</div>
 						
@@ -237,10 +269,10 @@
 							<div class="col1title" align="left">Creates Balance Qty*: </div>
 						</div>
 						<div class="col-md-3">
-						Opening Qty + Issue Qty - Recieved Qty
-							<!-- <input id="balQty" class="form-control"
-								placeholder="Balance Qty" name="balQty" style="text-align: left;"  type="number" disabled> -->
-
+					<!-- 	Opening Qty + Issue Qty - Recieved Qty -->
+							 <input class="form-control"
+								placeholder="Creates Balance Qty" name="cratesBalQty" id="cratesBalQty" style="text-align: right;"   type="number" value="${customer.cratesOpBal+billHeader.cratesIssued}" readonly> 
+                           <input name="cratesBal" id="cratesBal" type="hidden" value="${customer.cratesOpBal+billHeader.cratesIssued}"> 
 						</div>
 						
 					
@@ -250,8 +282,8 @@
 							<div class="col1title" align="left">Vehicle In KM*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="vehInKm" class="form-control" style="text-align: left;"
-								placeholder="Vehicle In KM" name="vehInKm"   type="number" required>
+							<input id="vehInKm" class="form-control" style="text-align: right;"
+								placeholder="Vehicle In KM" name="vehInKm"   type="number" value="0" required>
 
 						</div>
 						
@@ -301,24 +333,34 @@
 						</div>
  				<div id="currencyTable" style="display: none">
 					<div id="table-scroll" class="table-scroll">
-									<div id="faux-table" width=100% class="faux-table" aria="hidden"></div>
+									<div id="faux-table" width=50% class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
-										<table id="table_grid1" width=100% class="main-table small-td">
+										<table id="table_grid1" width="50%" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
 													<th width="10">Sr no.</th>
-													<th width="10">Currency</th>
-													<th width="10">Qty</th>
-													<th width="10">Total Value</th> 
+													<th width="30">Currency</th>
+													<th width="30">Qty</th>
+													<th width="70">Total Value</th> 
 												</tr>
 											</thead>
 											<tbody>
-											
+											 <c:forEach items="${currencyList}" var="currencyList" varStatus="count">
+										<input id="currValue${count.index}" class="form-control" style="text-align: right;"
+								 name="currValue${count.index}"   type="hidden"   value="${currencyList.currencyValue}">
 											<tr>
-												 
-												 
-												</tr>
-
+												 <td >${count.index+1}</td>
+													<td >${currencyList.description}</td>
+													<td ><input id="qty${count.index}" class="form-control" style="text-align: center;width:90px" 
+								 name="qty${count.index}"   type="number"  value="0" onchange="calCurrency(this.value,${count.index})" required>
+</td>
+													<td id="currencyTotal${count.index}">0
+											
+													</td> 
+												
+												</tr>	 	<input id="currTotal${count.index}" class="form-control" style="text-align: right;"
+								 name="currTotal${count.index}"   type="hidden"  value="0">
+                                           </c:forEach>
 											</tbody>
 
 										</table>
@@ -347,14 +389,7 @@
 
 				 
 			</div>
-			<!--tabNavigation-->
-			<!--<div class="order-btn"><a href="#" class="saveOrder">SAVE ORDER</a></div>-->
-			<%-- <div class="order-btn textcenter">
-						<a
-							href="${pageContext.request.contextPath}/showBillDetailProcess/${billNo}"
-							class="buttonsaveorder">VIEW DETAILS</a>
-						<!--<input name="" class="buttonsaveorder" value="EXPORT TO EXCEL" type="button">-->
-					</div> --%>
+		
 
 
 		</div>
@@ -382,13 +417,13 @@ function selectionCurrency() {
 	//alert("payMode" + payMode);
     if(payMode==2)
     	{
-    	document.getElementById("checkNo").disabled=true;
+    	document.getElementById("checkNo").readOnly=true;
     	 
     	$("#currencyTable").show();
     	}
     else
     	{
-    	document.getElementById("checkNo").disabled=false;
+    	document.getElementById("checkNo").readOnly=false;
     	 
     	$("#currencyTable").hide();
     	}
@@ -409,6 +444,140 @@ function selectionCurrency() {
 
 
 	</script>
+<script type="text/javascript">
+function onReturnQty(qty,key)
+{
+	var keysize=$("#keySize").val();
+	var rate=parseFloat($("#rate"+key).val());
+	var cgstPer=parseInt($("#cgstPer"+key).val());
+	var sgstPer=parseInt($("#sgstPer"+key).val());
+	var billQty=parseInt($("#billQty"+key).val());
+	var returnQty=parseInt($("#returnQty"+key).val());
+	var leakageQty=parseInt($("#leakageQty"+key).val());
+	
+	var actQty=(billQty-(returnQty+leakageQty));
+	var taxPer=(cgstPer+sgstPer);
+  	var baseRate=(rate*100)/(100+taxPer);
+  	var taxableAmt=(baseRate*actQty);
+  	var cgstRs=(taxableAmt*cgstPer)/100;
+	var sgstRs=(taxableAmt*sgstPer)/100;
+	var totalTax=cgstRs+sgstRs;
+	var grandAmt=totalTax+taxableAmt;
+	$('#baseRate'+key).html(baseRate.toFixed(2));
+	$('#taxAmt'+key).html(taxableAmt.toFixed(2));
+	$('#taxPer'+key).html(taxPer.toFixed(2));
+	$('#totalTax'+key).html(totalTax.toFixed(2));
+	$('#grandAmt'+key).html(grandAmt.toFixed(2)); 
+	
+	$('#taxAmtVar'+key).val(taxableAmt.toFixed(2));
+	$('#taxPerVar'+key).val(taxPer.toFixed(2));
+	$('#totalTaxVar'+key).val(totalTax.toFixed(2));
+	$('#grandAmtVar'+key).val(grandAmt.toFixed(2)); 
+	
+	var totSum=0;var taxTot=0;var grandTotal=0;
+	for(var i=0;i<keysize;i++)
+		{
+		var totAmt=parseFloat($("#taxAmtVar"+i).val());
+		var totTax=parseFloat($("#totalTaxVar"+i).val());
+		var grandTot=parseFloat($("#grandAmtVar"+i).val());
+		totSum=totSum+totAmt;
+		taxTot=taxTot+totTax;
+		grandTotal=grandTotal+grandTot;
+		}
+	
+	$('#totalSum').html(totSum.toFixed(2)); 
+	document.getElementById("totalSumText").value=(totSum).toFixed(2);
+	
+	$('#taxTotal').html(taxTot.toFixed(2)); 
+	document.getElementById("taxTotalText").value=(taxTot).toFixed(2);
+	
+	$('#grandTotal').html(grandTotal.toFixed(2));
+	document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
+	
+	var outstandingAmt=parseFloat($("#remAmt").val());
+	var collected=parseFloat($("#collectedAmt").val());
+    var total=(outstandingAmt+grandTotal)-collected;
+	document.getElementById("outstandingAmt").value=(total).toFixed(2);
+}
+function onLeakageQty(qty,key)
+{
+	var keysize=$("#keySize").val();
 
+	var rate=parseFloat($("#rate"+key).val());
+	var cgstPer=parseInt($("#cgstPer"+key).val());
+	var sgstPer=parseInt($("#sgstPer"+key).val());
+	var billQty=parseInt($("#billQty"+key).val());
+	var returnQty=parseInt($("#returnQty"+key).val());
+	var leakageQty=parseInt($("#leakageQty"+key).val());
+	
+	var actQty=(billQty-(returnQty+leakageQty));
+	var taxPer=(cgstPer+sgstPer);
+  	var baseRate=(rate*100)/(100+taxPer);
+  	var taxableAmt=(baseRate*actQty);
+  	var cgstRs=(taxableAmt*cgstPer)/100;
+	var sgstRs=(taxableAmt*sgstPer)/100;
+	var totalTax=cgstRs+sgstRs;
+	var grandAmt=totalTax+taxableAmt;
+	$('#baseRate'+key).html(baseRate.toFixed(2));
+	$('#taxAmt'+key).html(taxableAmt.toFixed(2));
+	$('#taxPer'+key).html(taxPer.toFixed(2));
+	$('#totalTax'+key).html(totalTax.toFixed(2));
+	$('#grandAmt'+key).html(grandAmt.toFixed(2)); 
+	
+	$('#taxAmtVar'+key).val(taxableAmt.toFixed(2));
+	$('#taxPerVar'+key).val(taxPer.toFixed(2));
+	$('#totalTaxVar'+key).val(totalTax.toFixed(2));
+	$('#grandAmtVar'+key).val(grandAmt.toFixed(2)); 
+	
+	var totSum=0;var taxTot=0;var grandTotal=0;
+	for(var i=0;i<keysize;i++)
+		{
+		var totAmt=parseFloat($("#taxAmtVar"+i).val());
+		var totTax=parseFloat($("#totalTaxVar"+i).val());
+		var grandTot=parseFloat($("#grandAmtVar"+i).val());
+		totSum=totSum+totAmt;
+		taxTot=taxTot+totTax;
+		grandTotal=grandTotal+grandTot;
+		}
+	
+	$('#totalSum').html(totSum.toFixed(2)); 
+	document.getElementById("totalSumText").value=(totSum).toFixed(2);
+	
+	$('#taxTotal').html(taxTot.toFixed(2)); 
+	document.getElementById("taxTotalText").value=(taxTot).toFixed(2);
+	
+	$('#grandTotal').html(grandTotal.toFixed(2));
+	document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
+	
+	var outstandingAmt=parseFloat($("#remAmt").val());
+	var collected=parseFloat($("#collectedAmt").val());
+    var total=(outstandingAmt+grandTotal)-collected;
+	document.getElementById("outstandingAmt").value=(total).toFixed(2);
+
+}
+
+function calRemainingAmt(collectedAmt)
+{
+	var grandTotal=parseFloat($("#grandTotalText").val());
+	var outstandingAmt=parseFloat($("#remAmt").val());
+    var total=(grandTotal+outstandingAmt)-collectedAmt;
+    
+	document.getElementById("outstandingAmt").value=(total).toFixed(2);
+}
+function calBalanceCrates(receivedCrates)
+{
+	var remCrates=parseInt($("#cratesBal").val());
+	var totalBalance=(remCrates-receivedCrates);
+	document.getElementById("cratesBalQty").value=totalBalance;
+}
+function calCurrency(qty,index)
+{
+	var currValue=parseInt($("#currValue"+index).val());
+	var total=currValue*qty;
+	$('#currencyTotal'+index).html(total);
+
+	document.getElementById("currTotal"+index).value=total;
+}
+</script>
 </body>
 </html>

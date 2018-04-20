@@ -63,9 +63,8 @@
 			<div class="sidebarright">
 				 
 				<form name="frm_search" id="frm_search" method="post"
-					action="${pageContext.request.contextPath}/insertSupplier">
-					<input type="hidden" name="mod_ser" id="mod_ser"
-						value="search_result">
+					action="${pageContext.request.contextPath}/searchBills">
+				
 
 					<div class="order-left">
 					<h2 class="pageTitle">All Bills </h2> 
@@ -88,26 +87,40 @@
 						</div>
 						
 						<div class="col-md-1"> 
-						<input type="button" class="btn additem_btn" value="Search" onclick="search();"
+						<input type="submit" class="btn additem_btn" value="Search" 
 												id="b1"/>
 						</div>
  					  
 					</div> 
+					</form>
+					<c:set var="billAmt" value="0"/>
+					<c:set var="outstandingAmt" value="0"/>
+					<c:set var="outstandingCrates" value="0"/>
+					<c:forEach items="${billHeaderList}" var="billHeader" varStatus="count">
 					
+						<c:set var="billAmt" value="${billAmt+billHeader.grandTotal}"/>
+							<c:set var="outstandingAmt" value="${outstandingAmt+billHeader.outstandingAmt}"/>
+					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeader.cratesOpBal+billHeader.cratesIssued)-billHeaders.cratesReceived)}"/>
+					</c:forEach>
+					<c:forEach items="${billHeadersList}" var="billHeaders" varStatus="count">
+						<c:set var="billAmt" value="${billAmt+billHeaders.grandTotal}"/>
+							<c:set var="outstandingAmt" value="${outstandingAmt+billHeaders.outstandingAmt}"/>
+					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeaders.cratesOpBal+billHeaders.cratesIssued)-billHeaders.cratesReceived)}"/>
+					</c:forEach>
 					<div class="colOuter">
 						<div class="col-md-3">
-							<div class="col1title" align="left">Bill Count (Generated/Pending) : 1/1</div>
+							<div class="col1title" align="left"><b>Bill Count (Generated/Pending) :</b> ${generated}/${pending}</div>
 						</div>
 						  
-						<div class="col-md-2">
-							<div class="col1title" align="left">Total Bill AMT : 5040</div>
+						<div class="col-md-3">
+							<div class="col1title" align="left"><b>Total Bill AMT :</b> ${billAmt}</div>
 						</div>
-						<div class="col-md-2">
-							<div class="col1title" align="left">Total Outstanding AMT : 00</div>
+						<div class="col-md-3">
+							<div class="col1title" align="left"><b>Total Outstanding AMT :</b>${outstandingAmt}</div>
 						</div>
 						
 						<div class="col-md-3">
-							<div class="col1title" align="left">Total Outstanding Creates : 00</div>
+							<div class="col1title" align="left"><b>Total Outstanding Crates :</b> ${outstandingCrates}</div>
 						</div>
 					 
 					</div> 
@@ -144,20 +157,44 @@
 												</tr>
 											</thead>
 											<tbody>
-											<tr>
-												<td class="col-md-1"><c:out value="${1}" /></td> 
-												<td class="col-md-1"><c:out value="-" /></td> 
-												<td class="col-md-1"><c:out value="Mahesh" /></td> 
-												<td class="col-md-1"><c:out value="MH-15-1772" /></td> 
-												<td class="col-md-1"><c:out value="-" /></td>
-												<td class="col-md-1"><c:out value="5040" /></td>
-												<td class="col-md-1"><c:out value="-" /></td>
-												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${1}">
-												<input type="button" class="btn additem_btn" value="Details" id="b1"/></a>
+										      <c:set var="cnt" value="0"/>
+									 			<c:forEach items="${billHeaderList}" var="billHeader" varStatus="count">
 												
-												<a href="${pageContext.request.contextPath}/creditNote/${1}">
-												<input type="button" class="btn additem_btn" value="CRN" id="b2"/></a></td>
+												  <c:set var="cnt" value="${cnt+1}"/>
+												 <tr>
+												<td class="col-md-1"><c:out value="${cnt}" /></td> 
+												<td class="col-md-1"><c:out value="-" /></td> 
+												<td class="col-md-1"><c:out value="${billHeader.custName}" /></td> 
+												<td class="col-md-1"><c:out value="${billHeader.vehName}" /></td> 
+												<td class="col-md-1"><c:out value="-" /></td>
+												<td class="col-md-1"><c:out value="${billHeader.grandTotal}" /></td>
+												<td class="col-md-1"><c:out value="-" /></td>
+												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${billHeader.billTempId}">
+												Details</a>
+												
+												<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
+												CRN</a></td>
 												</tr>
+												</c:forEach> 
+												<c:forEach items="${billHeadersList}" var="billHeaders" varStatus="count">
+												<tr  style="color: #fff; background: #72af73;">
+												  <c:set var="cnt" value="${cnt+1}"/>
+												<td class="col-md-1"><c:out value="${cnt}" /></td> 
+												<td class="col-md-1"><c:out value="${billHeaders.billId}" /></td> 
+												<td class="col-md-1"><c:out value="${billHeaders.custName}" /></td> 
+												<td class="col-md-1"><c:out value="${billHeaders.vehName}" /></td> 
+												<td class="col-md-1"><c:out value="-" /></td>
+												<td class="col-md-1"><c:out value="${billHeaders.grandTotal}" /></td>
+												<td class="col-md-1"><c:out value="${billHeaders.collectedAmt}" /></td>
+												<td>
+												
+											<%-- 	<a href="${pageContext.request.contextPath}/approvedTempBill/${billHeaders.billTempId}">
+												Details</a> --%>
+												
+												<a href="${pageContext.request.contextPath}/creditNote/${billHeaders.billTempId}">
+												CRN</a></td>
+												</tr>
+												</c:forEach> 
 											</tbody>
 
 										</table>
@@ -176,7 +213,7 @@
 					
 					 
 
-				</form>
+				
 
 				 
 			</div>

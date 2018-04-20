@@ -40,11 +40,11 @@
 			<div class="sidebarright">
 				 
 				<form name="save_rs" id="save_rs" method="post"
-					action="${pageContext.request.contextPath}/saveRs">
+					action="${pageContext.request.contextPath}/saveRsDetails">
 				
 						<div class="col-md -3">
 							
-								<div class="col1title" align="left"><h3>Add Rate</h3></div>
+								<div class="col1title" align="left"><h3>Edit Rate</h3></div>
 								 
 						</div>
 			
@@ -53,8 +53,9 @@
 							<div class="col1title" align="left">Rate Structure Name*: </div>
 						</div>
 						<div class="col-md-3">
+						<input type="hidden" name="rsHeaderId" id="rsHeaderId" value="${rsHeaderRes.rsHeaderId}"/>
 							<input id="rsName" class="form-control"
-								placeholder="Rate Structure Name" name="rsName" style="text-align: left;"  type="text" required>
+								placeholder="Rate Structure Name" name="rsName" style="text-align: left;"  type="text" value="${rsHeaderRes.rsName}" readonly>
 
 						</div>
 					 
@@ -73,17 +74,24 @@
 								</tr>
 							</thead>
 							<tbody>
-
+                                <c:forEach items="${rsDetailsList}" var="rsDetailsList"> 
+                               
 								<c:forEach items="${itemList}" var="itemList"
 									varStatus="count">
+									 <c:choose>
+                                <c:when test="${itemList.itemId==rsDetailsList.itemId}">
 									<tr>
 										 <td class="col-sm-1"><c:out value="${count.index+1}" /></td>
 										
 										<td class="col-md-3"><c:out
 												value="${itemList.itemName}" /></td>
-	                                    <td class="col-md-1"style="text-align: center;"><input type="number" style="text-align: right;" name="rate${itemList.itemId}" value="0" id="rate${itemList.itemId}"/></td>
+	                                    <td class="col-md-1"style="text-align: center;"><input type="number" style="text-align: right;" name="rate${itemList.itemId}" value="${rsDetailsList.rate}" id="rate${itemList.itemId}"/></td>
 									</tr>
+									</c:when>
+                                </c:choose>
 								</c:forEach>
+								   
+								 </c:forEach>
 						</table>
 
 					</div>

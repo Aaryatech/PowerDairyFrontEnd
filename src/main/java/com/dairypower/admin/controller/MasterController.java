@@ -654,7 +654,26 @@ public class MasterController {
 
 		return "redirect:/addUom";
 	}
-	
+	@RequestMapping(value = "/deleteRs/{rsHeaderId}", method = RequestMethod.GET)
+	public String deleteRs(@PathVariable int rsHeaderId, HttpServletRequest request, HttpServletResponse response) {
+
+		 
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("rsHeaderId", rsHeaderId);
+			Info info = rest.postForObject(Constants.url + "/master/deleteRsHeader",map,
+					Info.class);
+			
+			System.out.println("info " +  info); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/showRateList";
+	}
 	@RequestMapping(value = "/insertUom", method = RequestMethod.POST)
 	public String insertUom(HttpServletRequest request, HttpServletResponse response) {
 
@@ -700,6 +719,46 @@ public class MasterController {
 		 
 		return model;
 	}
+	@RequestMapping(value = "/showRateList", method = RequestMethod.GET)
+	public ModelAndView showRateList(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/rateStructureList");
+		try
+		{	
+			List<RSHeader> rsList =  rest.getForObject(Constants.url + "/master/getAllRsHeader", List.class);
+	       	model.addObject("rsList", rsList); 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		 
+		return model;
+	}
+	@RequestMapping(value = "/editRs/{rsHeaderId}", method = RequestMethod.GET)
+	public ModelAndView editRs(@PathVariable int rsHeaderId,HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("masters/editRs");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("rsHeaderId", rsHeaderId);
+			  RSHeader rsHeaderRes =  rest.postForObject(Constants.url + "/master/getRsHeader",map, RSHeader.class);
+			  
+			 List<RsDetail> rsDetailsList =  rest.postForObject(Constants.url + "/master/getAllRsDetails",map, List.class);
+			 model.addObject("rsDetailsList", rsDetailsList);
+			 
+			 List<GetItem> itemList =  rest.getForObject(Constants.url + "/master/getAllItems", List.class);
+		     model.addObject("itemList", itemList); 
+		     
+		     model.addObject("rsHeaderRes", rsHeaderRes);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		 
+		return model;
+	}
 	@RequestMapping(value = "/saveRs", method = RequestMethod.POST)
 	public String saveRs(HttpServletRequest request, HttpServletResponse response) {
 
@@ -711,14 +770,13 @@ public class MasterController {
 		    ArrayList<GetItem> allItems=new ArrayList<GetItem>(Arrays.asList(itemList));
 		
 		    RSHeader rsHeader=new RSHeader();
-		    rsHeader.setRsHeaderId(0);
+			rsHeader.setRsHeaderId(0);
 		    rsHeader.setRsName(rsName);
 		    rsHeader.setIsUsed(0);
 		    List<RsDetail> rsDetails=new ArrayList<RsDetail>();
 		    for(GetItem item:allItems)
 		    {
-				int rate = Integer.parseInt(request.getParameter("rate"+item.getItemId()));
-
+				float rate = Float.parseFloat(request.getParameter("rate"+item.getItemId()));
 		    	RsDetail rsDetailRes=new RsDetail();
 		    	rsDetailRes.setRsDetailId(0);
 		    	rsDetailRes.setRsHeaderId(0);
@@ -728,16 +786,48 @@ public class MasterController {
 		    }
 		System.err.println(rsDetails.toString());
 		rsHeader.setRsDetailList(rsDetails);
-			Info info = rest.postForObject(Constants.url + "/master/saveRs",rsHeader,
-					Info.class);
+		RSHeader rsHeader2 = rest.postForObject(Constants.url + "/master/saveRs",rsHeader,
+				RSHeader.class);
 			
-			System.out.println("info " +  info); 
+			System.out.println("info " +  rsHeader2); 
 			
 		}catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		return "redirect:/addRateStructure";
+		return "redirect:/showRateList";
 	}
+	@RequestMapping(value = "/saveRsDetails", method = RequestMethod.POST)
+	public String saveRsDetails(HttpServletRequest request, HttpServletResponse response) {
+
+		try
+		{
+			
+			int rsHeaderId = Integer.parseInt(request.getParameter("rsHeaderId"));
+
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 map.add("rsHeaderId", rsHeaderId);
+			 
+			 RsDetail[] rsDetailsList =  rest.postForObject(Constants.url + "/master/getAllRsDetails",map, RsDetail[].class);
+			 ArrayList<RsDetail> rsDetails=new ArrayList<RsDetail>(Arrays.asList(rsDetailsList));
+			 System.err.println("list:"+rsDetails.toString());
+					 
+		    for(int i=0;i<rsDetails.size();i++)
+		    {
+				float rate = Float.parseFloat(request.getParameter("rate"+rsDetails.get(i).getItemId()));
+				rsDetails.get(i).setRate(rate);
+		    }
+		   Info info = rest.postForObject(Constants.url + "/master/saveRsDetails",rsDetails,Info.class);
+			
+			System.out.println("info " +  info.toString()); 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "redirect:/showRateList";
+	}
+	
 }

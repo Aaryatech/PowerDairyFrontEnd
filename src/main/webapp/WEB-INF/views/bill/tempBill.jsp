@@ -9,7 +9,7 @@
 
 </head>
 <body>
- --%>
+
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
@@ -202,7 +202,7 @@
 						 </select></td>
 																			
 																		<td class="col-md-2"><input id="qty" style="text-align: left;" class="form-control"
-								placeholder="Qty" name="qty"   type="number"  ></td>
+								placeholder="Qty" name="qty"   type="number" value="0" ></td>
 																			
 																		  
 																		 
@@ -224,7 +224,6 @@
 					 <div class="colOuter"> 
 					</div>
 					<div id="table-scroll" class="table-scroll">
-									<div id="faux-table" class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
 										<table id="table_grid1" class="main-table small-td">
 											<thead>
@@ -287,6 +286,17 @@
 						</div>
 				 
 					</div>
+						<div align="center" id="loader" style="display: none">
+
+					<span>
+						<h4>
+							<font color="#343690">Saving Your Bill,please wait...</font>
+						</h4>
+					</span> <span class="l-1"></span> <span class="l-2"></span> <span
+						class="l-3"></span> <span class="l-4"></span> <span class="l-5"></span>
+					<span class="l-6"></span>
+				</div>
+					
 					
 					<%-- <div id="table-scroll" class="table-scroll">
 					<div id="faux-table" class="faux-table" aria="hidden"></div>
@@ -403,6 +413,7 @@ function onVehicleChange(vehId) {
 
 function onItemChange(itemId)
 {
+	//var firstBatch;
 	$.getJSON('${getBatchList}', {
 		itemId : itemId,
 		ajax : 'true' 
@@ -410,14 +421,23 @@ function onItemChange(itemId)
 	    var html;
 		var len = data.length;
 		for ( var i = 0; i < len; i++) {
+			if(i==0)
+				{
+			html += '<option value="' + data[i].batchNo +'"selected>'
+					+ data[i].batchNo+ '</option>';
+				}
+			else{
 			html += '<option value="' + data[i].batchNo +'">'
 					+ data[i].batchNo+ '</option>';
+			}
 		}
 		html += '</option>';
 		$('#batch_no').html(html);
 		$('.selectpicker').selectpicker("refresh");
        });
-
+	//alert(firstBatch)
+	//document.getElementById("batch_no").selectedIndex=2;
+	//$('.selectpicker').selectpicker("refresh");
 }
 function insertItem()
 {
@@ -438,7 +458,7 @@ function insertItem()
 
 		$('#table_grid1 td').remove();
          var totamount=0;var tottax=0;var grandtotal=0;
-		$.each(data,function(key, item) {
+		$.each(data,function(key, item) { 
 
 			var tr = $('<tr></tr>');
 
@@ -450,21 +470,31 @@ function insertItem()
 
 		  	tr.append($('<td></td>').html(item.billQty));
 		  	
-		  	tr.append($('<td></td>').html(item.rate));
-		  	var amount=item.rate*item.billQty;
-		  	totamount=totamount+amount;
-		  	tr.append($('<td></td>').html(amount));
+		  	var taxPer=(item.cgstPer+item.sgstPer);
 
-		  	var taxPer=item.cgstPer+item.sgstPer;
+		  	var baseRate=(item.rate*100)/(100+taxPer);
+		  	
+		  	var taxableAmt=(baseRate*item.billQty);
+		  	
+		  	var cgstRs=(taxableAmt*item.cgstPer)/100;
+			var sgstRs=(taxableAmt*item.sgstPer)/100;
+			
+			var totalTax=cgstRs+sgstRs;
+			
+		  	totamount=totamount+taxableAmt;
+		  	tr.append($('<td></td>').html((baseRate).toFixed(2)));
+
+		  	tr.append($('<td></td>').html((taxableAmt).toFixed(2)));
+
 		 
 		  	tr.append($('<td></td>').html((taxPer).toFixed(2)));
-		  	var taxAmt=(amount*taxPer)/100;
-		  	tr.append($('<td></td>').html(taxAmt.toFixed(2)));
-		 	tottax=tottax+taxAmt;
+		  
+		  	tr.append($('<td></td>').html((totalTax).toFixed(2)));
+		 	tottax=tottax+totalTax;
 		 	
-            var total=amount+taxAmt;
-            grandtotal=grandtotal+total;
-		  	tr.append($('<td></td>').html(total.toFixed(2)));
+           var total=taxableAmt+totalTax;
+           grandtotal=grandtotal+total;
+		  	tr.append($('<td></td>').html((total).toFixed(2)));
 
 		 	tr.append($('<td></td>').html("<a href='#' class='action_btn' onclick=editItemDetail("+key+")> <abbr title='edit'> <i class='fa fa-edit  fa-lg' ></i></abbr> </a> <a href='#' class='action_btn'onclick=deleteItemDetail("+key+ ")><abbr title='Delete'><i class='fa fa-trash-o  fa-lg'></i></abbr></a>"));
 		  
@@ -478,6 +508,7 @@ function insertItem()
 		document.getElementById("taxTotalText").value=tottax.toFixed(2);  
 		document.getElementById("grandTotalText").value=grandtotal.toFixed(2);
 		document.getElementById("qty").value=0;
+		document.getElementById("itemId").value="";
 		$('#batch_no').html("");
 		$('.selectpicker').selectpicker("refresh");
 		
@@ -492,7 +523,8 @@ function saveTempBill()
 	var cratesIssueQty=$("#cratesIssueQty").val();alert(cratesIssueQty)
 	var cratesOpnQty=$("#cratesOpnQty").val();alert(cratesOpnQty)
 	
-	var total=0; alert(total)
+	var total=$("#grandTotalText").val();alert(total)
+	$('#loader').show();
 	$.getJSON('${insertTempBill}', {
 		
 		custId : custId,
@@ -507,11 +539,18 @@ function saveTempBill()
 		var len = data.length;
 
 		$('#table_grid1 td').remove();
+		$('#loader').hide();
+
 		$.each(data,function(key, item) {
 
 			
 	 }); 
-	
+		
+		document.getElementById("custId").value="";
+		document.getElementById("vehId").value="";
+		document.getElementById("cratesIssueQty").value=0;
+		document.getElementById("cratesOpnQty").value=0;
+		document.getElementById("vehOutKm").value=0;
 		document.getElementById("totalSum").innerHTML=0;
 		document.getElementById("taxTotal").innerHTML=0;  
 		document.getElementById("grandTotal").innerHTML=0;
