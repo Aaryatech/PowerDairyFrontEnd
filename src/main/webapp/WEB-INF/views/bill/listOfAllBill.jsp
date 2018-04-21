@@ -95,18 +95,18 @@
 					</form>
 					<c:set var="billAmt" value="0"/>
 					<c:set var="outstandingAmt" value="0"/>
-					<c:set var="outstandingCrates" value="0"/>
+					<%-- <c:set var="outstandingCrates" value="0"/> --%>
 					<c:forEach items="${billHeaderList}" var="billHeader" varStatus="count">
 					
 						<c:set var="billAmt" value="${billAmt+billHeader.grandTotal}"/>
 							<c:set var="outstandingAmt" value="${outstandingAmt+billHeader.outstandingAmt}"/>
-					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeader.cratesOpBal+billHeader.cratesIssued)-billHeaders.cratesReceived)}"/>
-					</c:forEach>
+<%-- 					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeader.cratesOpBal+billHeader.cratesIssued)-billHeaders.cratesReceived)}"/>
+ --%>					</c:forEach>
 					<c:forEach items="${billHeadersList}" var="billHeaders" varStatus="count">
 						<c:set var="billAmt" value="${billAmt+billHeaders.grandTotal}"/>
 							<c:set var="outstandingAmt" value="${outstandingAmt+billHeaders.outstandingAmt}"/>
-					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeaders.cratesOpBal+billHeaders.cratesIssued)-billHeaders.cratesReceived)}"/>
-					</c:forEach>
+<%-- 					<c:set var="outstandingCrates" value="${outstandingCrates+((billHeaders.cratesOpBal+billHeaders.cratesIssued)-billHeaders.cratesReceived)}"/>
+ --%>					</c:forEach>
 					<div class="colOuter">
 						<div class="col-md-3">
 							<div class="col1title" align="left"><b>Bill Count (Generated/Pending) :</b> ${generated}/${pending}</div>

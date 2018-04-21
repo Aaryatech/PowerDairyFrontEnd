@@ -28,7 +28,17 @@ public class BillDetail {
 	
 	private float igstPer;
 
+	private int  poDetailId; 
 	
+	
+	public int getPoDetailId() {
+		return poDetailId;
+	}
+
+	public void setPoDetailId(int poDetailId) {
+		this.poDetailId = poDetailId;
+	}
+
 	public String getItemName() {
 		return itemName;
 	}
@@ -128,10 +138,11 @@ public class BillDetail {
 	@Override
 	public String toString() {
 		return "BillDetail [billDetailId=" + billDetailId + ", billTempId=" + billTempId + ", batchNo=" + batchNo
-				+ ", itemId=" + itemId + ", rate=" + rate + ", billQty=" + billQty + ", returnQty=" + returnQty
-				+ ", distLeakageQty=" + distLeakageQty + ", cgstPer=" + cgstPer + ", sgstPer=" + sgstPer + ", igstPer="
-				+ igstPer + "]";
+				+ ", itemId=" + itemId + ", itemName=" + itemName + ", rate=" + rate + ", billQty=" + billQty
+				+ ", returnQty=" + returnQty + ", distLeakageQty=" + distLeakageQty + ", cgstPer=" + cgstPer
+				+ ", sgstPer=" + sgstPer + ", igstPer=" + igstPer + ", poDetailId=" + poDetailId + "]";
 	}
+ 
 	
 	
 	

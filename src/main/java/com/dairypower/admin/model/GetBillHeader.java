@@ -39,7 +39,7 @@ public class GetBillHeader{
 	private int isSettled;
 
  
-	List<GetBillDetail> getBillDetailList;
+	List<GetBillDetail> billDetailList;
 	
 	
 	public float getGrandTotal() {
@@ -50,12 +50,13 @@ public class GetBillHeader{
 		this.grandTotal = grandTotal;
 	}
 
-	public List<GetBillDetail> getGetBillDetailList() {
-		return getBillDetailList;
+	
+	public List<GetBillDetail> getBillDetailList() {
+		return billDetailList;
 	}
 
-	public void setGetBillDetailList(List<GetBillDetail> getBillDetailList) {
-		this.getBillDetailList = getBillDetailList;
+	public void setBillDetailList(List<GetBillDetail> billDetailList) {
+		this.billDetailList = billDetailList;
 	}
 
 	public String getBillDate() {

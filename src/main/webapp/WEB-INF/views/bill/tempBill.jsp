@@ -38,7 +38,9 @@
 <!--topLeft-nav-->
 <div class="sidebarOuter"></div>
 <!--topLeft-nav-->
-
+<c:url var="checkBalance" value="/checkPoBalance" />
+<c:url var="editItemInSaleBill" value="/editItemInSaleBill"></c:url>
+<c:url var="deleteItemInSaleBill" value="/deleteItemInSaleBill"></c:url>
 <!--wrapper-start-->
 <div class="wrapper">
 
@@ -71,9 +73,12 @@
 				 
 				<form name="frm_search" id="frm_search" method="post"
 					action="${pageContext.request.contextPath}/insertSupplier">
-					<input type="hidden" name="mod_ser" id="mod_ser"
-						value="search_result">
-						
+					 <input  type="hidden" data-live-search="true"  
+															name="index" id="index"  >
+					 <input  type="hidden" data-live-search="true"  
+															name="cratesCap" id="cratesCap"  >
+					 <input  type="hidden" data-live-search="true"  
+															name="custCap" id="custCap"  >	
 						<div class="order-left"> 
 								<h2 class="pageTitle">Bill</h2> 
 								
@@ -201,8 +206,8 @@
 							 
 						 </select></td>
 																			
-																		<td class="col-md-2"><input id="qty" style="text-align: left;" class="form-control"
-								placeholder="Qty" name="qty"   type="number" value="0" ></td>
+																		<td class="col-md-2"><input id="qty" style="text-align: center;" class="form-control" min="0"
+								placeholder="Qty" name="qty"   type="number" value="0" onchange="checkBalance();" ></td>
 																			
 																		  
 																		 
@@ -225,19 +230,19 @@
 					</div>
 					<div id="table-scroll" class="table-scroll">
 									<div class="table-wrap table-wrap-custbill">
-										<table id="table_grid1" class="main-table small-td">
+										<table id="table_grid1" class="main-table small-td" border="1">
 											<thead>
 												<tr class="bgpink">
-													<th class="col-sm-1">Sr no.</th>
-													<th class="col-md-1">Batch No</th>
-													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Qty</th>   
-													<th class="col-md-1">Rate</th>   
-													<th class="col-md-1">Amount</th>
-													<th class="col-md-1">Tax%</th>
-													<th class="col-md-1">Tax Amt</th>
-													<th class="col-md-1">Total</th>
-													<th class="col-md-1">Action</th>
+													<th class="col-sm-1" style="text-align:center;">Sr no.</th>
+													<th class="col-md-1" style="text-align:center;">Batch No</th>
+													<th class="col-md-2" style="text-align:center;">Item Name</th>
+													<th class="col-md-1" style="text-align:center;">Qty</th>   
+													<th class="col-md-1" style="text-align:center;">Rate</th>   
+													<th class="col-md-1" style="text-align:center;">Amount</th>
+													<th class="col-md-1" style="text-align:center;">Tax%</th>
+													<th class="col-md-1" style="text-align:center;">Tax Amt</th>
+													<th class="col-md-1" style="text-align:center;">Total</th>
+													<th class="col-md-1" style="text-align:center;">Action</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -387,7 +392,8 @@ function onCustomerChange(custId) {
 					function(data) { 
 						
 						document.getElementById("cratesOpnQty").value=data.cratesOpBal;
-					
+						document.getElementById("cratesCap").value=data.cratesCap;
+						document.getElementById("custCap").value=data.custCap;
 					});
 
  
@@ -405,8 +411,13 @@ function onVehicleChange(vehId) {
 					},
 					function(data) { 
 						
+						if(data.inKms==0)
+							{
 						document.getElementById("vehOutKm").value=data.vehOpKms;
-					
+							}
+						else{
+							document.getElementById("vehOutKm").value=data.inKms;
+						}
 					});
 
 }
@@ -423,13 +434,43 @@ function onItemChange(itemId)
 		for ( var i = 0; i < len; i++) {
 			if(i==0)
 				{
-			html += '<option value="' + data[i].batchNo +'"selected>'
-					+ data[i].batchNo+ '</option>';
+			html += '<option value="'+ data[i].poDetailId +'"selected>'
+					+ data[i].batchNo+ '(Avail.Qty:'+ data[i].balance+')'+'</option>';
 				}
 			else{
-			html += '<option value="' + data[i].batchNo +'">'
-					+ data[i].batchNo+ '</option>';
+			html += '<option value="'+ data[i].poDetailId +'">'
+					+ data[i].batchNo +'(Avail.Qty:'+ data[i].balance+')'+'</option>';
 			}
+		}
+		html += '</option>';
+		$('#batch_no').html(html);
+		$('.selectpicker').selectpicker("refresh");
+       });
+	//alert(firstBatch)
+	//document.getElementById("batch_no").selectedIndex=2;
+	//$('.selectpicker').selectpicker("refresh");
+}
+function onItemChangeEdit(itemId,poDetailId)
+{
+	
+	$.getJSON('${getBatchList}', {
+		itemId : itemId,
+		ajax : 'true' 
+    }, function(data) {
+	    var html;
+		var len = data.length;
+		for ( var i = 0; i < len; i++) {
+			
+			if(poDetailId==data[i].poDetailId)
+				{
+			html += '<option value="'+ data[i].poDetailId +'"selected>'
+					+ data[i].batchNo +'(Avail.Qty:'+ data[i].balance+')'+'</option>';
+				}
+			else
+				{
+				html += '<option value="'+ data[i].poDetailId +'">'
+				+ data[i].batchNo +'(Avail.Qty:'+ data[i].balance+')'+'</option>';
+				}
 		}
 		html += '</option>';
 		$('#batch_no').html(html);
@@ -441,10 +482,13 @@ function onItemChange(itemId)
 }
 function insertItem()
 {
+	var isValid=validation();
+	if(isValid){ 
 	var itemId = $("#itemId").val();
 	var custId=$("#custId").val();
 	var qty=$('#qty').val();
 	var batchNo = $("#batch_no").val();
+	
 	$.getJSON('${insertItemDetail}', {
 		
 		custId : custId,
@@ -468,7 +512,7 @@ function insertItem()
 
 		  	tr.append($('<td></td>').html(item.itemName));
 
-		  	tr.append($('<td></td>').html(item.billQty));
+		  	tr.append($('<td style="text-align:center;"></td>').html(item.billQty));
 		  	
 		  	var taxPer=(item.cgstPer+item.sgstPer);
 
@@ -482,21 +526,21 @@ function insertItem()
 			var totalTax=cgstRs+sgstRs;
 			
 		  	totamount=totamount+taxableAmt;
-		  	tr.append($('<td></td>').html((baseRate).toFixed(2)));
+		  	tr.append($('<td style="text-align:right;"></td>').html((baseRate).toFixed(2)));
 
-		  	tr.append($('<td></td>').html((taxableAmt).toFixed(2)));
+		  	tr.append($('<td style="text-align:right;"></td>').html((taxableAmt).toFixed(2)));
 
 		 
-		  	tr.append($('<td></td>').html((taxPer).toFixed(2)));
+		  	tr.append($('<td style="text-align:right;"></td>').html((taxPer).toFixed(2)));
 		  
-		  	tr.append($('<td></td>').html((totalTax).toFixed(2)));
+		  	tr.append($('<td style="text-align:right;"></td>').html((totalTax).toFixed(2)));
 		 	tottax=tottax+totalTax;
 		 	
            var total=taxableAmt+totalTax;
            grandtotal=grandtotal+total;
-		  	tr.append($('<td></td>').html((total).toFixed(2)));
-
-		 	tr.append($('<td></td>').html("<a href='#' class='action_btn' onclick=editItemDetail("+key+")> <abbr title='edit'> <i class='fa fa-edit  fa-lg' ></i></abbr> </a> <a href='#' class='action_btn'onclick=deleteItemDetail("+key+ ")><abbr title='Delete'><i class='fa fa-trash-o  fa-lg'></i></abbr></a>"));
+		  	tr.append($('<td style="text-align:right;"></td>').html((total).toFixed(2)));
+//<a href='#' class='action_btn' onclick=editItemDetail("+key+")> <abbr title='edit'> <i class='fa fa-edit  fa-lg' ></i></abbr> </a>
+		 	tr.append($('<td></td>').html(" <a href='#' class='action_btn'onclick=deleteItemDetail("+key+ ")><abbr title='Delete'><i class='fa fa-trash-o  fa-lg'></i></abbr></a>"));
 		  
 			$('#table_grid1 tbody').append(tr);
 	 }); 
@@ -514,16 +558,122 @@ function insertItem()
 		
 
 	});
+	 } 
 	
+}
+
+function editItemDetail(key)
+{
+	    //alert("cancel");
+		document.getElementById("index").value=key;
+
+		$.getJSON(
+						'${editItemInSaleBill}',
+						{ 
+							index : key, 
+							ajax : 'true'
+
+						},
+						function(data) { 
+							 
+											document.getElementById("itemId").value=data.itemId;
+										
+											onItemChangeEdit(data.itemId,data.poDetailId);
+											$('.selectpicker').selectpicker('refresh');
+											//document.getElementById("batch_no").value=data.poDetailId; 
+											//$('.selectpicker').selectpicker('refresh');
+											document.getElementById("qty").value=data.billQty;
+										/* 	document.getElementById("shortNo").value=data.shortNo;
+											document.getElementById("extraNo").value=data.extraNo;
+											document.getElementById("leakageQty").value=data.poLeakageQty;
+											document.getElementById("datepicker1").value=data.mfgDate; */
+ 
+						});
+
+	
+}
+function deleteItemDetail(index) {
+
+	$.getJSON(
+					'${deleteItemInSaleBill}',
+					{
+						index : index, 
+						ajax : 'true'
+
+					},
+					function(data) { 
+						
+						$('#table_grid1 td').remove();
+				         var totamount=0;var tottax=0;var grandtotal=0;
+						$.each(data,function(key, item) { 
+
+							var tr = $('<tr></tr>');
+
+						  	tr.append($('<td></td>').html(key+1));
+
+						  	tr.append($('<td></td>').html(item.batchNo));
+
+						  	tr.append($('<td></td>').html(item.itemName));
+
+						  	tr.append($('<td style="text-align:center;"></td>').html(item.billQty));
+						  	
+						  	var taxPer=(item.cgstPer+item.sgstPer);
+
+						  	var baseRate=(item.rate*100)/(100+taxPer);
+						  	
+						  	var taxableAmt=(baseRate*item.billQty);
+						  	
+						  	var cgstRs=(taxableAmt*item.cgstPer)/100;
+							var sgstRs=(taxableAmt*item.sgstPer)/100;
+							
+							var totalTax=cgstRs+sgstRs;
+							
+						  	totamount=totamount+taxableAmt;
+						  	tr.append($('<td style="text-align:right;"></td>').html((baseRate).toFixed(2)));
+
+						  	tr.append($('<td style="text-align:right;"></td>').html((taxableAmt).toFixed(2)));
+
+						 
+						  	tr.append($('<td style="text-align:right;"></td>').html((taxPer).toFixed(2)));
+						  
+						  	tr.append($('<td style="text-align:right;"></td>').html((totalTax).toFixed(2)));
+						 	tottax=tottax+totalTax;
+						 	
+				           var total=taxableAmt+totalTax;
+				           grandtotal=grandtotal+total;
+						  	tr.append($('<td style="text-align:right;"></td>').html((total).toFixed(2)));
+//<a href='#' class='action_btn' onclick=editItemDetail("+key+")> <abbr title='edit'> <i class='fa fa-edit  fa-lg' ></i></abbr> </a>
+						 	tr.append($('<td></td>').html(" <a href='#' class='action_btn'onclick=deleteItemDetail("+key+ ")><abbr title='Delete'><i class='fa fa-trash-o  fa-lg'></i></abbr></a>"));
+						  
+							$('#table_grid1 tbody').append(tr);
+					 }); 
+					
+						document.getElementById("totalSum").innerHTML=totamount.toFixed(2);
+						document.getElementById("taxTotal").innerHTML=tottax.toFixed(2);  
+						document.getElementById("grandTotal").innerHTML=grandtotal.toFixed(2);
+						document.getElementById("totalSumText").value=totamount.toFixed(2);
+						document.getElementById("taxTotalText").value=tottax.toFixed(2);  
+						document.getElementById("grandTotalText").value=grandtotal.toFixed(2);
+						document.getElementById("qty").value=0;
+						document.getElementById("itemId").value="";
+						$('#batch_no').html("");
+						$('.selectpicker').selectpicker("refresh");
+					});
+
 }
 function saveTempBill()
 {
-	var custId=$("#custId").val();alert(custId)
-	var vehId=$("#vehId").val();alert(vehId)
-	var cratesIssueQty=$("#cratesIssueQty").val();alert(cratesIssueQty)
-	var cratesOpnQty=$("#cratesOpnQty").val();alert(cratesOpnQty)
+	var cratesCap=parseInt($("#cratesCap").val());
+	var custCap=$("#custCap").val();
+	var custId=$("#custId").val();
+	var vehId=$("#vehId").val();
+	var cratesIssueQty=parseInt($("#cratesIssueQty").val());
+	var cratesOpnQty=parseInt($("#cratesOpnQty").val());
+	var totalCrates=cratesIssueQty+cratesOpnQty;
+	var total=$("#grandTotalText").val();
 	
-	var total=$("#grandTotalText").val();alert(total)
+	if(totalCrates<=cratesCap)
+		{
 	$('#loader').show();
 	$.getJSON('${insertTempBill}', {
 		
@@ -563,7 +713,13 @@ function saveTempBill()
 		
 
 	});
-	
+		}
+	else
+		{
+		 alert("You have exceeded limit of crates(LIMIT::"+cratesCap+" ) !!")
+			document.getElementById("cratesIssueQty").value=0;
+
+		}
 }
 function cancel1() {
 
@@ -584,6 +740,60 @@ function cancel1() {
   fauxTable.appendChild(clonedElement2);
 })();
 
+function checkBalance() {
+	
+	var batchNo = document.getElementById("batch_no").value;
+	var qty = document.getElementById("qty").value;
+	
+	//$('#loader').show();
+
+	$.getJSON(
+					'${checkBalance}',
+
+					{
+						 
+						batchNo : batchNo,
+						qty : qty,
+						ajax : 'true'
+
+					},
+					function(flag) { 
+						 
+						 if(flag==0)
+							 {
+							 alert("Please Enter Qty less Than or equal to Batch Balance Qty ");
+							 document.getElementById("qty").value = 0;
+							 }
+						 
+					});
+
+
+    
+
+}
+function validation() {
+	
+	var custId = $("#custId").val();
+	var itemId = $("#itemId").val();
+	var batchNo = $("#batch_no").val();
+	var qty = $("#qty").val();
+
+	var isValid = true;
+	if (custId==0||custId=="") { 
+		isValid = false;
+		alert("Please Select Customer");
+	} else if (itemId==0||itemId=="") {
+		isValid = false;
+		alert("Please Select Item ");
+	} else if (batchNo==0||batchNo=="") {
+		isValid = false;
+		alert("Please Select Batch ");
+	}else if (qty == ""||qty==0) {
+		isValid = false;
+		alert("Please Enter Valid Qty");
+	}
+	return isValid;
+}
 
 	</script>
 

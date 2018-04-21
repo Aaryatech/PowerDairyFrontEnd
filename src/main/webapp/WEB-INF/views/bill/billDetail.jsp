@@ -325,7 +325,7 @@
 								<div class="col-md-3">
 								 
 									 <input id="checkNo" class="form-control"
-										placeholder="Check No" name="checkNo" style="text-align: left;"  type="text" required> 
+										placeholder="Check No" name="checkNo" style="text-align: left;" value="0"  type="number" required> 
 		
 								</div>
 								 

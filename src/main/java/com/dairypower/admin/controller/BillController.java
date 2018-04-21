@@ -30,9 +30,12 @@ import com.dairypower.admin.model.GetBillHeader;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.Info;
+import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.RsDetail;
+import com.dairypower.admin.model.TSetting;
+import com.dairypower.admin.model.TVehicle;
 import com.dairypower.admin.model.Vehicle;
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
+import com.dairypower.admin.model.VehicleRes;
 
 @Controller
 @Scope("session")
@@ -40,7 +43,8 @@ public class BillController {
 	
 	RestTemplate rest = new RestTemplate();
 	List<BillDetail> billDetailList=null;
-	
+	List<GetPoDetail> poDetailList=new ArrayList<GetPoDetail>();
+
 	@RequestMapping(value = "/showAllTempAndSettleBill", method = RequestMethod.GET)
 	public ModelAndView showAllTempAndSettleBill(HttpServletRequest request, HttpServletResponse response) {
 
@@ -65,6 +69,26 @@ public class BillController {
             ArrayList<GetBillHeader> billHeadersList=new ArrayList<GetBillHeader>(Arrays.asList(headersList));
             model.addObject("billHeadersList", billHeadersList);
             
+            map = new LinkedMultiValueMap<String,Object>();
+			map.add("date", sf1.format(date));
+            BillHeader[] allBills =  rest.postForObject(Constants.url + "/getAllBillHeader",map, BillHeader[].class);
+            ArrayList<BillHeader> billsList=new ArrayList<BillHeader>(Arrays.asList(allBills));
+           
+            int outstandingCrates=0;
+            if(!billsList.isEmpty())
+            {
+            	for(int i=0;i<billsList.size();i++)
+            	{
+            		if(billsList.get(i).getIsSettled()==1)
+            		{
+            			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesClBal());
+            		}else
+            		{
+            			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesOpBal()+billsList.get(i).getCratesIssued());
+            		}
+            	}
+            }
+            model.addObject("outstandingCrates", outstandingCrates);
             model.addObject("pending", billHeaderList.size());
             model.addObject("generated", billHeadersList.size());
 		}catch(Exception e)
@@ -124,6 +148,10 @@ public class BillController {
 
 			List<GetItem> itemList =  rest.getForObject(Constants.url + "/master/getAllItems", List.class);
 			model.addObject("itemList", itemList); 
+			
+			GetPoDetail[]	poDetailListRes=  rest.getForObject(Constants.url + "/getPoDetailsList", GetPoDetail[].class);
+			poDetailList=new ArrayList<GetPoDetail>(Arrays.asList(poDetailListRes));
+
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -151,15 +179,15 @@ public class BillController {
 	}
 	
 @RequestMapping(value = "/getVehicle", method = RequestMethod.GET)
-public @ResponseBody Vehicle getVehicle(HttpServletRequest request, HttpServletResponse response) {
+public @ResponseBody VehicleRes getVehicle(HttpServletRequest request, HttpServletResponse response) {
 
-	Vehicle vehicleRes=new Vehicle();
+	VehicleRes vehicleRes=new VehicleRes();
 	try {
 		int vehId=Integer.parseInt(request.getParameter("vehId"));
 
 	 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 	 map.add("vehId", vehId);
-	 vehicleRes = rest.postForObject(Constants.url + "/master/getVehicleById",map, Vehicle.class);
+	 vehicleRes = rest.postForObject(Constants.url + "/master/getCalVehicleKm",map, VehicleRes.class);
 	}
 	catch(Exception e)
 	{
@@ -170,20 +198,29 @@ public @ResponseBody Vehicle getVehicle(HttpServletRequest request, HttpServletR
 @RequestMapping(value = "/getBatchList", method = RequestMethod.GET) 
 public @ResponseBody List<GetPoDetail> getPoDetailList(HttpServletRequest request, HttpServletResponse response) {
 
-	List<GetPoDetail> poDetailList=new ArrayList<>();
+	List<GetPoDetail> poDetails=new ArrayList<>();
 	try {
 		int itemId=Integer.parseInt(request.getParameter("itemId"));
-
-		 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
-		 map.add("itemId", itemId);
-
-		poDetailList = rest.postForObject(Constants.url + "/getPoDetails",map,List.class);
+		// MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+		 //map.add("itemId", itemId);
+		//poDetailListRes = rest.postForObject(Constants.url + "/getPoDetails",map,List.class);
+		if(!poDetailList.isEmpty())
+		{
+			for(int i=0;i<poDetailList.size();i++)
+			{
+				if(itemId==poDetailList.get(i).getItemId())
+				{
+					poDetails.add(poDetailList.get(i));
+				}
+				
+			}
+		}
 	}
 	catch(Exception e)
 	{
 	e.printStackTrace();
 	}
-	return poDetailList;
+	return poDetails;
 }
 @RequestMapping(value = "/insertItemDetail", method = RequestMethod.GET)
 public @ResponseBody List<BillDetail> insertItemDetail(HttpServletRequest request, HttpServletResponse response) {
@@ -199,7 +236,9 @@ public @ResponseBody List<BillDetail> insertItemDetail(HttpServletRequest reques
 	int billQty=Integer.parseInt(request.getParameter("qty"));
 	System.out.println("billQty"+billQty);
 
-	String batchNo=request.getParameter("batchNo");
+	int batchNo=Integer.parseInt(request.getParameter("batchNo"));
+
+	
 	 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 	 map.add("itemId", itemId);
 	 map.add("custId", custId);
@@ -207,27 +246,112 @@ public @ResponseBody List<BillDetail> insertItemDetail(HttpServletRequest reques
 	 map = new LinkedMultiValueMap<String,Object>();
 	 map.add("itemId", itemId);
 	GetItem getItemRes =  rest.postForObject(Constants.url + "/master/getItemById",map, GetItem.class);
+	
+	GetPoDetail getPoDetail=new GetPoDetail();
+	for(int i=0;i<poDetailList.size();i++)
+	{
+		if(poDetailList.get(i).getPoDetailId()==batchNo)
+		{
+			getPoDetail=poDetailList.get(i);
+			int balanceQty=poDetailList.get(i).getBalance();
+			poDetailList.get(i).setBalance(balanceQty-billQty);
+		}
+	}
+	
 	BillDetail billDetail=new BillDetail();
 	billDetail.setBillDetailId(0);
 	billDetail.setBillTempId(0);
 	billDetail.setItemId(itemId);
 	billDetail.setItemName(getItemRes.getItemName());
 	billDetail.setBillQty(billQty);
-	billDetail.setBatchNo(batchNo);
+	billDetail.setBatchNo(getPoDetail.getBatchNo());
 	billDetail.setCgstPer(getItemRes.getCgstPer());
 	billDetail.setIgstPer(getItemRes.getIgstPer());
 	billDetail.setSgstPer(getItemRes.getSgstPer());
 	billDetail.setRate(rsDetail.getRate());
 	billDetail.setReturnQty(0);
 	billDetail.setDistLeakageQty(0);
-
+    billDetail.setPoDetailId(batchNo);
 	billDetailList.add(billDetail);
+	System.err.println("billDetailListbillDetailList"+billDetailList.toString());
 	}
 	catch (Exception e) {
-		// TODO: handle exception
+		e.printStackTrace();
 	}
 	return billDetailList;
 
+}
+@RequestMapping(value = "/editItemInSaleBill", method = RequestMethod.GET)
+@ResponseBody
+public BillDetail editItemInSaleBill(HttpServletRequest request, HttpServletResponse response) {
+
+	BillDetail billDetail = new BillDetail();
+	try
+	{
+		 int index  = Integer.parseInt(request.getParameter("index"));
+		 billDetail = billDetailList.get(index);
+		
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+
+	return billDetail;
+} 
+@RequestMapping(value = "/deleteItemInSaleBill", method = RequestMethod.GET)
+@ResponseBody
+public List<BillDetail> deleteItemInSaleBill(HttpServletRequest request, HttpServletResponse response) {
+
+	 
+	try
+	{
+		 int index  = Integer.parseInt(request.getParameter("index"));
+		 BillDetail billDetail=billDetailList.get(index);
+		 for(int i=0;i<poDetailList.size();i++)
+			{
+				if(poDetailList.get(i).getPoDetailId()==billDetail.getPoDetailId())
+				{
+					int balanceQty=poDetailList.get(i).getBalance();
+					poDetailList.get(i).setBalance(balanceQty+billDetail.getBillQty());
+				}
+			}
+		 billDetailList.remove(index);
+		
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+
+	return billDetailList;
+}
+
+@RequestMapping(value = "/checkPoBalance", method = RequestMethod.GET)
+@ResponseBody
+public int checkPoBalance(HttpServletRequest request, HttpServletResponse response) {
+
+	int flag = 0;
+	try
+	{
+		int detailNo = Integer.parseInt(request.getParameter("batchNo"));
+		int qty = Integer.parseInt(request.getParameter("qty"));
+		
+		for(int i = 0 ; i<poDetailList.size();i++)
+		{
+			if(detailNo==poDetailList.get(i).getPoDetailId() && qty<=poDetailList.get(i).getBalance())
+			{
+				flag=1;
+				break;
+			}
+		}
+		
+		System.out.println("flag " +  flag);
+		
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+
+	return flag;
 }
 @RequestMapping(value = "/insertTempBill", method = RequestMethod.GET)
 public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpServletResponse response) {
@@ -267,10 +391,34 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		billHeader.setVehId(vehId);
 		billHeader.setBillDetailList(billDetailList);
 		
-		
+		System.err.println("billHeader:"+billHeader.toString());
 		billHeaderRes=restTemplate.postForObject(Constants.url+"/saveBill",billHeader,BillHeader.class);
-	
-	
+		System.err.println("poDetailList:"+poDetailList.toString());
+	    List<PoDetail> poListRes=restTemplate.postForObject(Constants.url+"/updatePoDetailList", poDetailList, List.class);
+	System.err.println("poListRes:"+poListRes.toString());
+		if(billHeaderRes!=null)
+		{
+			Date date = new Date();
+			String currdDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		    String strDateTime = sdf.format(date);
+		    
+			TVehicle tVehicleRes=new TVehicle();
+			tVehicleRes.settVehId(0);
+			tVehicleRes.setVehId(vehId);
+			tVehicleRes.setBillTempId(billHeaderRes.getBillTempId());
+			tVehicleRes.setInKms(0);
+			tVehicleRes.setDate(currdDate);
+			tVehicleRes.setDatetime(strDateTime);
+			tVehicleRes.setEntryBy(1);
+			tVehicleRes.setRemark("");
+			tVehicleRes.setDriverName("");
+			
+			Info info=restTemplate.postForObject(Constants.url+"/master/saveTVehicle",tVehicleRes,Info.class);
+
+		}
+		
+		billDetailList=new ArrayList<>();
 	}
 	catch(Exception e)
 	{
@@ -292,13 +440,13 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
 			System.err.println("header"+header.toString());
 			model.addObject("billHeader", header);
-			model.addObject("billDetails", header.getGetBillDetailList());
+			model.addObject("billDetails", header.getBillDetailList());
 			map = new LinkedMultiValueMap<String,Object>();
 			map.add("custId", header.getCustId()); 
 			Customer customer = rest.postForObject(Constants.url + "/master/getCustomerById",map, Customer.class);
 			model.addObject("customer",customer);
 			try {
-			model.addObject("keySize", header.getGetBillDetailList().size());
+			model.addObject("keySize", header.getBillDetailList().size());
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -333,21 +481,27 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			
 			Currency[] currencyList =  rest.getForObject(Constants.url + "/master/getAllCurrency", Currency[].class);
 			ArrayList<Currency> currencyListRes=new ArrayList<Currency>(Arrays.asList(currencyList));
-			if(!header.getGetBillDetailList().isEmpty())
+			
+			map = new LinkedMultiValueMap<String,Object>();
+			map.add("settingKey", "bill_id");
+			TSetting tSettingRes=rest.postForObject(Constants.url + "/getSettingValue",map, TSetting.class);
+			int billId=tSettingRes.getSettingValue()+1;
+			if(!header.getBillDetailList().isEmpty())
 			{
-			for(int i=0;i<header.getGetBillDetailList().size();i++)
+			for(int i=0;i<header.getBillDetailList().size();i++)
 			{
 				
 				int returnQty=Integer.parseInt(request.getParameter("returnQty"+i));
 				int distLeakageQty=Integer.parseInt(request.getParameter("leakageQty"+i));
-				if((returnQty+distLeakageQty)<=header.getGetBillDetailList().get(i).getBillQty())
+				if((returnQty+distLeakageQty)<=header.getBillDetailList().get(i).getBillQty())
 				{
-					header.getGetBillDetailList().get(i).setReturnQty(returnQty);
-					header.getGetBillDetailList().get(i).setDistLeakageQty(distLeakageQty);
+					header.getBillDetailList().get(i).setReturnQty(returnQty);
+					header.getBillDetailList().get(i).setDistLeakageQty(distLeakageQty);
 				}
 				
 			}
 			}
+			header.setBillId(billId);
 			header.setCollectedAmt(collectedAmt);
 			header.setOutstandingAmt(outstandingAmt);
 			header.setCratesReceived(cratesReceived);
@@ -370,7 +524,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					{
 						BillPayment billPayment=new BillPayment();
 						billPayment.setPayId(0);
-						billPayment.setBillId(1);//hardcoded
+						billPayment.setBillId(billId);
 						billPayment.setCurrId((int)currValue);
 						billPayment.setTranId("0");
 						billPayment.setQty(qty);
@@ -387,7 +541,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				String checkNo=request.getParameter("checkNo");
 				BillPayment billPayment=new BillPayment();
 				billPayment.setPayId(0);
-				billPayment.setBillId(1);//hardcoded
+				billPayment.setBillId(billId);
 				billPayment.setCurrId(0);
 				billPayment.setTranId(checkNo);
 				billPayment.setQty(0);
@@ -406,13 +560,24 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			System.err.println("hebillPaymentListader"+billPaymentList.toString());
 				
 		BillHeader	billHeaderRes=rest.postForObject(Constants.url+"/saveBill",header,BillHeader.class);
-
+        if(billHeaderRes!=null)
+        {
 		Info info = rest.postForObject(Constants.url + "/master/saveCustomer",customer,
 				Info.class);
 		
 		Info billPaymentRes=rest.postForObject(Constants.url+"/master/insertBillPayment",billPaymentList,Info.class);
-
 		
+		map = new LinkedMultiValueMap<String,Object>();
+		map.add("billTempId", billHeaderRes.getBillTempId()); 
+		map.add("vehInKm",vehInKm); 
+		Info infoRes=rest.postForObject(Constants.url+"/master/updateTvehicleKm",map,Info.class);
+		
+		map = new LinkedMultiValueMap<String,Object>();
+		map.add("settingValue",billId);
+		map.add("settingKey","bill_id");
+		Info settingRes=rest.postForObject(Constants.url+"/updateSetingValue",map,Info.class);
+
+        }
 			
 	} catch (Exception e) {
 			e.printStackTrace();

@@ -17,9 +17,9 @@
 
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/assets/bootstrap/css/lightbox.css">
-<link rel="icon"
+<%-- <link rel="icon"
 	href="${pageContext.request.contextPath}/resources/images/feviconicon.png"
-	type="image/x-icon" />
+	type="image/x-icon" /> --%>
 	
 	<link
 	href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css"
