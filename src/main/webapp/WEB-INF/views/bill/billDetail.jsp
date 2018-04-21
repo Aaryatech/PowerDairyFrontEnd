@@ -227,6 +227,17 @@
 					</div> 
 					  
 					  <div class="colOuter">
+					  <div class="col-md-2">
+							<div class="col1title" align="left"> Previous Out Standing Amt: </div>
+						</div>
+						<div class="col-md-3">
+							 <input id="remAmt" style="text-align: right;" class="form-control"
+								  name="remAmt"   type="number" value="${customer.outstandingAmt}" readonly> 
+ 
+
+						</div>
+							<div class="col-md-1"> 
+						</div>
 						<div class="col-md-2">
 							<div class="col1title" align="left"> Collected Amt *: </div>
 						</div>
@@ -235,25 +246,21 @@
 								placeholder="Collected Amt" name="collectedAmt"  value="0" type="number" onblur="calRemainingAmt(this.value)" required>
 
 						</div>
-						<div class="col-md-1"> 
-						</div>
-						
-						<div class="col-md-2">
-							<div class="col1title" align="left"> Outstanding Amt *: </div>
-						</div>
-						<div class="col-md-3">
-							 <input id="outstandingAmt" style="text-align: right;" class="form-control"
-								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" value="${customer.outstandingAmt+grandTotal}" readonly> 
- <input id="remAmt" style="text-align: right;" class="form-control"
-						name="remAmt"   type="hidden" value="${customer.outstandingAmt}"> 
-
-						</div>
-						 
+					 
  
 					</div>
 					
 					<div class="colOuter">
-						
+					<div class="col-md-2">
+							<div class="col1title" align="left"> Outstanding Amt *: </div>
+						</div>
+					<div class="col-md-3">
+							 <input id="outstandingAmt" style="text-align: right;" class="form-control"
+								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" value="${customer.outstandingAmt+grandTotal}" readonly> 
+   
+						</div>
+						<div class="col-md-1"> 
+						</div>
 						<div class="col-md-2">
 							<div class="col1title" align="left">Received Creates Qty*: </div>
 						</div>
@@ -262,9 +269,23 @@
 								placeholder="Received Creates Qty" name="recCreatesQty"   type="number"  value="0" onblur="calBalanceCrates(this.value)" required>
 
 						</div>
+						 
+					</div> 
+					
+					<div class="colOuter">
 						
+						<div class="col-md-2">
+							<div class="col1title" align="left"> Previous Outs Standing Crates: </div>
+						</div>
+					<div class="col-md-3">
+							 <input id="cratesBal" style="text-align: right;" class="form-control"
+								 name="cratesBal"   type="number" value="${customer.cratesOpBal+billHeader.cratesIssued}" readonly> 
+   
+						</div>
 						<div class="col-md-1"> 
 						</div>
+						
+						
 						<div class="col-md-2">
 							<div class="col1title" align="left">Creates Balance Qty*: </div>
 						</div>
@@ -272,7 +293,7 @@
 					<!-- 	Opening Qty + Issue Qty - Recieved Qty -->
 							 <input class="form-control"
 								placeholder="Creates Balance Qty" name="cratesBalQty" id="cratesBalQty" style="text-align: right;"   type="number" value="${customer.cratesOpBal+billHeader.cratesIssued}" readonly> 
-                           <input name="cratesBal" id="cratesBal" type="hidden" value="${customer.cratesOpBal+billHeader.cratesIssued}"> 
+                            
 						</div>
 						
 					
@@ -447,60 +468,71 @@ function selectionCurrency() {
 <script type="text/javascript">
 function onReturnQty(qty,key)
 {
-	var keysize=$("#keySize").val();
-	var rate=parseFloat($("#rate"+key).val());
-	var cgstPer=parseInt($("#cgstPer"+key).val());
-	var sgstPer=parseInt($("#sgstPer"+key).val());
-	var billQty=parseInt($("#billQty"+key).val());
-	var returnQty=parseInt($("#returnQty"+key).val());
-	var leakageQty=parseInt($("#leakageQty"+key).val());
-	
-	var actQty=(billQty-(returnQty+leakageQty));
-	var taxPer=(cgstPer+sgstPer);
-  	var baseRate=(rate*100)/(100+taxPer);
-  	var taxableAmt=(baseRate*actQty);
-  	var cgstRs=(taxableAmt*cgstPer)/100;
-	var sgstRs=(taxableAmt*sgstPer)/100;
-	var totalTax=cgstRs+sgstRs;
-	var grandAmt=totalTax+taxableAmt;
-	$('#baseRate'+key).html(baseRate.toFixed(2));
-	$('#taxAmt'+key).html(taxableAmt.toFixed(2));
-	$('#taxPer'+key).html(taxPer.toFixed(2));
-	$('#totalTax'+key).html(totalTax.toFixed(2));
-	$('#grandAmt'+key).html(grandAmt.toFixed(2)); 
-	
-	$('#taxAmtVar'+key).val(taxableAmt.toFixed(2));
-	$('#taxPerVar'+key).val(taxPer.toFixed(2));
-	$('#totalTaxVar'+key).val(totalTax.toFixed(2));
-	$('#grandAmtVar'+key).val(grandAmt.toFixed(2)); 
-	
-	var totSum=0;var taxTot=0;var grandTotal=0;
-	for(var i=0;i<keysize;i++)
+	if(RetQtyValidation(key)==true)
 		{
-		var totAmt=parseFloat($("#taxAmtVar"+i).val());
-		var totTax=parseFloat($("#totalTaxVar"+i).val());
-		var grandTot=parseFloat($("#grandAmtVar"+i).val());
-		totSum=totSum+totAmt;
-		taxTot=taxTot+totTax;
-		grandTotal=grandTotal+grandTot;
+	
+			var keysize=$("#keySize").val();
+			var rate=parseFloat($("#rate"+key).val());
+			var cgstPer=parseInt($("#cgstPer"+key).val());
+			var sgstPer=parseInt($("#sgstPer"+key).val());
+			var billQty=parseInt($("#billQty"+key).val());
+			var returnQty=parseInt($("#returnQty"+key).val());
+			var leakageQty=parseInt($("#leakageQty"+key).val());
+			
+			var actQty=(billQty-(returnQty+leakageQty));
+			var taxPer=(cgstPer+sgstPer);
+		  	var baseRate=(rate*100)/(100+taxPer);
+		  	var taxableAmt=(baseRate*actQty);
+		  	var cgstRs=(taxableAmt*cgstPer)/100;
+			var sgstRs=(taxableAmt*sgstPer)/100;
+			var totalTax=cgstRs+sgstRs;
+			var grandAmt=totalTax+taxableAmt;
+			$('#baseRate'+key).html(baseRate.toFixed(2));
+			$('#taxAmt'+key).html(taxableAmt.toFixed(2));
+			$('#taxPer'+key).html(taxPer.toFixed(2));
+			$('#totalTax'+key).html(totalTax.toFixed(2));
+			$('#grandAmt'+key).html(grandAmt.toFixed(2)); 
+			
+			$('#taxAmtVar'+key).val(taxableAmt.toFixed(2));
+			$('#taxPerVar'+key).val(taxPer.toFixed(2));
+			$('#totalTaxVar'+key).val(totalTax.toFixed(2));
+			$('#grandAmtVar'+key).val(grandAmt.toFixed(2)); 
+			
+			var totSum=0;var taxTot=0;var grandTotal=0;
+			for(var i=0;i<keysize;i++)
+				{
+				var totAmt=parseFloat($("#taxAmtVar"+i).val());
+				var totTax=parseFloat($("#totalTaxVar"+i).val());
+				var grandTot=parseFloat($("#grandAmtVar"+i).val());
+				totSum=totSum+totAmt;
+				taxTot=taxTot+totTax;
+				grandTotal=grandTotal+grandTot;
+				}
+			
+			$('#totalSum').html(totSum.toFixed(2)); 
+			document.getElementById("totalSumText").value=(totSum).toFixed(2);
+			
+			$('#taxTotal').html(taxTot.toFixed(2)); 
+			document.getElementById("taxTotalText").value=(taxTot).toFixed(2);
+			
+			$('#grandTotal').html(grandTotal.toFixed(2));
+			document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
+			
+			var outstandingAmt=parseFloat($("#remAmt").val());
+			var collected=parseFloat($("#collectedAmt").val());
+		    var total=(outstandingAmt+grandTotal)-collected;
+			document.getElementById("outstandingAmt").value=(total).toFixed(2);
 		}
-	
-	$('#totalSum').html(totSum.toFixed(2)); 
-	document.getElementById("totalSumText").value=(totSum).toFixed(2);
-	
-	$('#taxTotal').html(taxTot.toFixed(2)); 
-	document.getElementById("taxTotalText").value=(taxTot).toFixed(2);
-	
-	$('#grandTotal').html(grandTotal.toFixed(2));
-	document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
-	
-	var outstandingAmt=parseFloat($("#remAmt").val());
-	var collected=parseFloat($("#collectedAmt").val());
-    var total=(outstandingAmt+grandTotal)-collected;
-	document.getElementById("outstandingAmt").value=(total).toFixed(2);
+	else
+		{
+		var returnQty=parseFloat($("#returnQty"+key).val());
+		onReturnQty(returnQty,key);
+		}
 }
 function onLeakageQty(qty,key)
 {
+	if(lekQtyValidation(key)==true)
+	{
 	var keysize=$("#keySize").val();
 
 	var rate=parseFloat($("#rate"+key).val());
@@ -553,7 +585,47 @@ function onLeakageQty(qty,key)
 	var collected=parseFloat($("#collectedAmt").val());
     var total=(outstandingAmt+grandTotal)-collected;
 	document.getElementById("outstandingAmt").value=(total).toFixed(2);
+	}
+	else
+	{
+	var leakageQty=parseFloat($("#leakageQty"+key).val());
+	onLeakageQty(leakageQty,key);
+	}
 
+}
+
+function RetQtyValidation(key)
+{
+	var returnQty=parseFloat($("#returnQty"+key).val());
+	var leakageQty=parseFloat($("#leakageQty"+key).val());
+	var billQty=parseInt($("#billQty"+key).val()); 
+	var ret=true;
+	
+	if((returnQty+leakageQty)>billQty)
+		{
+		ret=false;
+		alert("Your Bill Qty is " + billQty );
+		document.getElementById("returnQty"+key).value=0;
+		}
+	
+     return ret;
+}
+
+function lekQtyValidation(key)
+{
+	var returnQty=parseFloat($("#returnQty"+key).val());
+	var leakageQty=parseFloat($("#leakageQty"+key).val());
+	var billQty=parseInt($("#billQty"+key).val()); 
+	var ret=true;
+	
+	if((returnQty+leakageQty)>billQty)
+		{
+		ret=false;
+		alert("Your Bill Qty is " + billQty );
+		document.getElementById("leakageQty"+key).value=0;
+		}
+	
+     return ret;
 }
 
 function calRemainingAmt(collectedAmt)
@@ -567,8 +639,17 @@ function calRemainingAmt(collectedAmt)
 function calBalanceCrates(receivedCrates)
 {
 	var remCrates=parseInt($("#cratesBal").val());
-	var totalBalance=(remCrates-receivedCrates);
-	document.getElementById("cratesBalQty").value=totalBalance;
+	if(receivedCrates>remCrates)
+		{
+		document.getElementById("recCreatesQty").value=0;
+		calBalanceCrates(0);
+		}
+	else
+		{
+		var totalBalance=(remCrates-receivedCrates);
+		document.getElementById("cratesBalQty").value=totalBalance;
+		}
+	
 }
 function calCurrency(qty,index)
 {
