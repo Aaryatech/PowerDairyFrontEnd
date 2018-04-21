@@ -172,8 +172,8 @@
 												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${billHeader.billTempId}">
 												Details</a>
 												
-												<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
-												CRN</a></td>
+											<%-- 	<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
+												CRN</a> --%></td>
 												</tr>
 												</c:forEach> 
 												<c:forEach items="${billHeadersList}" var="billHeaders" varStatus="count">
@@ -188,8 +188,8 @@
 												<td class="col-md-1"><c:out value="${billHeaders.collectedAmt}" /></td>
 												<td>
 												
-											<%-- 	<a href="${pageContext.request.contextPath}/approvedTempBill/${billHeaders.billTempId}">
-												Details</a> --%>
+												<a href="${pageContext.request.contextPath}/settledBills/${billHeaders.billTempId}">
+												Details</a> 
 												
 												<a href="${pageContext.request.contextPath}/creditNote/${billHeaders.billTempId}">
 												CRN</a></td>

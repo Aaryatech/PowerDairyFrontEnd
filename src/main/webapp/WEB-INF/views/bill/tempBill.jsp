@@ -79,6 +79,8 @@
 															name="cratesCap" id="cratesCap"  >
 					 <input  type="hidden" data-live-search="true"  
 															name="custCap" id="custCap"  >	
+					 <input  type="hidden" data-live-search="true"  
+															name="crateStock" id="crateStock" value="${crateStock}" >
 						<div class="order-left"> 
 								<h2 class="pageTitle">Bill</h2> 
 								
@@ -149,7 +151,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="cratesIssueQty" class="form-control"
-								placeholder="Issue Qty" name="cratesIssueQty" style="text-align: left;"  type="number" min="0" required>
+								placeholder="Issue Qty" name="cratesIssueQty" style="text-align: left;"  type="number" min="0" onchange="checkCratesStock(this.value)" required>
 
 						</div>
 					 
@@ -285,9 +287,19 @@
 						 
 					<div class="colOuter">
 						<div align="center">
+						
+						<c:choose>
+							<c:when test="${today==stockDate}">
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="button" align="center" onclick="saveTempBill()">
-								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
+							</c:when>
+							<c:otherwise>
+							
+							<input name="submit" class="buttonsaveorder" value="Submit"
+								type="submit" align="center" disabled>
+								Please Complete The Day End Process.....
+							</c:otherwise>
+						</c:choose>
 						</div>
 				 
 					</div>
@@ -796,6 +808,20 @@ function validation() {
 }
 
 	</script>
+<script type="text/javascript">
+function checkCratesStock(issueCrates)
+{
+	var crateStock = $("#crateStock").val();
+	
+	if(crateStock<issueCrates)
+		{
+		  alert("You dont have " +issueCrates+" crates" );
+		  document.getElementById("cratesIssueQty").value = "";
+		}
+	
+}
 
+
+</script>
 </body>
 </html>
