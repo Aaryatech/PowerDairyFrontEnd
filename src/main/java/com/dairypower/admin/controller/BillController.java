@@ -417,10 +417,12 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		System.err.println("billHeader:"+billHeader.toString());
 		billHeaderRes=restTemplate.postForObject(Constants.url+"/saveBill",billHeader,BillHeader.class);
 		System.err.println("poDetailList:"+poDetailList.toString());
-	    List<PoDetail> poListRes=restTemplate.postForObject(Constants.url+"/updatePoDetailList", poDetailList, List.class);
-    	System.err.println("poListRes:"+poListRes.toString());
+	   
 		if(billHeaderRes!=null)
 		{
+			 List<PoDetail> poListRes=restTemplate.postForObject(Constants.url+"/updatePoDetailList", poDetailList, List.class);
+		    	System.err.println("poListRes:"+poListRes.toString());
+		    	
 			Date date = new Date();
 			String currdDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");

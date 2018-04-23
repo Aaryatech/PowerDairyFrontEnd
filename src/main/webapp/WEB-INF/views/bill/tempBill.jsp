@@ -406,6 +406,9 @@ function onCustomerChange(custId) {
 						document.getElementById("cratesOpnQty").value=data.cratesOpBal;
 						document.getElementById("cratesCap").value=data.cratesCap;
 						document.getElementById("custCap").value=data.custCap;
+						document.getElementById("vehId").value=data.vehId;
+						$('.selectpicker').selectpicker("refresh");
+						onVehicleChange(data.vehId);
 					});
 
  

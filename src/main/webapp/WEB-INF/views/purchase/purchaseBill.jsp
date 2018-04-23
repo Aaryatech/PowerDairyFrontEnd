@@ -93,6 +93,28 @@
 					<div class="colOuter">
 						 
 					</div> 
+					<div class="row">
+									<div class="col-md-4">
+									 
+									 
+									</div>
+
+									<div class="col-md-4">
+										 
+									</div>
+
+									<div class="col-md-4">
+										<h4 class="col-md-7" style="margin-top: 5px">
+											<b>Grand Total:-</b>
+										</h4>
+
+										<h4 class="col-md-5" id="grandTotal">00</h4>
+										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
+									</div>
+
+									<div class="clearfix"></div>
+									 
+								</div>
 						
 					<div class="colOuter">
 						<div class="col-md-2">
@@ -413,7 +435,7 @@ function addItem( ) {
 							alert("No records found !!");
 
 						}
-						
+						var grandTotal=0;
 						$.each(
 								data,
 								function(key, itemList) {
@@ -427,6 +449,7 @@ function addItem( ) {
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemQty));
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.rate));   
 									  	 tr.append($('<td class="col-md-1" ></td>').html((itemList.itemQty*itemList.rate).toFixed(2))); 
+									  	grandTotal = parseFloat(grandTotal) + parseFloat((itemList.itemQty*itemList.rate).toFixed(2));
 									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-edit" onclick="edit('+key+');"></span> <span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
 										$('#table_grid1 tbody').append(tr);
 										
@@ -443,8 +466,8 @@ function addItem( ) {
 										  $("#enterQty").html(0);
 
 								})
-						
-						 
+						 $("#grandTotal").html(grandTotal);
+								 
 					});
 
  
