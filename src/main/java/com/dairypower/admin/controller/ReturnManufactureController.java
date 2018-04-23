@@ -24,6 +24,7 @@ import com.dairypower.admin.common.DateConvertor;
 import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetCurrentStock;
 import com.dairypower.admin.model.GetItem;
+import com.dairypower.admin.model.GetMfgReturn;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Info;
@@ -197,10 +198,10 @@ public class ReturnManufactureController {
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 			 map.add("fromDate",consume.format(date));
 			 map.add("toDate",consume.format(date));
-			 List<GetPoHeader>  getPoHeaderList =  rest.postForObject(Constants.url + "/getPoHeaderDetailsBetweenDate",map, List .class);
+			 List<GetMfgReturn>  getMfgReturnList =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, List .class);
 			 model.addObject("fromDate", show.format(date));
 			 model.addObject("toDate", show.format(date));
-			 model.addObject("getPoHeaderList", getPoHeaderList);
+			 model.addObject("getMfgReturnList", getMfgReturnList);
 			 
 		}catch(Exception e)
 		{
@@ -208,6 +209,31 @@ public class ReturnManufactureController {
 		}
 
 		return model;
+	}
+	
+	@RequestMapping(value = "/getMfgReturnRecordBetweenDate", method = RequestMethod.GET)
+	@ResponseBody
+	public List<GetMfgReturn> getMfgReturnRecordBetweenDate(HttpServletRequest request, HttpServletResponse response) {
+
+		 List<GetMfgReturn>  getMfgReturnList = new ArrayList<GetMfgReturn>();
+		try
+		{
+			String fromDate =  request.getParameter("fromDate") ;
+			String toDate =  request.getParameter("toDate") ;
+			
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("fromDate", DateConvertor.convertToYMD(fromDate) );
+			map.add("toDate", DateConvertor.convertToYMD(toDate));
+			getMfgReturnList =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, List.class);
+			 
+			 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return getMfgReturnList;
 	}
 
 }
