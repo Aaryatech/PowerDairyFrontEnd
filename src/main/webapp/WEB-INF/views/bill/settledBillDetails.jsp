@@ -147,14 +147,14 @@
 												<td class="col-md-1"><c:out value="${count.index+1}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.batchNo}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.itemName}" /></td> 
-												<td class="col-md-1"><c:out value="${billDetail.billQty}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.billQty-(billDetail.returnQty+billDetail.distLeakageQty)}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.returnQty}" /></td>
 												<td class="col-md-1"><c:out value="${billDetail.distLeakageQty}" /></td>
 												 <c:set var="taxPer"   value="${billDetail.cgstPer+billDetail.sgstPer}"/>
 												 
 												 <c:set var="baseRate"   value="${(billDetail.rate*100)/(100 + taxPer)}"/>
 												<td class="col-md-1" id="baseRate${count.index}" ><fmt:formatNumber type = "number" minFractionDigits = "2" maxFractionDigits = "2" value = "${baseRate}"/></td>
-												 <c:set var="taxableAmt"   value="${baseRate*billDetail.billQty}"/>
+												 <c:set var="taxableAmt"   value="${baseRate*(billDetail.billQty-(billDetail.returnQty+billDetail.distLeakageQty))}"/>
 												 	 <c:set var="cgstRs"   value="${(taxableAmt*billDetail.cgstPer)/100}"/>
 												 	 <c:set var="sgstRs"   value="${(taxableAmt*billDetail.sgstPer)/100}"/>
 												 	 <c:set var="totalTax"   value="${(cgstRs+sgstRs)}"/>
@@ -265,8 +265,8 @@
 						<div class="col-md-3">
 					<!-- 	Opening Qty + Issue Qty - Recieved Qty -->
 							 <input class="form-control"
-								placeholder="Creates Balance Qty" name="cratesBalQty" id="cratesBalQty" style="text-align: right;"   type="number" value="${customer.cratesOpBal+billHeader.cratesIssued}" readonly> 
-                           <input name="cratesBal" id="cratesBal" type="hidden" value="${customer.cratesOpBal+billHeader.cratesIssued}"> 
+								placeholder="Creates Balance Qty" name="cratesBalQty" id="cratesBalQty" style="text-align: right;"   type="number" value="${billHeader.cratesClBal}" readonly> 
+                           <input name="cratesBal" id="cratesBal" type="hidden" value="${billHeader.cratesClBal}"> 
 						</div>
 						
 					

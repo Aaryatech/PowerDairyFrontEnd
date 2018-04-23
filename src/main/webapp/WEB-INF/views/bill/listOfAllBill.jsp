@@ -170,7 +170,7 @@
 												<td class="col-md-1"><c:out value="${billHeader.grandTotal}" /></td>
 												<td class="col-md-1"><c:out value="-" /></td>
 												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${billHeader.billTempId}">
-												Details</a>
+												Approve</a>
 												
 											<%-- 	<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
 												CRN</a> --%></td>

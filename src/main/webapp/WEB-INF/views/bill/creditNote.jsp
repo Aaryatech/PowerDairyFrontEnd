@@ -67,6 +67,8 @@
 					action="${pageContext.request.contextPath}/saveCreditNote">
 				<input type="hidden" name="billTempId" id="billTempId"
 						value="${billHeader.billTempId}">
+						<input type="hidden" name="custId" id="custId"
+						value="${billHeader.custId}">
 						<div class="col-md -3">
 							
 								<div class="col1title" align="left"><h3> Credit Note </h3></div>
@@ -148,7 +150,7 @@
                                      <c:forEach items="${billDetails}" var="billDetail" varStatus="count">
                                       <input type="hidden" name="keySize" id="keySize" value="${keySize}"/>
                                                   
-                                                   <input type="hidden" name="billQty${count.index}" id="billQty${count.index}" value="${billDetail.billQty}"/>
+                                                   <input type="hidden" name="billQty${count.index}" id="billQty${count.index}" value="${billDetail.billQty-(billDetail.returnQty+billDetail.distLeakageQty)}"/>
 												
 												<input type="hidden" name="cgstPer${count.index}" id="cgstPer${count.index}" value="${billDetail.cgstPer}"/>
 												<input type="hidden" name="rate${count.index}" id="rate${count.index}" value="${billDetail.rate}"/>
@@ -158,7 +160,7 @@
 												<td class="col-md-1"><c:out value="${count.index+1}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.batchNo}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.itemName}" /></td> 
-												<td class="col-md-1"><c:out value="${billDetail.billQty}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.billQty-(billDetail.returnQty+billDetail.distLeakageQty)}" /></td> 
 												<td class="col-md-1"><input type="text" min="0" max="500"
 																			class="form-control" name="expireQty${count.index}" id="expireQty${count.index}" value="0"
 																			onblur="onExpireQty(this.value,${count.index})"
@@ -213,11 +215,15 @@
 
 										<h4 class="col-md-5" id="grandTotal">0</h4>
 										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
-									</div>
-
-									<div class="clearfix"></div>
-									 
-								</div>
+									</div></div>  
+							
+				  <div class="row"><div class="col-md-2"><b>Remark</b></div>
+							<div class="col-md-3">									
+						<input id="remark" class="form-control"
+								placeholder="Remark" name="remark"  style="text-align: left;" type="text"  required>
+							</div>		
+								 
+						</div>
 						 
 					<div class="colOuter">
 						<div align="center">

@@ -34,10 +34,18 @@ public class BillHeader{
 	private String remarks;
 	
 	private int isSettled;
-	
+	private int isCrnGenerated;
 	List<BillDetail> billDetailList;
 	
 	
+
+	public int getIsCrnGenerated() {
+		return isCrnGenerated;
+	}
+
+	public void setIsCrnGenerated(int isCrnGenerated) {
+		this.isCrnGenerated = isCrnGenerated;
+	}
 
 	public float getGrandTotal() {
 		return grandTotal;

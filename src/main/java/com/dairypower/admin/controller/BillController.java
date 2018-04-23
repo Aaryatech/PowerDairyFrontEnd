@@ -21,17 +21,22 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.dairypower.admin.common.Constants;
+import com.dairypower.admin.common.DateConvertor;
 import com.dairypower.admin.model.BillDetail;
 import com.dairypower.admin.model.BillHeader;
 import com.dairypower.admin.model.BillPayment;
+import com.dairypower.admin.model.CreditNoteDetail;
+import com.dairypower.admin.model.CreditNoteHeader;
 import com.dairypower.admin.model.Currency;
 import com.dairypower.admin.model.Customer;
 import com.dairypower.admin.model.GetBillHeader;
+import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.RsDetail;
+import com.dairypower.admin.model.StockHeader;
 import com.dairypower.admin.model.TSetting;
 import com.dairypower.admin.model.TVehicle;
 import com.dairypower.admin.model.Vehicle;
@@ -88,6 +93,7 @@ public class BillController {
             		}
             	}
             }
+            outstandingCrates=outstandingCrates+0;
             model.addObject("outstandingCrates", outstandingCrates);
             model.addObject("pending", billHeaderList.size());
             model.addObject("generated", billHeadersList.size());
@@ -151,6 +157,23 @@ public class BillController {
 			
 			GetPoDetail[]	poDetailListRes=  rest.getForObject(Constants.url + "/getPoDetailsList", GetPoDetail[].class);
 			poDetailList=new ArrayList<GetPoDetail>(Arrays.asList(poDetailListRes));
+			
+			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
+					StockHeader.class); 
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+			 map.add("date",DateConvertor.convertToYMD(stockHeader.getDate()));
+			 
+			  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
+					  GetCratesStock.class); 
+			  model.addObject("stockDate", stockHeader.getDate());
+			  
+			  int totalCrates = getCratesStock.getCratesOpQty()+getCratesStock.getCratesReceivedQtyBypurchase()-getCratesStock.getCratesIssued()+
+					  getCratesStock.getCratesReceivedBycustomer()-getCratesStock.getCratesReturnQtyTomfg();
+			  model.addObject("crateStock", totalCrates);
+			  
+			  SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+				Date today = new Date();
+				model.addObject("today", sf.format(today));
 
 		}catch(Exception e)
 		{
@@ -395,11 +418,11 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		billHeaderRes=restTemplate.postForObject(Constants.url+"/saveBill",billHeader,BillHeader.class);
 		System.err.println("poDetailList:"+poDetailList.toString());
 	    List<PoDetail> poListRes=restTemplate.postForObject(Constants.url+"/updatePoDetailList", poDetailList, List.class);
-	System.err.println("poListRes:"+poListRes.toString());
+    	System.err.println("poListRes:"+poListRes.toString());
 		if(billHeaderRes!=null)
 		{
 			Date date = new Date();
-			String currdDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+			String currdDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		    String strDateTime = sdf.format(date);
 		    
@@ -459,6 +482,37 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		
 		return model;
 	}
+	@RequestMapping(value = "/settledBills/{billTempId}", method = RequestMethod.GET)
+	public ModelAndView settledBills(@PathVariable int billTempId, HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("bill/settledBillDetails");
+		try
+		{
+			 
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("billTempId", billTempId);
+			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
+			System.err.println("header"+header.toString());
+			model.addObject("billHeader", header);
+			model.addObject("billDetails", header.getBillDetailList());
+			map = new LinkedMultiValueMap<String,Object>();
+			map.add("custId", header.getCustId()); 
+			Customer customer = rest.postForObject(Constants.url + "/master/getCustomerById",map, Customer.class);
+			model.addObject("customer",customer);
+			try {
+			model.addObject("keySize", header.getBillDetailList().size());
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+			List<Currency> currencyList =  rest.getForObject(Constants.url + "/master/getAllCurrency", List.class);
+			model.addObject("currencyList",currencyList);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return model;
+	}
 	@RequestMapping(value = "/approveBill", method = RequestMethod.POST)
 	public String approveBill(HttpServletRequest request, HttpServletResponse response) {
 
@@ -486,8 +540,30 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			map.add("settingKey", "bill_id");
 			TSetting tSettingRes=rest.postForObject(Constants.url + "/getSettingValue",map, TSetting.class);
 			int billId=tSettingRes.getSettingValue()+1;
+			
+		    List<CreditNoteDetail> creditNoteDetail=new ArrayList<>();//
+			Date date = new Date();
+			String currDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			
+			map = new LinkedMultiValueMap<String,Object>();
+			map.add("settingKey", "crn_no");
+			TSetting tSetting=rest.postForObject(Constants.url + "/getSettingValue",map, TSetting.class);
+			int crnNo=tSetting.getSettingValue()+1;
+		    String strDateTime = sdf.format(date);
 			if(!header.getBillDetailList().isEmpty())
 			{
+				boolean flag=false;
+				CreditNoteHeader creditNoteHeader=new CreditNoteHeader();
+				creditNoteHeader.setCrnHeaderId(0);
+				creditNoteHeader.setCrnDate(currDate);
+				creditNoteHeader.setCrnDatetime(strDateTime);
+				creditNoteHeader.setCrnId(""+crnNo);
+				creditNoteHeader.setCustId(header.getCustId());
+				creditNoteHeader.setRemarks("Credit Note of Distribution Leakage");
+				creditNoteHeader.setScrapType(2);
+				creditNoteHeader.setBillTempId(billTempId);
+				
 			for(int i=0;i<header.getBillDetailList().size();i++)
 			{
 				
@@ -498,8 +574,32 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					header.getBillDetailList().get(i).setReturnQty(returnQty);
 					header.getBillDetailList().get(i).setDistLeakageQty(distLeakageQty);
 				}
-				
+				if(distLeakageQty!=0)
+				{
+					flag=true;
+					CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
+					creditNoteDetails.setCrnDetailId(0);
+					creditNoteDetails.setCrnHeaderId(0);
+					creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
+					creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
+					creditNoteDetails.setQty(distLeakageQty);
+					creditNoteDetails.setPackDate(currDate);
+					creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
+					creditNoteDetail.add(creditNoteDetails);
+				}
 			}
+			creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
+
+			if(flag==true)
+			{
+	     	CreditNoteHeader crNote = rest.postForObject(Constants.url + "/saveCreditNote",creditNoteHeader,
+						CreditNoteHeader.class);
+		     map= new LinkedMultiValueMap<String,Object>();
+		     map.add("settingValue",crnNo);
+		     map.add("settingKey","crn_no");
+		     Info settingRes=rest.postForObject(Constants.url+"/updateSetingValue",map,Info.class);
+			}
+			
 			}
 			header.setBillId(billId);
 			header.setCollectedAmt(collectedAmt);
@@ -585,14 +685,29 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		return "redirect:/showAllTempAndSettleBill";
 	}
 	
-	@RequestMapping(value = "/creditNote/{tempId}", method = RequestMethod.GET)
-	public ModelAndView creditNote(@PathVariable int tempId, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/creditNote/{billTempId}", method = RequestMethod.GET)
+	public ModelAndView creditNote(@PathVariable int billTempId, HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("bill/creditNote");
 		try
 		{
-			 
 			
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("billTempId", billTempId);
+			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
+			System.err.println("header"+header.toString());
+			model.addObject("billHeader", header);
+			model.addObject("billDetails", header.getBillDetailList());
+			try {
+				model.addObject("keySize", header.getBillDetailList().size());
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+			map = new LinkedMultiValueMap<String,Object>();
+			map.add("settingKey", "crn_no");
+			TSetting tSettingRes=rest.postForObject(Constants.url + "/getSettingValue",map, TSetting.class);
+			int crnNo=tSettingRes.getSettingValue()+1;
+			model.addObject("crnNo", crnNo);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -600,7 +715,94 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 
 		return model;
 	}
-	
+	@RequestMapping(value = "/saveCreditNote", method = RequestMethod.POST)
+	public String saveCreditNote(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			
+			int custId=Integer.parseInt(request.getParameter("custId"));
+			int billTempId=Integer.parseInt(request.getParameter("billTempId"));
+			int billId=Integer.parseInt(request.getParameter("billId"));
+			int creditNo=Integer.parseInt(request.getParameter("creditNo"));
+			String remark=request.getParameter("remark");
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			map.add("billTempId", billTempId);
+			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
+			System.err.println("header"+header.toString());
+			Date date = new Date();
+			String currDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		    String strDateTime = sdf.format(date);
+		    List<CreditNoteDetail> creditNoteDetail=new ArrayList<>();
+		  
+			if(!header.getBillDetailList().isEmpty()) {
+				  boolean flag=false;
+				
+				CreditNoteHeader creditNoteHeader=new CreditNoteHeader();
+				creditNoteHeader.setCrnHeaderId(0);
+				creditNoteHeader.setCrnDate(currDate);
+				creditNoteHeader.setCrnDatetime(strDateTime);
+				creditNoteHeader.setCrnId(""+creditNo);
+				creditNoteHeader.setCustId(custId);
+				creditNoteHeader.setRemarks(remark);
+				creditNoteHeader.setScrapType(1);
+				creditNoteHeader.setBillTempId(billTempId);
+				
+				for(int i=0;i<header.getBillDetailList().size();i++)
+				{
+					int expireQty=Integer.parseInt(request.getParameter("expireQty"+i));
+					int leakageQty=Integer.parseInt(request.getParameter("leakageQty"+i));
+					if(expireQty!=0)
+					{
+						flag=true;
+						CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
+						creditNoteDetails.setCrnDetailId(0);
+						creditNoteDetails.setCrnHeaderId(0);
+						creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
+						creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
+						creditNoteDetails.setQty(expireQty);
+						creditNoteDetails.setPackDate(currDate);
+						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
+						creditNoteDetail.add(creditNoteDetails);
+					}
+					if(leakageQty!=0)
+					{
+						flag=true;
+						CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
+						creditNoteDetails.setCrnDetailId(0);
+						creditNoteDetails.setCrnHeaderId(0);
+						creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
+						creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
+						creditNoteDetails.setQty(leakageQty);
+						creditNoteDetails.setPackDate(currDate);
+
+						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
+						creditNoteDetail.add(creditNoteDetails);
+					}
+					
+				}
+				creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
+				if(flag==true)
+				{
+			CreditNoteHeader crNote = rest.postForObject(Constants.url + "/saveCreditNote",creditNoteHeader,
+							CreditNoteHeader.class);
+			
+			map = new LinkedMultiValueMap<String,Object>();
+			map.add("billTempId", billTempId);
+			Info info=rest.postForObject(Constants.url + "/updateCrnGenerated",map, Info.class);
+			
+			 map= new LinkedMultiValueMap<String,Object>();
+			 map.add("settingValue",creditNo);
+			 map.add("settingKey","crn_no");
+			 Info settingRes=rest.postForObject(Constants.url+"/updateSetingValue",map,Info.class);
+				}
+			}
+		}
+		catch (Exception e) {
+			
+		}
+		return "redirect:/showAllTempAndSettleBill";
+	}
 	@RequestMapping(value = "/vehInfo", method = RequestMethod.GET)
 	public ModelAndView vehInfo(HttpServletRequest request, HttpServletResponse response) {
 
