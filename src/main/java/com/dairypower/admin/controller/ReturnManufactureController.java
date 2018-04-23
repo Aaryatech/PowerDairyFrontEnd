@@ -31,6 +31,8 @@ import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.MfgReturn;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.StockHeader;
+import com.dairypower.admin.model.TVehicle;
+import com.dairypower.admin.model.Vehicle;
 
 @Controller
 @Scope("session")
@@ -234,6 +236,62 @@ public class ReturnManufactureController {
 		}
 
 		return getMfgReturnList;
+	}
+	
+	
+	@RequestMapping(value = "/adjustKm", method = RequestMethod.GET)
+	public ModelAndView adjustKm(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("bill/adjustKm");
+		try
+		{
+			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			model.addObject("vehicleList", vehicleList);
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+	
+	@RequestMapping(value = "/sumbitAdjustKm", method = RequestMethod.POST)
+	public String sumbitAdjustKm(HttpServletRequest request, HttpServletResponse response) {
+
+		 
+	 
+		try {
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date date = new Date();
+		  
+			int vehId = Integer.parseInt(request.getParameter("vehId"));
+			int inKm = Integer.parseInt(request.getParameter("inKm")); 
+			String remark =   request.getParameter("remark") ;
+			String driverName = request.getParameter("driverName");
+			
+			TVehicle tVehicle = new TVehicle();
+			tVehicle.setVehId(vehId);
+			tVehicle.setInKms(inKm);
+			tVehicle.setEntryBy(1);
+			tVehicle.setRemark(remark);
+			tVehicle.setDriverName(driverName);
+			tVehicle.setDate(sf.format(date));
+			tVehicle.setDatetime(time.format(date));
+			
+		 Info info = rest.postForObject(Constants.url + "/master/saveTVehicle",tVehicle, Info.class);
+		 
+		 System.out.println("info " + info);
+			 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+
+		return "redirect:/tempBill";
 	}
 
 }

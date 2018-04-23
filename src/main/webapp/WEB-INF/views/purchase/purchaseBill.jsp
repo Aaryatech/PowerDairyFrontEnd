@@ -534,7 +534,7 @@ function deleteItem(index) {
 							alert("No records found !!");
 
 						}
-						
+						var grandTotal=0;
 						$.each(
 								data,
 								function(key, itemList) {
@@ -548,6 +548,7 @@ function deleteItem(index) {
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemQty));
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.rate));   
 									  	 tr.append($('<td class="col-md-1" ></td>').html((itemList.itemQty*itemList.rate).toFixed(2))); 
+									 	grandTotal = parseFloat(grandTotal) + parseFloat((itemList.itemQty*itemList.rate).toFixed(2));
 									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-edit" onclick="edit('+key+');"></span> <span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
 										$('#table_grid1 tbody').append(tr);
 										
@@ -564,7 +565,7 @@ function deleteItem(index) {
 								})
 						
 
-							  
+								 $("#grandTotal").html(grandTotal);
 						 
 					});
 

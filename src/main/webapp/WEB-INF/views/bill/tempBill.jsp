@@ -168,8 +168,8 @@
 						</div>
 						
 						<div class="col-md-1">
-							 <input type="button" class="btn additem_btn" value="Adjust KM" onclick="addItem();"
-												id="b2"/>
+							<a href="${pageContext.request.contextPath}/adjustKm"> <input type="button" class="btn additem_btn" value="Adjust KM"  
+												id="adjustKm"/></a>
 						</div>
  
 					</div> 

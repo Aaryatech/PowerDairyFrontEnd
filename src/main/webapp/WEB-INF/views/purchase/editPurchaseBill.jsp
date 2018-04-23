@@ -145,6 +145,7 @@
 					</div> 
 					
 					 <div class="colOuter"> 
+					 <c:set var="grndTotal" value="0"></c:set>
 					</div>
 					 <div class="colOuter"> 
 					</div>
@@ -225,7 +226,7 @@
 													</table>
 												</div>
 											</div>
-					 
+					
 					 
 					 
 					 <div class="colOuter"> 
@@ -266,6 +267,7 @@
 												value="${poDetailList.rate}" /></td> 
 										<td class="col-md-1" ><c:out
 												value="${poDetailList.itemQty*poDetailList.rate}" /></td>
+												<c:set var="grndTotal" value="${grndTotal+(poDetailList.itemQty*poDetailList.rate)}"></c:set>
 										<td>
 													<span  class="glyphicon glyphicon-edit" onclick="edit(${count.index})" ></span> 
 													<span class="glyphicon glyphicon-remove" onclick="deleteItem(${count.index})"></span>
@@ -280,7 +282,28 @@
 									</div>
 								</div>
 								
-								 
+								  <div class="row">
+									<div class="col-md-4">
+									 
+									 
+									</div>
+
+									<div class="col-md-4">
+										 
+									</div>
+
+									<div class="col-md-4">
+										<h4 class="col-md-7" style="margin-top: 5px">
+											<b>Grand Total:-</b>
+										</h4>
+
+										<h4 class="col-md-5" id="grandTotal">${grndTotal }</h4>
+										<input type="hidden" class="form-control" id="grandTotalText" name="grandTotalText">
+									</div>
+
+									<div class="clearfix"></div>
+									 
+								</div>
 					  
 						 
 					<div class="colOuter">
@@ -415,7 +438,7 @@ function addItem( ) {
 							alert("No records found !!");
 
 						}
-						
+						var grandTotal=0;
 						$.each(
 								data,
 								function(key, itemList) {
@@ -430,6 +453,7 @@ function addItem( ) {
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemQty));
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.rate));   
 									  	 tr.append($('<td class="col-md-1" ></td>').html((itemList.itemQty*itemList.rate).toFixed(2))); 
+									  	grandTotal = parseFloat(grandTotal) + parseFloat((itemList.itemQty*itemList.rate).toFixed(2));
 									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-edit" onclick="edit('+key+');"></span> <span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
 										$('#table_grid1 tbody').append(tr);
 										
@@ -446,7 +470,7 @@ function addItem( ) {
 
 								})
 						
-						 
+								$("#grandTotal").html(grandTotal);
 					});
 
  
@@ -513,7 +537,7 @@ function deleteItem(index) {
 							alert("No records found !!");
 
 						}
-						
+						var grandTotal=0;
 						$.each(
 								data,
 								function(key, itemList) {
@@ -528,6 +552,7 @@ function deleteItem(index) {
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemQty));
 									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.rate));   
 									  	 tr.append($('<td class="col-md-1" ></td>').html((itemList.itemQty*itemList.rate).toFixed(2))); 
+									  	grandTotal = parseFloat(grandTotal) + parseFloat((itemList.itemQty*itemList.rate).toFixed(2));
 									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-edit" onclick="edit('+key+');"></span> <span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
 										$('#table_grid1 tbody').append(tr);
 										
@@ -545,7 +570,7 @@ function deleteItem(index) {
 								})
 						
 
-							  
+								$("#grandTotal").html(grandTotal);
 						 
 					});
 
