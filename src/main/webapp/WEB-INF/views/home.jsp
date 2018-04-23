@@ -99,7 +99,7 @@
 
 				<!--rightSidebar-->
 				<div class="sidebarright">
-										<h2 class="pageTitle">Hi <span>${frDetails.frOwner},</span> Welcome Back</h2>
+										<h2 class="pageTitle">Hi <span>${login.userName},</span> Welcome Back</h2>
             
             
 					<!--slider-->

@@ -8,6 +8,8 @@ public class User {
 	
 	private String userName;
 	
+	private String password;
+	
 	private String userMobNo;
 	
 	private int userTypeId;
@@ -54,10 +56,18 @@ public class User {
 		this.isUsed = isUsed;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", userMobNo=" + userMobNo + ", userType="
-				+ userTypeId + ", isUsed=" + isUsed + "]";
+		return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", userMobNo="
+				+ userMobNo + ", userTypeId=" + userTypeId + ", isUsed=" + isUsed + "]";
 	}
     
 	

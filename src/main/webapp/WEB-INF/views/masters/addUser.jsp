@@ -88,6 +88,30 @@
 						</div>
 						 </div>
 						 
+						 <div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Password*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="password" class="form-control"
+								placeholder="Password" style="text-align: left;" onchange="checkPassWord()" name="password" type="password" value="${user.password}" required>
+								 
+
+						</div>
+						 </div>
+						 
+						  <div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Re Enter Password*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="RePassword" class="form-control"
+								placeholder="Password" style="text-align: left;" onchange="checkPassWord()" name="RePassword" type="password"   required>
+								 
+
+						</div>
+						 </div>
+						 
 					<div class="colOuter">
 						<div class="col-md-2">
 							<div class="col1title" align="left">Mobile No*: </div>
@@ -128,7 +152,7 @@
 					<div class="colOuter">
 						<div align="center">
 							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
+								type="submit"  id="submit" align="center" disabled>
 								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
 						</div>
 				 
@@ -205,57 +229,26 @@
 
 
 <script>
-function edit(suppId) {
  
-	  
-	$('#loader').show();
 
-	$
-			.getJSON(
-					'${editFrSupplier}',
-
-					{
-						 
-						suppId : suppId, 
-						ajax : 'true'
-
-					},
-					function(data) { 
-						
-						document.getElementById("suppId").value=data.suppId;
-						document.getElementById("suppName").value=data.suppName;  
-						document.getElementById("suppAdd").value=data.suppAddr;
-						document.getElementById("city").value=data.suppCity;
-						document.getElementById("mob").value=data.mobileNo;
-						document.getElementById("email").value=data.email;
-						document.getElementById("gstnNo").value=data.gstnNo;
-						document.getElementById("panNo").value=data.panNo;
-						document.getElementById("liceNo").value=data.suppFdaLic;
-						document.getElementById("creditDays").value=data.suppCreditDays;
-						document.getElementById("isSameState").value=data.isSameState; 
-						document.getElementById("cancel").disabled=false;
-					});
-
- 
-	   
-
-}
-
-function cancel1() {
+function checkPassWord() {
 
     //alert("cancel");
-	document.getElementById("suppId").value="";
-	document.getElementById("suppName").value="";  
-	document.getElementById("suppAdd").value="";
-	document.getElementById("city").value="";
-	document.getElementById("mob").value="";
-	document.getElementById("email").value="";
-	document.getElementById("gstnNo").value="";
-	document.getElementById("panNo").value="";
-	document.getElementById("liceNo").value="";
-	document.getElementById("creditDays").value="";
-	document.getElementById("isSameState").value=""; 
-	document.getElementById("cancel").disabled=false;
+	var password = document.getElementById("password").value ;
+	var RePassword = document.getElementById("RePassword").value ; 
+	
+	if(password!="" && RePassword!="")
+		{
+			if(password==RePassword)
+				{
+				document.getElementById("submit").disabled=false;
+				}
+			else
+				{
+				alert("Password is Not Match "); 
+				document.getElementById("submit").disabled=true;
+				}
+		}
 
 }
 (function() {

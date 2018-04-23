@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Item;
+import com.dairypower.admin.model.LoginResponse;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.PoHeader;
 import com.dairypower.admin.model.StockHeader;
@@ -241,6 +243,9 @@ public class PurchaseController {
 				insert.setPoRemarks(remark);
 				insert.setCratesRecievedQty(recievedCreates);
 				insert.setPoDatetime(time.format(date));
+				HttpSession session = request.getSession(); 
+				LoginResponse login = (LoginResponse) session.getAttribute("UserDetail"); 
+				insert.setUserId(login.getUser().getUserId());
 				
 				List<PoDetail> poDetailList = new ArrayList<>();
 				float poTotal = 0;
@@ -513,6 +518,9 @@ public class PurchaseController {
 				insert.setPoRemarks(remark);
 				insert.setCratesRecievedQty(recievedCreates);
 				insert.setPoDatetime(time.format(date));
+				HttpSession session = request.getSession(); 
+				LoginResponse login = (LoginResponse) session.getAttribute("UserDetail"); 
+				insert.setUserId(login.getUser().getIsUsed());
 				
 				List<PoDetail> poDetailList = new ArrayList<>();
 				float poTotal = 0;

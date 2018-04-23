@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import com.dairypower.admin.model.GetMfgReturn;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Info;
+import com.dairypower.admin.model.LoginResponse;
 import com.dairypower.admin.model.MfgReturn;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.StockHeader;
@@ -258,8 +260,7 @@ public class ReturnManufactureController {
 	
 	@RequestMapping(value = "/sumbitAdjustKm", method = RequestMethod.POST)
 	public String sumbitAdjustKm(HttpServletRequest request, HttpServletResponse response) {
-
-		 
+ 
 	 
 		try {
 			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
@@ -271,6 +272,9 @@ public class ReturnManufactureController {
 			String remark =   request.getParameter("remark") ;
 			String driverName = request.getParameter("driverName");
 			
+			HttpSession session = request.getSession(); 
+			LoginResponse login = (LoginResponse) session.getAttribute("UserDetail"); 
+			
 			TVehicle tVehicle = new TVehicle();
 			tVehicle.setVehId(vehId);
 			tVehicle.setInKms(inKm);
@@ -279,6 +283,7 @@ public class ReturnManufactureController {
 			tVehicle.setDriverName(driverName);
 			tVehicle.setDate(sf.format(date));
 			tVehicle.setDatetime(time.format(date));
+			tVehicle.setEntryBy(login.getUser().getIsUsed());
 			
 		 Info info = rest.postForObject(Constants.url + "/master/saveTVehicle",tVehicle, Info.class);
 		 

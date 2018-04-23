@@ -550,6 +550,7 @@ public class MasterController {
 		{
 			String userId = request.getParameter("userId");
 			String userName = request.getParameter("userName");  
+			String password = request.getParameter("password"); 
 			String userMobNo =request.getParameter("mob");
 			int userTypeId = Integer.parseInt(request.getParameter("typeId"));
 			
@@ -561,6 +562,7 @@ public class MasterController {
 		    user.setUserMobNo(userMobNo);
 		    user.setUserName(userName); 
 		    user.setUserTypeId(userTypeId);
+		    user.setPassword(password);
 		    user.setIsUsed(0);
 		    
 			Info info = rest.postForObject(Constants.url + "/master/saveUser",user,
