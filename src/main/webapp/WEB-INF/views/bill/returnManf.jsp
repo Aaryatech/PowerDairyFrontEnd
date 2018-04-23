@@ -251,8 +251,8 @@ function getBatchListByitemId() {
 
 function checkCratesStock() {
 	
-	var crateStock = document.getElementById("crateStock").value;
-	var cratesQty = document.getElementById("cratesQty").value;
+	var crateStock = parseInt(document.getElementById("crateStock").value);
+	var cratesQty = parseInt(document.getElementById("cratesQty").value);
 	
 	if(cratesQty>crateStock) 
 		{
