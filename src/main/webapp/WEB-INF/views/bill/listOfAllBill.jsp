@@ -70,6 +70,9 @@
 					<h2 class="pageTitle">All Bills </h2> 
 				</div>
 				 <div class="col1title" align="right"> 
+						<a href="${pageContext.request.contextPath}/creditNotes"><input type="button" value="View All Credit Notes" class="btn btn-info">
+										</a>
+				
 						<a href="${pageContext.request.contextPath}/tempBill"><input type="button" value="Add New Bill" class="btn btn-info">
 										</a>
 					</div>
@@ -166,7 +169,7 @@
 												<td class="col-md-1"><c:out value="-" /></td> 
 												<td class="col-md-1"><c:out value="${billHeader.custName}" /></td> 
 												<td class="col-md-1"><c:out value="${billHeader.vehName}" /></td> 
-												<td class="col-md-1"><c:out value="-" /></td>
+												<td class="col-md-1"><c:out value="${billHeader.inKms-billHeader.outKm}" /></td>
 												<td class="col-md-1"><c:out value="${billHeader.grandTotal}" /></td>
 												<td class="col-md-1"><c:out value="-" /></td>
 												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${billHeader.billTempId}">
@@ -183,16 +186,16 @@
 												<td class="col-md-1"><c:out value="${billHeaders.billId}" /></td> 
 												<td class="col-md-1"><c:out value="${billHeaders.custName}" /></td> 
 												<td class="col-md-1"><c:out value="${billHeaders.vehName}" /></td> 
-												<td class="col-md-1"><c:out value="-" /></td>
+												<td class="col-md-1"><c:out value="${billHeaders.inKms-billHeaders.outKm}" /></td>
 												<td class="col-md-1"><c:out value="${billHeaders.grandTotal}" /></td>
 												<td class="col-md-1"><c:out value="${billHeaders.collectedAmt}" /></td>
 												<td>
 												
 												<a href="${pageContext.request.contextPath}/settledBills/${billHeaders.billTempId}">
 												Details</a> 
-												
+												<c:if test="${billHeaders.isCrnGenerated==0}">
 												<a href="${pageContext.request.contextPath}/creditNote/${billHeaders.billTempId}">
-												CRN</a></td>
+												CRN</a></c:if></td>
 												</tr>
 												</c:forEach> 
 											</tbody>

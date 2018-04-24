@@ -686,7 +686,7 @@ function saveTempBill()
 	var cratesOpnQty=parseInt($("#cratesOpnQty").val());
 	var totalCrates=cratesIssueQty+cratesOpnQty;
 	var total=$("#grandTotalText").val();
-	
+	var vehOutKm=parseInt($("#vehOutKm").val());
 	if(totalCrates<=cratesCap)
 		{
 	$('#loader').show();
@@ -697,6 +697,7 @@ function saveTempBill()
 		total:total,
 		cratesOpnQty:cratesOpnQty,
 		cratesIssueQty:cratesIssueQty,
+		vehOutKm:vehOutKm,
 		
 		ajax : 'true',
 	},  function(data) { 
@@ -814,7 +815,7 @@ function validation() {
 <script type="text/javascript">
 function checkCratesStock(issueCrates)
 {
-	var crateStock = $("#crateStock").val();
+	var crateStock =parseInt($("#crateStock").val());
 	
 	if(crateStock<issueCrates)
 		{

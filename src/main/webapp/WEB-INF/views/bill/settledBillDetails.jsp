@@ -147,7 +147,7 @@
 												<td class="col-md-1"><c:out value="${count.index+1}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.batchNo}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.itemName}" /></td> 
-												<td class="col-md-1"><c:out value="${billDetail.billQty-(billDetail.returnQty+billDetail.distLeakageQty)}" /></td> 
+												<td class="col-md-1"><c:out value="${billDetail.billQty}" /></td> 
 												<td class="col-md-1"><c:out value="${billDetail.returnQty}" /></td>
 												<td class="col-md-1"><c:out value="${billDetail.distLeakageQty}" /></td>
 												 <c:set var="taxPer"   value="${billDetail.cgstPer+billDetail.sgstPer}"/>
@@ -220,45 +220,66 @@
 						 
 					</div> 
 					  
-					  <div class="colOuter">
+				 <div class="colOuter">
+					  <div class="col-md-2">
+							<div class="col1title" align="left"> Previous Out Standing Amt: </div>
+						</div>
+						<div class="col-md-3">
+							 <input id="remAmt" style="text-align: right;" class="form-control"
+								  name="remAmt"   type="number" value="${billHeader.collectedAmt+billHeader.outstandingAmt}" readonly> 
+ 
+
+						</div>
+							<div class="col-md-1"> 
+						</div>
 						<div class="col-md-2">
 							<div class="col1title" align="left"> Collected Amt *: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="collectedAmt" style="text-align: right;" class="form-control" value="${billHeader.collectedAmt}"
-								placeholder="Collected Amt" name="collectedAmt"  value="0" type="number" onblur="calRemainingAmt(this.value)" readonly>
+							<input id="collectedAmt" style="text-align: right;" class="form-control"
+								placeholder="Collected Amt" name="collectedAmt"  type="number" onblur="calRemainingAmt(this.value)" value="${billHeader.collectedAmt}" readonly>
 
 						</div>
-						<div class="col-md-1"> 
-						</div>
-						
-						<div class="col-md-2">
-							<div class="col1title" align="left"> Outstanding Amt *: </div>
-						</div>
-						<div class="col-md-3">
-							 <input id="outstandingAmt" style="text-align: right;" class="form-control" value="${billHeader.outstandingAmt}"
-								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" value="${customer.outstandingAmt+grandTotal}" readonly> 
- <input id="remAmt" style="text-align: right;" class="form-control"
-						name="remAmt"   type="hidden" value="${customer.outstandingAmt}"> 
-
-						</div>
-						 
+					 
  
 					</div>
 					
 					<div class="colOuter">
-						
+					<div class="col-md-2">
+							<div class="col1title" align="left"> Outstanding Amt *: </div>
+						</div>
+					<div class="col-md-3">
+							 <input id="outstandingAmt" style="text-align: right;" class="form-control"
+								placeholder="Outstanding Amt" name="outstandingAmt"   type="number" value="${billHeader.outstandingAmt}" readonly> 
+   
+						</div>
+						<div class="col-md-1"> 
+						</div>
 						<div class="col-md-2">
 							<div class="col1title" align="left">Received Creates Qty*: </div>
 						</div>
 						<div class="col-md-3">
-							<input id="recCreatesQty" class="form-control" style="text-align: right;" value="${billHeader.cratesReceived}"
-								placeholder="Received Creates Qty" name="recCreatesQty"   type="number"  value="0" onblur="calBalanceCrates(this.value)" readonly>
+							<input id="recCreatesQty" class="form-control" style="text-align: right;"
+								placeholder="Received Creates Qty" name="recCreatesQty"   type="number"  onblur="calBalanceCrates(this.value)" value="${billHeader.cratesReceived}" readonly>
 
 						</div>
+						 
+					</div> 
+					
+					<div class="colOuter">
 						
+						<div class="col-md-2">
+							<div class="col1title" align="left"> Previous Outs Standing Crates: </div>
+						</div>
+					<div class="col-md-3">
+							 <input id="cratesBal" style="text-align: right;" class="form-control"
+								 name="cratesBal"   type="number" value="${customer.cratesOpBal+billHeader.cratesIssued}" readonly> 
+   
+						</div>
 						<div class="col-md-1"> 
 						</div>
+						
+						
 						<div class="col-md-2">
 							<div class="col1title" align="left">Creates Balance Qty*: </div>
 						</div>
@@ -266,20 +287,20 @@
 					<!-- 	Opening Qty + Issue Qty - Recieved Qty -->
 							 <input class="form-control"
 								placeholder="Creates Balance Qty" name="cratesBalQty" id="cratesBalQty" style="text-align: right;"   type="number" value="${billHeader.cratesClBal}" readonly> 
-                           <input name="cratesBal" id="cratesBal" type="hidden" value="${billHeader.cratesClBal}"> 
+                            
 						</div>
 						
 					
 					 </div>
-					<div class="colOuter">
-					<div class="col-md-2">
-							<div class="col1title" align="left">Vehicle In KM*: </div>
+				 <div class="colOuter">
+				 <div class="col-md-2">
+							<div class="col1title" align="left"><!-- Vehicle In KM*: --></div>
 						</div>
 						<div class="col-md-3">
-							<input id="vehInKm" class="form-control" style="text-align: right;"
-								placeholder="Vehicle In KM" name="vehInKm"   type="number" value="0" required>
+							<!-- <input id="vehInKm" class="form-control" style="text-align: right;"
+								placeholder="Vehicle In KM" name="vehInKm"   type="number" readonly> -->
 
-						</div>
+						</div> 
 						
 						<div class="col-md-1"> 
 								</div>
@@ -287,8 +308,8 @@
 							<div class="col1title" align="left">Remark : </div>
 						</div>
 						<div class="col-md-3">
-							<input id="remark" class="form-control" style="text-align: left;"value="${billHeader.remarks}"
-								placeholder="Remark" name="remark"   type="text" readonly>
+							<input id="remark" class="form-control" style="text-align: left;"
+								placeholder="Remark" name="remark"   type="text" value="${billHeader.remarks}" readonly>
  
 					</div>
 						<div class="col-md-1"> 
@@ -303,39 +324,70 @@
 							<div class="col1title" align="left">Payment Mode*: </div>
 						</div>
 						<div class="col-md-3">
-							<select class="form-control" onchange="selectionCurrency()" data-live-search="true" title="Please Select" 
-							name="payMode" id="payMode" required> 
-							<option value="1">Check</option> 
-							<option value="2">Cash</option>
-							
-						 </select>
-
+						<c:if test="${billHeader.collectionPaymode==1}">Check</c:if>
+	                   <c:if test="${billHeader.collectionPaymode==2}">Cash</c:if>
+		              <c:if test="${billHeader.collectionPaymode==3}">Cash and Check Both</c:if>
 						</div>
 						<div class="col-md-1"> 
 								</div>
-							<div class="col-md-2">
+							    <div class="col-md-2">
 									<div class="col1title" align="left">Check No : </div>
 								</div>
 								<div class="col-md-3">
 								 
 									 <input id="checkNo" class="form-control"
-										placeholder="Check No" name="checkNo" style="text-align: left;" value="0"  type="number" required> 
+										placeholder="Check No" name="checkNo" style="text-align: left;"   type="number" readonly> 
 		
 								</div>
 								 
 
 						</div>
- 				<div id="currencyTable" style="display: none">
+				<%--	<c:if test="${billHeader.collectionPaymode==1 or billHeader.collectionPaymode==3}">		<div class="colOuter">
+						<div class="col-md-2">
+									<div class="col1title" align="left">Check Amount: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="checkAmt" class="form-control"
+										placeholder="Check Amount" name="checkAmt" type="text"  style="text-align: left;"  readonly> 
+		
+								</div>
+								<div class="col-md-1"> 
+								</div>
+						<div class="col-md-2">
+									<div class="col1title" align="left">Check Date: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="fromdatepicker" class="form-control"
+										placeholder="Check Date" name="checkDate" type="text"  style="text-align: left;"  readonly/> 
+		
+								</div>
+						
+								
+					</div>	
+						<div class="colOuter">
+						<div class="col-md-2">
+									<div class="col1title" align="left">Bank Name: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="bankName" class="form-control"
+										placeholder="Bank Name" name="bankName" style="text-align: left;"  readonly> 
+		
+								</div>	
+								</div>	</c:if>
+								   <c:if test="${billHeader.collectionPaymode==3 or billHeader.collectionPaymode==2}">
 					<div id="table-scroll" class="table-scroll">
-									<div id="faux-table" width=50% class="faux-table" aria="hidden"></div>
+									<div id="faux-table" width=60% class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
-										<table id="table_grid1" width="50%" class="main-table small-td">
+										<table id="table_grid1" width="60%" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
-													<th width="10">Sr no.</th>
-													<th width="30">Currency</th>
-													<th width="30">Qty</th>
-													<th width="70">Total Value</th> 
+													<th width="50px">Sr no.</th>
+													<th width="70px">Currency</th>
+													<th width="80px">Qty</th>
+													<th width="80px">Total Value</th> 
 												</tr>
 											</thead>
 											<tbody>
@@ -359,14 +411,13 @@
 
 										</table>
 									</div>
-								</div>
-					</div>
-					<div class="colOuter">
+								</div></c:if>
+						<div class="colOuter">
 						
 						<div class="col-md-1"> 
 						</div>
 						 
-					</div>
+					</div> --%>
 						 
 					<div class="colOuter">
 						<div align="center">

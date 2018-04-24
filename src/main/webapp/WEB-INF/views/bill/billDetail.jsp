@@ -334,13 +334,14 @@
 							name="payMode" id="payMode" required> 
 							<option value="1">Check</option> 
 							<option value="2">Cash</option>
+							<option value="3">Check And Cash Both</option>
 							
 						 </select>
 
 						</div>
 						<div class="col-md-1"> 
 								</div>
-							<div class="col-md-2">
+							    <div class="col-md-2">
 									<div class="col1title" align="left">Check No : </div>
 								</div>
 								<div class="col-md-3">
@@ -352,17 +353,52 @@
 								 
 
 						</div>
+						<div class="colOuter">
+						<div class="col-md-2">
+									<div class="col1title" align="left">Check Amount: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="checkAmt" class="form-control"
+										placeholder="Check Amount" name="checkAmt" type="text"  style="text-align: left;" value="0" required> 
+		
+								</div>
+								<div class="col-md-1"> 
+								</div>
+						<div class="col-md-2">
+									<div class="col1title" align="left">Check Date: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="fromdatepicker" class="form-control"
+										placeholder="Check Date" name="checkDate" type="text"  style="text-align: left;"  required> 
+		
+								</div>
+						
+								
+					</div>	
+						<div class="colOuter">
+						<div class="col-md-2">
+									<div class="col1title" align="left">Bank Name: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="bankName" class="form-control"
+										placeholder="Bank Name" name="bankName" style="text-align: left;"  required> 
+		
+								</div>	
+								</div>	
  				<div id="currencyTable" style="display: none">
 					<div id="table-scroll" class="table-scroll">
-									<div id="faux-table" width=50% class="faux-table" aria="hidden"></div>
+									<div id="faux-table" width=60% class="faux-table" aria="hidden"></div>
 									<div class="table-wrap table-wrap-custbill">
-										<table id="table_grid1" width="50%" class="main-table small-td">
+										<table id="table_grid1" width="60%" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
-													<th width="10">Sr no.</th>
-													<th width="30">Currency</th>
-													<th width="30">Qty</th>
-													<th width="70">Total Value</th> 
+													<th width="50px">Sr no.</th>
+													<th width="70px">Currency</th>
+													<th width="80px">Qty</th>
+													<th width="80px">Total Value</th> 
 												</tr>
 											</thead>
 											<tbody>
@@ -439,16 +475,30 @@ function selectionCurrency() {
     if(payMode==2)
     	{
     	document.getElementById("checkNo").readOnly=true;
-    	 
+    	document.getElementById("fromdatepicker").readOnly=true;
+    	document.getElementById("checkAmt").readOnly=true;
+    	document.getElementById("bankName").readOnly=true;
     	$("#currencyTable").show();
     	}
-    else
+    else  if(payMode==1)
     	{
     	document.getElementById("checkNo").readOnly=false;
+    	document.getElementById("fromdatepicker").readOnly=false;
+    	document.getElementById("checkAmt").readOnly=false;
+    	document.getElementById("bankName").readOnly=false;
     	 
     	$("#currencyTable").hide();
     	}
-	  
+    else  if(payMode==3)
+    	{
+    	
+    	document.getElementById("checkNo").readOnly=false;
+    	document.getElementById("fromdatepicker").readOnly=false;
+    	document.getElementById("checkAmt").readOnly=false;
+    	document.getElementById("bankName").readOnly=false;
+    	$("#currencyTable").show();
+    	
+    	}
 	 
 
 }

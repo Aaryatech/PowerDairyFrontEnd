@@ -262,13 +262,16 @@
 <script type="text/javascript">
 function onExpireQty(qty,key)
 {
+	var billQty=parseInt($("#billQty"+key).val());
+	var expireQty=parseInt($("#expireQty"+key).val());
+	var leakageQty=parseInt($("#leakageQty"+key).val());
+	if((expireQty+leakageQty)<=billQty)
+		{
 	var keysize=$("#keySize").val();
 	var rate=parseFloat($("#rate"+key).val());
 	var cgstPer=parseInt($("#cgstPer"+key).val());
 	var sgstPer=parseInt($("#sgstPer"+key).val());
-	var billQty=parseInt($("#billQty"+key).val());
-	var expireQty=parseInt($("#expireQty"+key).val());
-	var leakageQty=parseInt($("#leakageQty"+key).val());
+	
 	
 	var actQty=((expireQty+leakageQty));
 	var taxPer=(cgstPer+sgstPer);
@@ -308,18 +311,28 @@ function onExpireQty(qty,key)
 	
 	$('#grandTotal').html(grandTotal.toFixed(2));
 	document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
-	
+		}
+	else
+		{
+		  alert("Your entered Qty is Greator than Available Qty");
+		  document.getElementById("expireQty"+key).value=0;
+		
+		}
 }
 function onLeakageQty(qty,key)
 {
+	
+	var billQty=parseInt($("#billQty"+key).val());
+	var expireQty=parseInt($("#expireQty"+key).val());
+	var leakageQty=parseInt($("#leakageQty"+key).val());
+	if((expireQty+leakageQty)<=billQty)
+	{
 	var keysize=$("#keySize").val();
 
 	var rate=parseFloat($("#rate"+key).val());
 	var cgstPer=parseInt($("#cgstPer"+key).val());
 	var sgstPer=parseInt($("#sgstPer"+key).val());
-	var billQty=parseInt($("#billQty"+key).val());
-	var expireQty=parseInt($("#expireQty"+key).val());
-	var leakageQty=parseInt($("#leakageQty"+key).val());
+	
 	
 	var actQty=((expireQty+leakageQty));
 	var taxPer=(cgstPer+sgstPer);
@@ -360,7 +373,13 @@ function onLeakageQty(qty,key)
 	$('#grandTotal').html(grandTotal.toFixed(2));
 	document.getElementById("grandTotalText").value=(grandTotal).toFixed(2);
 	
-	
+	}
+	else
+		{
+		  alert("Your entered Qty is Greator than Available Qty");
+		  document.getElementById("leakageQty"+key).value=0;
+		
+		}
  
 }
 (function() {
