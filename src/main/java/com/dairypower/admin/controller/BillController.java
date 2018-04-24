@@ -27,14 +27,18 @@ import com.dairypower.admin.model.BillHeader;
 import com.dairypower.admin.model.BillPayment;
 import com.dairypower.admin.model.CreditNoteDetail;
 import com.dairypower.admin.model.CreditNoteHeader;
+import com.dairypower.admin.model.CrnHeader;
 import com.dairypower.admin.model.Currency;
 import com.dairypower.admin.model.Customer;
 import com.dairypower.admin.model.GetBillHeader;
+import com.dairypower.admin.model.GetBillHeaders;
 import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
+import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.PoDetail;
+import com.dairypower.admin.model.ReturnStockUpdate;
 import com.dairypower.admin.model.RsDetail;
 import com.dairypower.admin.model.StockHeader;
 import com.dairypower.admin.model.TSetting;
@@ -49,6 +53,7 @@ public class BillController {
 	RestTemplate rest = new RestTemplate();
 	List<BillDetail> billDetailList=null;
 	List<GetPoDetail> poDetailList=new ArrayList<GetPoDetail>();
+	List<CrnHeader>  getCrnHeaderList=new ArrayList<CrnHeader>();
 
 	@RequestMapping(value = "/showAllTempAndSettleBill", method = RequestMethod.GET)
 	public ModelAndView showAllTempAndSettleBill(HttpServletRequest request, HttpServletResponse response) {
@@ -64,14 +69,14 @@ public class BillController {
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			map.add("date", sf1.format(date));
 			map.add("isSettled", 0);
-			GetBillHeader[] headerList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeader[].class);
-            ArrayList<GetBillHeader> billHeaderList=new ArrayList<GetBillHeader>(Arrays.asList(headerList));
+			GetBillHeaders[] headerList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeaders[].class);
+            ArrayList<GetBillHeaders> billHeaderList=new ArrayList<GetBillHeaders>(Arrays.asList(headerList));
 			model.addObject("billHeaderList", billHeaderList);
 			 map = new LinkedMultiValueMap<String,Object>();
 			map.add("date", sf1.format(date));
 			map.add("isSettled",1);
-			GetBillHeader[] headersList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeader[].class);
-            ArrayList<GetBillHeader> billHeadersList=new ArrayList<GetBillHeader>(Arrays.asList(headersList));
+			GetBillHeaders[] headersList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeaders[].class);
+            ArrayList<GetBillHeaders> billHeadersList=new ArrayList<GetBillHeaders>(Arrays.asList(headersList));
             model.addObject("billHeadersList", billHeadersList);
             
             map = new LinkedMultiValueMap<String,Object>();
@@ -119,14 +124,14 @@ public class BillController {
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			map.add("date", sf1.format(date1));
 			map.add("isSettled", 0);
-			GetBillHeader[] headerList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeader[].class);
-            ArrayList<GetBillHeader> billHeaderList=new ArrayList<GetBillHeader>(Arrays.asList(headerList));
+			GetBillHeaders[] headerList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeaders[].class);
+            ArrayList<GetBillHeaders> billHeaderList=new ArrayList<GetBillHeaders>(Arrays.asList(headerList));
 			model.addObject("billHeaderList", billHeaderList);
 			 map = new LinkedMultiValueMap<String,Object>();
 			map.add("date", sf1.format(date1));
 			map.add("isSettled",1);
-			GetBillHeader[] headersList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeader[].class);
-            ArrayList<GetBillHeader> billHeadersList=new ArrayList<GetBillHeader>(Arrays.asList(headersList));
+			GetBillHeaders[] headersList =  rest.postForObject(Constants.url + "/getSettledBills",map, GetBillHeaders[].class);
+            ArrayList<GetBillHeaders> billHeadersList=new ArrayList<GetBillHeaders>(Arrays.asList(headersList));
             model.addObject("billHeadersList", billHeadersList);
             
             model.addObject("pending", billHeaderList.size());
@@ -391,7 +396,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		
 		int vehId=Integer.parseInt(request.getParameter("vehId"));
 		System.out.println("vehId"+vehId);
-		
+		int outKm=Integer.parseInt(request.getParameter("vehOutKm"));
 		int cratesIssued=Integer.parseInt(request.getParameter("cratesIssueQty"));
 		
 		int cratesOpnQty=Integer.parseInt(request.getParameter("cratesOpnQty"));
@@ -433,6 +438,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			tVehicleRes.setVehId(vehId);
 			tVehicleRes.setBillTempId(billHeaderRes.getBillTempId());
 			tVehicleRes.setInKms(0);
+			tVehicleRes.setOutKm(outKm);
 			tVehicleRes.setDate(currdDate);
 			tVehicleRes.setDatetime(strDateTime);
 			tVehicleRes.setEntryBy(1);
@@ -553,6 +559,9 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			TSetting tSetting=rest.postForObject(Constants.url + "/getSettingValue",map, TSetting.class);
 			int crnNo=tSetting.getSettingValue()+1;
 		    String strDateTime = sdf.format(date);
+		    List<ReturnStockUpdate> stkUpdateList= new ArrayList<ReturnStockUpdate>();
+		    String poDetailIdList="";
+		    
 			if(!header.getBillDetailList().isEmpty())
 			{
 				boolean flag=false;
@@ -589,6 +598,16 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 					creditNoteDetail.add(creditNoteDetails);
 				}
+				if(returnQty>0)
+				{
+					
+					ReturnStockUpdate stk=new ReturnStockUpdate();
+					stk.setPoDetailId(header.getBillDetailList().get(i).getPoDetailId());
+					poDetailIdList=poDetailIdList+header.getBillDetailList().get(i).getPoDetailId()+",";
+					stk.setReturnQty(returnQty);
+					stkUpdateList.add(stk);
+				}
+				
 			}
 			creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
 
@@ -629,8 +648,12 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 						billPayment.setBillId(billId);
 						billPayment.setCurrId((int)currValue);
 						billPayment.setTranId("0");
+						billPayment.setBankName("");
+						billPayment.setChequeAmt(0);
+						billPayment.setChequeNo("0");
 						billPayment.setQty(qty);
 						billPayment.setTotalAmt(qty*currValue);
+						billPayment.setPayMode(payMode);
 						billPaymentList.add(billPayment);
 					}
 				}
@@ -640,15 +663,69 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			}
 			else if(payMode==1)
 			{
-				String checkNo=request.getParameter("checkNo");
+				String chequeNo=request.getParameter("checkNo");
+				String checkDate=request.getParameter("checkDate");
+
+				float chequeAmt=Float.parseFloat(request.getParameter("checkAmt"));
+				String bankName=request.getParameter("bankName");
 				BillPayment billPayment=new BillPayment();
 				billPayment.setPayId(0);
 				billPayment.setBillId(billId);
 				billPayment.setCurrId(0);
-				billPayment.setTranId(checkNo);
+				billPayment.setTranId("0");
+				billPayment.setChequeNo(chequeNo);
+				billPayment.setBankName(bankName);
+				billPayment.setPayMode(payMode);
+				billPayment.setChequeAmt(chequeAmt);
 				billPayment.setQty(0);
-				billPayment.setTotalAmt(0);
+				billPayment.setTotalAmt(chequeAmt);
+				billPayment.setChequeDate(checkDate);
 				billPaymentList.add(billPayment);
+				
+			}
+			else if(payMode==3)
+			{
+				String chequeNo=request.getParameter("checkNo");
+				String checkDate=request.getParameter("checkDate");
+
+				float chequeAmt=Float.parseFloat(request.getParameter("checkAmt"));
+				String bankName=request.getParameter("bankName");
+				BillPayment billPayment=new BillPayment();
+				billPayment.setPayId(0);
+				billPayment.setBillId(billId);
+				billPayment.setCurrId(0);
+				billPayment.setTranId("0");
+				billPayment.setChequeNo(chequeNo);
+				billPayment.setBankName(bankName);
+				billPayment.setPayMode(payMode);
+				billPayment.setChequeAmt(chequeAmt);
+				billPayment.setChequeDate(checkDate);
+
+				billPayment.setQty(0);
+				billPayment.setTotalAmt(chequeAmt);
+				billPaymentList.add(billPayment);
+				for(int j=0;j<currencyListRes.size();j++)
+				{
+					
+					float currValue=Float.parseFloat(request.getParameter("currValue"+j));
+					int qty=Integer.parseInt(request.getParameter("qty"+j));
+					
+					if(qty>0)
+					{
+						BillPayment billPayment1=new BillPayment();
+						billPayment1.setPayId(0);
+						billPayment1.setBillId(billId);
+						billPayment1.setCurrId((int)currValue);
+						billPayment1.setTranId("0");
+						billPayment1.setBankName("");
+						billPayment1.setChequeAmt(0);
+						billPayment1.setChequeNo("0");
+						billPayment1.setQty(qty);
+						billPayment1.setTotalAmt(qty*currValue);
+						billPayment1.setPayMode(payMode);
+						billPaymentList.add(billPayment1);
+					}
+				}
 				
 			}
 			
@@ -664,6 +741,35 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		BillHeader	billHeaderRes=rest.postForObject(Constants.url+"/saveBill",header,BillHeader.class);
         if(billHeaderRes!=null)
         {
+          if(!stkUpdateList.isEmpty())	
+          {
+        	  
+        	  poDetailIdList=poDetailIdList.substring(0,poDetailIdList.length()-1);
+        	  map= new LinkedMultiValueMap<String,Object>();
+ 		      map.add("poIdList",poDetailIdList);
+        	 PoDetail[] poDetails=rest.postForObject(Constants.url+"/getPoDetailsBalance",map,PoDetail[].class);
+        	  ArrayList<PoDetail> poDetailListRes=new ArrayList<PoDetail>(Arrays.asList(poDetails));
+        	  
+        	  for(int i=0;i<stkUpdateList.size();i++)
+        	  {
+        		  for(int j=0;j<poDetailListRes.size();j++)
+            	  {
+        			  if(stkUpdateList.get(i).getPoDetailId()==poDetailListRes.get(j).getPoDetailId())
+        			  {
+        				  int balance= poDetailListRes.get(j).getBalance();
+        				  poDetailListRes.get(j).setBalance(balance+stkUpdateList.get(i).getReturnQty());
+        			  }
+        			  
+            	  }
+        	  }
+        	  System.err.println("PO Detail List with updated Balance:"+poDetailListRes.toString());
+        	  
+        	  List<PoDetail> poListRes=rest.postForObject(Constants.url+"/updatePoDetailList", poDetailListRes, List.class);
+		    	System.err.println("#########poListRes:@@@@@@"+poListRes.toString());
+        	  
+          }
+        	
+        	
 		Info info = rest.postForObject(Constants.url + "/master/saveCustomer",customer,
 				Info.class);
 		
@@ -820,5 +926,70 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 
 		return model;
 	}
+	@RequestMapping(value = "/creditNotes", method = RequestMethod.GET)
+	public ModelAndView creditNotes(HttpServletRequest request, HttpServletResponse response) {
 
+		ModelAndView model = new ModelAndView("bill/creditNotes");
+		try
+		{
+			 Date date = new Date(); 
+			 SimpleDateFormat show = new SimpleDateFormat("dd-MM-yyyy");
+			 SimpleDateFormat consume = new SimpleDateFormat("yyyy-MM-dd");
+			 
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+			 map.add("fromDate",consume.format(date));
+			 map.add("toDate",consume.format(date));
+			  getCrnHeaderList =  rest.postForObject(Constants.url + "/getAllCrn",map, List .class);
+			 model.addObject("fromDate", show.format(date));
+			 model.addObject("toDate", show.format(date));
+			 model.addObject("crnHeaderList", getCrnHeaderList);
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+	@RequestMapping(value = "/getCrnbetweenDate", method = RequestMethod.GET)
+	@ResponseBody
+	public List<CrnHeader> getCrnbetweenDate(HttpServletRequest request, HttpServletResponse response) {
+
+	
+		try
+		{
+			String fromDate = request.getParameter("fromDate");
+			String toDate = request.getParameter("toDate");
+			
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>(); 
+			 map.add("fromDate",DateConvertor.convertToYMD(fromDate));
+			 map.add("toDate",DateConvertor.convertToYMD(toDate));
+			 getCrnHeaderList =  rest.postForObject(Constants.url + "/getAllCrn",map, List .class);
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return getCrnHeaderList;
+	}
+	@RequestMapping(value = "/crnDetails/{crnHeaderId}", method = RequestMethod.GET)
+	public ModelAndView crnDetails(@PathVariable int crnHeaderId, HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("bill/creditNoteDetails");
+		try
+		{
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+			 map.add("crnHeaderId",crnHeaderId); 
+			  CrnHeader   crnHeaderRes=  rest.postForObject(Constants.url + "/getCrnById",map, CrnHeader.class);
+			
+			 model.addObject("crnHeader",crnHeaderRes); 
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
+	}
 }

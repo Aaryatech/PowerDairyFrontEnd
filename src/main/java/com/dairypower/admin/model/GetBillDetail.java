@@ -28,6 +28,18 @@ public class GetBillDetail {
 	private float sgstPer;
 	
 	private float igstPer;
+	
+	private int poDetailId;
+	
+	
+
+	public int getPoDetailId() {
+		return poDetailId;
+	}
+
+	public void setPoDetailId(int poDetailId) {
+		this.poDetailId = poDetailId;
+	}
 
 	public int getBillDetailId() {
 		return billDetailId;

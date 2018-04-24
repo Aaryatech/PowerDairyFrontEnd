@@ -12,6 +12,8 @@ public class TVehicle{
 	
 	private int inKms;
 	
+	private int outKm;
+	
 	private String remark;
 	
 	private int entryBy;
@@ -21,6 +23,16 @@ public class TVehicle{
 	private String datetime;
 	
 	private String driverName;
+
+	
+	
+	public int getOutKm() {
+		return outKm;
+	}
+
+	public void setOutKm(int outKm) {
+		this.outKm = outKm;
+	}
 
 	public int gettVehId() {
 		return tVehId;

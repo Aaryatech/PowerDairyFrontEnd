@@ -1,13 +1,22 @@
 package com.dairypower.admin.model;
 
 
-
 public class BillPayment{
 	
 	private int payId;
 	
 	private int billId;
 	
+	private String bankName;
+	
+	private String chequeNo;
+	
+	private String chequeDate;
+	
+	private float chequeAmt;
+	
+	private int payMode;
+
 	private String tranId;
 	
 	private int currId;
@@ -15,6 +24,47 @@ public class BillPayment{
 	private int qty;
 	
 	private float totalAmt;
+
+	
+	public String getChequeDate() {
+		return chequeDate;
+	}
+
+	public void setChequeDate(String chequeDate) {
+		this.chequeDate = chequeDate;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public String getChequeNo() {
+		return chequeNo;
+	}
+
+	public float getChequeAmt() {
+		return chequeAmt;
+	}
+
+	public int getPayMode() {
+		return payMode;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public void setChequeNo(String chequeNo) {
+		this.chequeNo = chequeNo;
+	}
+
+	public void setChequeAmt(float chequeAmt) {
+		this.chequeAmt = chequeAmt;
+	}
+
+	public void setPayMode(int payMode) {
+		this.payMode = payMode;
+	}
 
 	public int getPayId() {
 		return payId;
@@ -66,10 +116,10 @@ public class BillPayment{
 
 	@Override
 	public String toString() {
-		return "BillPayment [payId=" + payId + ", billId=" + billId + ", tranId=" + tranId + ", currId=" + currId
-				+ ", qty=" + qty + ", totalAmt=" + totalAmt + "]";
+		return "BillPayment [payId=" + payId + ", billId=" + billId + ", bankName=" + bankName + ", chequeNo="
+				+ chequeNo + ", chequeAmt=" + chequeAmt + ", payMode=" + payMode + ", tranId=" + tranId + ", currId="
+				+ currId + ", qty=" + qty + ", totalAmt=" + totalAmt + "]";
 	}
-	
-	
 
+	
 }
