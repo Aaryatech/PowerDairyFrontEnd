@@ -1,6 +1,7 @@
 package com.dairypower.admin.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +22,10 @@ import com.dairypower.admin.common.DateConvertor;
 import com.dairypower.admin.model.BillWisePurchaseReport;
 import com.dairypower.admin.model.CustomerWiseConReport;
 import com.dairypower.admin.model.DateWisePurchaseReport;
+import com.dairypower.admin.model.ExportToExcel;
 import com.dairypower.admin.model.ItemWisePurchaseReport;
 import com.dairypower.admin.model.VehicleWiseReport;
+import com.dairypower.admin.model.Vehicle;
 
 @Controller
 public class ReportController {
@@ -31,12 +34,6 @@ public class ReportController {
 	public ModelAndView viewBill(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/billWisePurchaseReport");
-		try {
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 		return model;
 
 	}
@@ -45,12 +42,7 @@ public class ReportController {
 	public ModelAndView viewDate(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/dateWisePurchaseReport");
-		try {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 		return model;
 	}
 
@@ -58,12 +50,7 @@ public class ReportController {
 	public ModelAndView viewItem(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/itemWisePurchaseReport");
-		try {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 		return model;
 	}
 
@@ -71,24 +58,24 @@ public class ReportController {
 	public ModelAndView viewCustomer(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/customerWiseConsumptionReport");
-		try {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 		return model;
 	}
 
 	@RequestMapping(value = "/viewVehicleWiseReport", method = RequestMethod.GET)
-	public ModelAndView viewVehicle(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView Vehicle(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/viewVehicleWiseReport");
+		RestTemplate restTemplate = new RestTemplate();
 		try {
+
+			List<Vehicle> vehicleList = restTemplate.getForObject(Constants.url + "/master/getAllVehicles", List.class);
+			System.out.println("Assign Project" + vehicleList.toString());
+			System.out.println("vehicleList " + vehicleList);
+			model.addObject("vehicleList", vehicleList);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		}
 		return model;
 	}
@@ -98,7 +85,7 @@ public class ReportController {
 	@RequestMapping(value = "/findBillWisePurchase", method = RequestMethod.GET)
 	public @ResponseBody List<BillWisePurchaseReport> getBillWisePurchase(HttpServletRequest request,
 			HttpServletResponse response) {
-		List<BillWisePurchaseReport> billWisePurchaseReport = null;
+		List<BillWisePurchaseReport> billWisePurchaseReportList = null;
 		try {
 			System.out.println("in method");
 			String fromDate = request.getParameter("fromDate");
@@ -114,16 +101,57 @@ public class ReportController {
 			map.add("fromDate", DateConvertor.convertToYMD(fromDate));
 			map.add("toDate", DateConvertor.convertToYMD(toDate));
 
-			billWisePurchaseReport = restTemplate.postForObject(Constants.url + "Test/getBillwisePurchase", map,
-					List.class);
+			BillWisePurchaseReport[] billWisePurchaseList = restTemplate.postForObject(Constants.url + "Test/getBillwisePurchase", map,
+					BillWisePurchaseReport[].class);
 
-			System.out.println("billWisePurchaseReport" + billWisePurchaseReport.toString());
+			 billWisePurchaseReportList=new ArrayList<BillWisePurchaseReport>(Arrays.asList(billWisePurchaseList));
+			System.out.println("billWisePurchaseReport" + billWisePurchaseReportList.toString());
+			
+			
+			// export to excel
+
+			List<ExportToExcel> exportToExcelList = new ArrayList<ExportToExcel>();
+
+			ExportToExcel expoExcel = new ExportToExcel();
+			List<String> rowData = new ArrayList<String>();
+
+
+			 rowData.add("Sr. No"); 
+			rowData.add("PO No.");
+			rowData.add("PO Date");
+			rowData.add("Total Amt");
+			rowData.add("Crates Received");
+			rowData.add("Po Remark");
+			
+
+			expoExcel.setRowData(rowData);
+			exportToExcelList.add(expoExcel);
+			int cnt=1;
+			for (int i = 0; i < billWisePurchaseReportList.size(); i++) {
+				expoExcel = new ExportToExcel();
+				rowData = new ArrayList<String>();
+                cnt=cnt+i;
+				 rowData.add(""+(cnt)); 
+				rowData.add("" + billWisePurchaseReportList.get(i).getPoId());
+				rowData.add("" + billWisePurchaseReportList.get(i).getPoDate());
+				rowData.add("" + billWisePurchaseReportList.get(i).getPoTotal());
+				rowData.add("" + billWisePurchaseReportList.get(i).getCratesReceivedQty());
+				rowData.add("" + billWisePurchaseReportList.get(i).getPoRemarks());
+			
+				expoExcel.setRowData(rowData);
+				exportToExcelList.add(expoExcel);
+
+			}
+
+			HttpSession session = request.getSession();
+			session.setAttribute("exportExcelList", exportToExcelList);
+			session.setAttribute("excelName", "BillwisePurchaseList");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
 
-		return billWisePurchaseReport;
+		return billWisePurchaseReportList;
 
 	}
 
@@ -161,7 +189,7 @@ public class ReportController {
 
 	}
 
-	// ----------------------------------Bill Wise Purchase
+	// ----------------------------------Item Wise Purchase
 	// Report---------------------------------------------
 	@RequestMapping(value = "/findItemWisePurchase", method = RequestMethod.GET)
 	public @ResponseBody List<ItemWisePurchaseReport> getItemWisePurchase(HttpServletRequest request,
@@ -195,12 +223,12 @@ public class ReportController {
 
 	}
 
-	// ----------------------------------Bill Wise Purchase
+	// ---------------------------------Customer Wise Consumption Report
 	// Report---------------------------------------------
 	@RequestMapping(value = "/findCustomerWiseConsumption", method = RequestMethod.GET)
 	public @ResponseBody List<CustomerWiseConReport> getCustomerWiseConsumption(HttpServletRequest request,
 			HttpServletResponse response) {
-		List<CustomerWiseConReport> customerWiseConReport = null;
+		List<CustomerWiseConReport> customerWiseConReportList = null;
 		try {
 			System.out.println("in method");
 			String fromDate = request.getParameter("fromDate");
@@ -216,20 +244,72 @@ public class ReportController {
 			map.add("fromDate", DateConvertor.convertToYMD(fromDate));
 			map.add("toDate", DateConvertor.convertToYMD(toDate));
 
-			customerWiseConReport = restTemplate.postForObject(Constants.url + "Test/getAllCustomerwiseReport", map,
-					List.class);
+			CustomerWiseConReport[] cutwiseCons = restTemplate.postForObject(Constants.url + "Test/getAllCustomerwiseReport", map,
+					CustomerWiseConReport[].class);
+			
 
-			System.out.println("customerWiseConReport" + customerWiseConReport.toString());
+			customerWiseConReportList=new ArrayList<CustomerWiseConReport>(Arrays.asList(cutwiseCons));
+			
+			
+System.out.println("new List cust wise consumption " +customerWiseConReportList.toString());
+			// export to excel
+
+			List<ExportToExcel> exportToExcelList = new ArrayList<ExportToExcel>();
+
+			ExportToExcel expoExcel = new ExportToExcel();
+			List<String> rowData = new ArrayList<String>();
+			
+			
+			
+			
+			 rowData.add("Sr. No"); 
+				rowData.add("Customer Name");
+				rowData.add("Bill Amount");
+				rowData.add("Received Amount");
+				rowData.add("OS Amount");
+				rowData.add("Payment Mode");
+				rowData.add("Crates OP");
+				rowData.add("Crates Issued");
+				rowData.add("Crates CL");
+				rowData.add("Crates OS");
+				rowData.add("Out Km");
+				
+
+
+			expoExcel.setRowData(rowData);
+			exportToExcelList.add(expoExcel);
+			int cnt=1;
+			for (int i = 0; i < customerWiseConReportList.size(); i++) {
+				expoExcel = new ExportToExcel();
+				rowData = new ArrayList<String>();
+                cnt=cnt+i;
+				 rowData.add(""+(cnt)); 
+				rowData.add("" + customerWiseConReportList.get(i).getCustName());
+				rowData.add("" + customerWiseConReportList.get(i).getGrandTotal());
+				rowData.add("" + customerWiseConReportList.get(i).getCollectedAmt());
+				rowData.add("" + customerWiseConReportList.get(i).getOutstandingAmt());
+				rowData.add("" + customerWiseConReportList.get(i).getCollectionPaymode());
+			
+				expoExcel.setRowData(rowData);
+				exportToExcelList.add(expoExcel);
+
+			}
+
+			HttpSession session = request.getSession();
+			session.setAttribute("exportExcelList", exportToExcelList);
+			session.setAttribute("excelName", "BillwisePurchaseList");
+
+			System.out.println("customerWiseConReportList" + customerWiseConReportList.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
 
-		return customerWiseConReport;
+		return customerWiseConReportList;
 
 	}
 
-	// ----------------------------------Bill Wise Purchase Report--------
+	// ----------------------------------Vehicle Wise Report--------
 	@RequestMapping(value = "/findVehicleWiseWiseReport", method = RequestMethod.GET)
 	public @ResponseBody List<VehicleWiseReport> getVehicleWise(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -242,7 +322,7 @@ public class ReportController {
 			String toDate = request.getParameter("toDate");
 			System.out.println("toDate" + toDate);
 
-			String tVehId = request.getParameter("tVehId");
+			String tVehId = request.getParameter("vehId");
 			System.out.println("tVehId" + tVehId);
 
 			RestTemplate restTemplate = new RestTemplate();
@@ -258,6 +338,10 @@ public class ReportController {
 					List.class);
 
 			System.out.println("vehicleWiseReport" + vehicleWiseReport.toString());
+			
+			
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
