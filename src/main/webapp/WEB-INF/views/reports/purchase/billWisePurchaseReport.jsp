@@ -150,11 +150,11 @@ jQuery(document).ready(function(){
 
 										<th class="col-sm-1">Sr.No.</th>
 
-										<th class="col-sm-1">Invoice No</th>
-										<th class="col-sm-2">Bill Date</th>
+										<th class="col-sm-1">Po No</th>
+										<th class="col-sm-2">PO Date</th>
 										<th class="col-md-2">Total Amt</th>
 										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Po_Remark</th>
+										<th class="col-md-1">Po Remark</th>
 
 
 									</tr>
@@ -170,11 +170,11 @@ jQuery(document).ready(function(){
 
 										<th class="col-sm-1">Sr.No.</th>
 
-										<th class="col-sm-1">Invoice No</th>
-										<th class="col-sm-2">Bill Date</th>
+										<th class="col-sm-1">Po No</th>
+										<th class="col-sm-2">PO Date</th>
 										<th class="col-md-2">Total Amt</th>
 										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Po_Remark</th>
+										<th class="col-md-1">Po Remark</th>
 
 									</tr>
 
@@ -231,8 +231,10 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
-alert("Hi");
-        $.getJSON('${getBillWisePurchase}',
+			alert("Hi");
+			$
+					.getJSON(
+							'${getBillWisePurchase}',
 							{
 
 								fromDate : fromDate,
@@ -257,7 +259,7 @@ alert("Hi");
 												function(key,
 														billWisePurchaseData) {
 
-											  	document
+													document
 															.getElementById("expExcel").disabled = false;
 													document
 															.getElementById('range').style.display = 'block';
@@ -265,15 +267,15 @@ alert("Hi");
 													var partyname = "GFPL";
 													var gstNo = "#012";
 
- 	var tr = $('<tr></tr>');
+													var tr = $('<tr></tr>');
 
 													tr
 															.append($(
 																	'<td class="col-md-1"></td>')
 																	.html(
 																			key + 1));
-												
-												 	tr
+
+													tr
 															.append($(
 																	'<td class="col-md-1"></td>')
 																	.html(
@@ -285,29 +287,25 @@ alert("Hi");
 																	.html(
 																			billWisePurchaseData.poDate));
 
-													
-
-															tr
+													tr
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.poTotal)
-																					);
-															tr
+																			billWisePurchaseData.poTotal));
+													tr
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
 
-																	tr
+													tr
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.poRemarks));
-																			
 
 													$('#table_grid tbody')
-															.append(tr);  
+															.append(tr);
 
 												});
 							}

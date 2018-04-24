@@ -133,12 +133,15 @@ jQuery(document).ready(function(){
 					</div>
 					 -->
 
-					<select name="vehicleId" class="form-control"
-						placeholder="Vehicle Name" data-rule-required="true">
+					<select name="vehId" class="form-control"
+						placeholder="Vehicle Name" data-rule-required="true" id="vehId"
+						>
 						<option value="">Select Vehicle</option>
-						<c:forEach items="${vehicleInfo}" var="vehicle" varStatus="count">
-							<option value="${employee.empId}"><c:out
-									value="${employee.empName}" /></option>
+						<option value="0"><c:out
+									value="All" /></option>
+						<c:forEach items="${vehicleList}" var="vehicle" varStatus="count">
+							<option value="${vehicle.vehId}"><c:out
+									value="${vehicle.vehName}" /></option>
 						</c:forEach>
 					</select>
 
@@ -171,7 +174,7 @@ jQuery(document).ready(function(){
 										<th class="col-md-2">OP KM</th>
 										<th class="col-md-1">CL KM</th>
 										<th class="col-md-1">Total KM</th>
-										<th class="col-md-1">Crates OS</th>
+
 
 
 									</tr>
@@ -193,7 +196,7 @@ jQuery(document).ready(function(){
 										<th class="col-md-2">OP KM</th>
 										<th class="col-md-1">CL KM</th>
 										<th class="col-md-1">Total KM</th>
-										<th class="col-md-1">Crates OS</th>
+
 
 
 
@@ -252,6 +255,9 @@ jQuery(document).ready(function(){
 			var fromDate = document.getElementById("fromdatepicker").value;
 
 			var toDate = document.getElementById("todatepicker").value;
+			
+			
+			var vehId = document.getElementById("vehId").value;
 
 			$
 					.getJSON(
@@ -260,6 +266,7 @@ jQuery(document).ready(function(){
 
 								fromDate : fromDate,
 								toDate : toDate,
+								vehId : vehId,
 								ajax : 'true',
 
 							},
@@ -324,7 +331,7 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.poTotal));
+																			billWisePurchaseData.totalKm));
 
 													$('#table_grid tbody')
 															.append(tr);

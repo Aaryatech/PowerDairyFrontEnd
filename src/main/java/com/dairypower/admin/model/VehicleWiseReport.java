@@ -13,6 +13,8 @@ private int tVehId;
 	private int inKms;
 
 	private int outKm;
+	
+	private int totalKm;
 
 	private String custName;
 
@@ -63,12 +65,22 @@ private int tVehId;
 	public void setCustName(String custName) {
 		this.custName = custName;
 	}
+	
+	
+
+	public int getTotalKm() {
+		return totalKm;
+	}
+
+	public void setTotalKm(int totalKm) {
+		this.totalKm = totalKm;
+	}
 
 	@Override
 	public String toString() {
-		return "VehiclewiseReport [vehId=" + vehId + ", tVehId=" + tVehId + ", date=" + date + ", inKms=" + inKms
-				+ ", outKm=" + outKm + ", custName=" + custName + "]";
+		return "VehicleWiseReport [tVehId=" + tVehId + ", vehId=" + vehId + ", date=" + date + ", inKms=" + inKms
+				+ ", outKm=" + outKm + ", totalKm=" + totalKm + ", custName=" + custName + "]";
 	}
 
-
+	
 }
