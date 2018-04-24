@@ -151,7 +151,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="cratesIssueQty" class="form-control"
-								placeholder="Issue Qty" name="cratesIssueQty" style="text-align: left;"  type="number" min="0" onchange="checkCratesStock(this.value)" required>
+								placeholder="Issue Qty" name="cratesIssueQty" style="text-align: left;"  type="number" min="0" onchange="checkCratesStock(this.value)" value="0" required>
 
 						</div>
 					 
@@ -679,9 +679,9 @@ function deleteItemDetail(index) {
 function saveTempBill()
 {
 	var cratesCap=parseInt($("#cratesCap").val());
-	var custCap=$("#custCap").val();
-	var custId=$("#custId").val();
-	var vehId=$("#vehId").val();
+	var custCap=parseInt($("#custCap").val());
+	var custId=parseInt($("#custId").val());
+	var vehId=parseInt($("#vehId").val());
 	var cratesIssueQty=parseInt($("#cratesIssueQty").val());
 	var cratesOpnQty=parseInt($("#cratesOpnQty").val());
 	var totalCrates=cratesIssueQty+cratesOpnQty;

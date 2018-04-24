@@ -324,6 +324,8 @@
 							<div class="col1title" align="left">Payment Mode*: </div>
 						</div>
 						<div class="col-md-3">
+						<c:if test="${billHeader.collectionPaymode==0}">NA</c:if>
+						
 						<c:if test="${billHeader.collectionPaymode==1}">Check</c:if>
 	                   <c:if test="${billHeader.collectionPaymode==2}">Cash</c:if>
 		              <c:if test="${billHeader.collectionPaymode==3}">Cash and Check Both</c:if>

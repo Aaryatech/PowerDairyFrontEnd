@@ -632,6 +632,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			header.setGrandTotal(grandTotal);
 			header.setIsSettled(1);
 			List<BillPayment> billPaymentList=new ArrayList<BillPayment>();
+			
 			if(payMode==2)
 			{
 				

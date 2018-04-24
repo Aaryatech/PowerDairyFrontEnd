@@ -304,7 +304,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="vehInKm" class="form-control" style="text-align: right;"
-								placeholder="Vehicle In KM" name="vehInKm"   type="number" value="0" required>
+								placeholder="Vehicle In KM" name="vehInKm"   type="number"  required>
 
 						</div>
 						
@@ -315,7 +315,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="remark" class="form-control" style="text-align: left;"
-								placeholder="Remark" name="remark"   type="text" required>
+								placeholder="Remark" name="remark"   type="text" value="NA">
  
 					</div>
 						<div class="col-md-1"> 
@@ -331,7 +331,8 @@
 						</div>
 						<div class="col-md-3">
 							<select class="form-control" onchange="selectionCurrency()" data-live-search="true" title="Please Select" 
-							name="payMode" id="payMode" required> 
+							name="payMode" id="payMode">
+							<option value="0">NA</option>  
 							<option value="1">Check</option> 
 							<option value="2">Cash</option>
 							<option value="3">Check And Cash Both</option>
@@ -347,7 +348,7 @@
 								<div class="col-md-3">
 								 
 									 <input id="checkNo" class="form-control"
-										placeholder="Check No" name="checkNo" style="text-align: left;" value="0"  type="number" required> 
+										placeholder="Check No" name="checkNo" style="text-align: left;" value="0"  type="number" required readOnly> 
 		
 								</div>
 								 
@@ -360,7 +361,7 @@
 								<div class="col-md-3">
 								 
 									 <input id="checkAmt" class="form-control"
-										placeholder="Check Amount" name="checkAmt" type="text"  style="text-align: left;" value="0" required> 
+										placeholder="Check Amount" name="checkAmt" type="text"  style="text-align: left;" value="0" required readOnly> 
 		
 								</div>
 								<div class="col-md-1"> 
@@ -371,7 +372,7 @@
 								<div class="col-md-3">
 								 
 									 <input id="fromdatepicker" class="form-control"
-										placeholder="Check Date" name="checkDate" type="text"  style="text-align: left;"  required> 
+										placeholder="Check Date" name="checkDate" type="text"  style="text-align: left;"  required readOnly> 
 		
 								</div>
 						
@@ -384,7 +385,7 @@
 								<div class="col-md-3">
 								 
 									 <input id="bankName" class="form-control"
-										placeholder="Bank Name" name="bankName" style="text-align: left;"  required> 
+										placeholder="Bank Name" name="bankName" style="text-align: left;"  required readOnly> 
 		
 								</div>	
 								</div>	
@@ -472,7 +473,16 @@ function selectionCurrency() {
 //alert("ala");
 	var payMode = document.getElementById("payMode").value;
 	//alert("payMode" + payMode);
-    if(payMode==2)
+	  if(payMode==0)
+    	{
+		  document.getElementById("checkNo").readOnly=true;
+	    	document.getElementById("fromdatepicker").readOnly=true;
+	    	document.getElementById("checkAmt").readOnly=true;
+	    	document.getElementById("bankName").readOnly=true;
+	    	 
+	    	$("#currencyTable").hide();
+    	}
+	  else if(payMode==2)
     	{
     	document.getElementById("checkNo").readOnly=true;
     	document.getElementById("fromdatepicker").readOnly=true;
