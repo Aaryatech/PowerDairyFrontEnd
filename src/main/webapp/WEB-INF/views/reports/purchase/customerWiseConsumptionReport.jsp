@@ -132,7 +132,7 @@ jQuery(document).ready(function(){
 						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
  --%>
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
-							onclick="genPdf()">PDF</button>
+							onclick="genPdf()" disabled="disabled">PDF</button>
 
 					</div>
 
@@ -262,7 +262,9 @@ jQuery(document).ready(function(){
 
 								if (data == "") {
 									document.getElementById("expExcel").disabled = true;
+									document.getElementById("PDFButton").disabled = true;
 								}
+								document.getElementById("PDFButton").disabled = false;
 
 								$('#table_grid td').remove();
 
@@ -340,7 +342,7 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.crates_received));
+																			billWisePurchaseData.cratesReceived));
 
 													tr
 															.append($(
@@ -405,14 +407,13 @@ jQuery(document).ready(function(){
 </script>
 <script type="text/javascript">
 	function genPdf() {
+		var fromDate = $("#fromdatepicker").val();
+		var toDate = $("#todatepicker").val();
 		var isValid = validate();
 		if (isValid == true) {
-			var fromDate = document.getElementById("fromdatepicker").value;
-			var toDate = document.getElementById("todatepicker").value;
-			var frId = document.getElementById("frId").value;
+		
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showPurchaseBillwiseReportPdf/'
-							+ fromDate + '/' + toDate + '/' + frId);
+					.open('${pageContext.request.contextPath}/showPurchaseCustomerwiseConsumptionReportPdf/'+fromDate+'/'+toDate);
 		}
 	}
 </script>

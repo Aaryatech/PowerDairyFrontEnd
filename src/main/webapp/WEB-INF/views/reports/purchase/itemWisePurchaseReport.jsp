@@ -105,7 +105,7 @@ jQuery(document).ready(function(){
 
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="pageTitle">Datewise Purchase Report</h2>
+						<h2 class="pageTitle">Itemwise Purchase Report</h2>
 					</div>
 				</div>
 
@@ -241,7 +241,10 @@ jQuery(document).ready(function(){
 
 				if (data == "") {
 					document.getElementById("expExcel").disabled = true;
+					document.getElementById("PDFButton").disabled = true;
 				}
+				document.getElementById("PDFButton").disabled = false;
+
 
 				$('#table_grid td').remove();
 
@@ -329,8 +332,8 @@ jQuery(document).ready(function(){
 			var toDate = document.getElementById("todatepicker").value;
 			var frId = document.getElementById("frId").value;
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showPurchaseBillwiseReportPdf/'
-							+ fromDate + '/' + toDate + '/' + frId);
+					.open('${pageContext.request.contextPath}/showPurchaseItemwiseReportPdf/'
+							+ fromDate + '/' + toDate);
 		}
 	}
 </script>

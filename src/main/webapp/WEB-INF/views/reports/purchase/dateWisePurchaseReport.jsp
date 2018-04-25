@@ -150,7 +150,7 @@ jQuery(document).ready(function(){
 
 										<th class="col-sm-1">Sr.No.</th>
 
-										<th class="col-sm-1">Invoice No</th>
+										<th class="col-sm-1">PO No</th>
 										<th class="col-sm-2">PO Date</th>
 										<th class="col-md-2">PO Day</th>
 										<th class="col-md-1">Total Amount</th>
@@ -169,7 +169,7 @@ jQuery(document).ready(function(){
 									<tr class="bgpink">
 
 										<th class="col-sm-1">Sr.No.</th>
-										<th class="col-sm-1">Invoice No</th>
+										<th class="col-sm-1">PO No</th>
 										<th class="col-sm-2">PO Date</th>
 										<th class="col-md-2">PO Day</th>
 										<th class="col-md-1">Total Amount</th>
@@ -221,8 +221,6 @@ jQuery(document).ready(function(){
 
 <script type="text/javascript">
 	function dateWisePurchaseReport() {
-		
-		
 
 		var isValid = validate();
 
@@ -230,7 +228,7 @@ jQuery(document).ready(function(){
 
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
-			
+
 			var toDate = document.getElementById("todatepicker").value;
 
 			$
@@ -245,13 +243,14 @@ jQuery(document).ready(function(){
 							},
 							function(data) {
 
-							 	$('#loader').hide();
+								$('#loader').hide();
 								var len = data.length;
 
 								if (data == "") {
 									document.getElementById("expExcel").disabled = true;
+									document.getElementById("PDFButton").disabled = true;
 								}
-
+								document.getElementById("PDFButton").disabled = false;
 								$('#table_grid td').remove();
 
 								$
@@ -278,7 +277,7 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"></td>')
+																	'<td class="col-md-1" style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poHeaderId));
 
@@ -298,17 +297,17 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.cratesReceivedQty));
+																			billWisePurchaseData.poTotal));
 
 													tr
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.poTotal));
+																			billWisePurchaseData.cratesReceivedQty));
 
 													$('#table_grid tbody')
 															.append(tr);
- 
+
 												});
 							}
 
@@ -364,14 +363,16 @@ jQuery(document).ready(function(){
 </script>
 <script type="text/javascript">
 	function genPdf() {
+		var fromDate = $("#fromdatepicker").val();
+		var toDate = $("#todatepicker").val();
 		var isValid = validate();
 		if (isValid == true) {
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
 			var frId = document.getElementById("frId").value;
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showPurchaseBillwiseReportPdf/'
-							+ fromDate + '/' + toDate + '/' + frId);
+					.open('${pageContext.request.contextPath}/showPurchaseDatewiseReportPdf/'
+							+ fromDate + '/' + toDate);
 		}
 	}
 </script>

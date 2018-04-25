@@ -105,7 +105,7 @@ jQuery(document).ready(function(){
 
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="pageTitle">Datewise Purchase Report</h2>
+						<h2 class="pageTitle">Vehiclewise Purchase Report</h2>
 					</div>
 				</div>
 
@@ -144,6 +144,21 @@ jQuery(document).ready(function(){
 									value="${vehicle.vehName}" /></option>
 						</c:forEach>
 					</select>
+					
+					
+					<!-- <label class="col-sm-3 col-lg-2 control-label">Custom Dropdown Multiple Select</label>
+                                      <div class="col-sm-9 col-lg-10 controls">
+                                         <select data-placeholder="Your Favorite Football Teams" class="form-control chosen" multiple="multiple" tabindex="6">
+                                            <option value=""> </option>
+                                               <option>Dallas Cowboys</option>
+                                               <option>New York Giants</option>
+                                               <option>Philadelphia Eagles</option>
+                                               <option>Washington Redskins</option>
+                                            </optgroup>
+                                            
+                                         </select>
+                                      </div> -->
+					
 
 					<div class="col-md-2">
 						<button class="btn search_btn pull-left"
@@ -277,7 +292,10 @@ jQuery(document).ready(function(){
 
 								if (data == "") {
 									document.getElementById("expExcel").disabled = true;
+									document.getElementById("PDFButton").disabled = true;
 								}
+								document.getElementById("PDFButton").disabled = false;
+
 
 								$('#table_grid td').remove();
 
@@ -397,7 +415,7 @@ jQuery(document).ready(function(){
 			var toDate = document.getElementById("todatepicker").value;
 			var frId = document.getElementById("frId").value;
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showPurchaseBillwiseReportPdf/'
+					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showVehiclewiseReportPdf/'
 							+ fromDate + '/' + toDate + '/' + frId);
 		}
 	}

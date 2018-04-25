@@ -128,7 +128,7 @@ jQuery(document).ready(function(){
 						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
  --%>
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
-							onclick="genPdf()">PDF</button>
+							onclick="genPdf()" disabled="disabled">PDF</button>
 
 					</div>
 
@@ -154,7 +154,7 @@ jQuery(document).ready(function(){
 										<th class="col-md-1">Extra No</th>
 										<th class="col-md-1">Leakage Qty</th>
 										<th class="col-md-1">User</th>
-										
+
 										<th class="col-md-1">Remark</th>
 
 
@@ -165,11 +165,11 @@ jQuery(document).ready(function(){
 							</table>
 						</div>
 						<div class="table-wrap">
-							<table id="table_grid" class="main-table" >
+							<table id="table_grid" class="main-table">
 								<thead>
 									<tr class="bgpink">
 
-											<th class="col-sm-1">Sr.No.</th>
+										<th class="col-sm-1">Sr.No.</th>
 										<th class="col-md-1">PO Date</th>
 
 										<th class="col-md-1">PO No</th>
@@ -179,7 +179,7 @@ jQuery(document).ready(function(){
 										<th class="col-md-1">Extra No</th>
 										<th class="col-md-1">Leakage Qty</th>
 										<th class="col-md-1">User</th>
-										
+
 										<th class="col-md-1">Remark</th>
 
 									</tr>
@@ -237,7 +237,7 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
-			alert("Hi");
+		
 			$
 					.getJSON(
 							'${getBillWisePurchase}',
@@ -255,7 +255,9 @@ jQuery(document).ready(function(){
 
 								if (data == "") {
 									document.getElementById("expExcel").disabled = true;
+									document.getElementById("PDFButton").disabled = true;
 								}
+								document.getElementById("PDFButton").disabled = false;
 
 								$('#table_grid td').remove();
 
@@ -267,6 +269,7 @@ jQuery(document).ready(function(){
 
 													document
 															.getElementById("expExcel").disabled = false;
+													document.getElementById("PDFButton").disabled = false;
 													document
 															.getElementById('range').style.display = 'block';
 
@@ -388,12 +391,12 @@ jQuery(document).ready(function(){
 </script>
 <script type="text/javascript">
 	function genPdf() {
-		var isValid = validate();
-		if (isValid == true) {
+		var fromDate = document.getElementById("fromdatepicker").value;
+		var toDate = document.getElementById("todatepicker").value;
 		
 			window
-					.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/');
-		}
+					.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/'+ fromDate + '/' + toDate');
+		
 	}
 </script>
 </body>
