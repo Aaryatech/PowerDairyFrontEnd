@@ -49,7 +49,7 @@
                 	</div> </a>
                 	<ul class="dropdown">
                        
-						<li><a href="${pageContext.request.contextPath}/showeditprofile">Edit Profile</a></li>
+						<li><a href="${pageContext.request.contextPath}/addUser">Edit Profile</a></li>
 						<li><a href="${pageContext.request.contextPath}/logout">Log out</a></li>
 					</ul>
                 </li>

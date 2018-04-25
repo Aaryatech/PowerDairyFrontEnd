@@ -66,8 +66,9 @@ public class StockController {
 				StockDetail[] itemStockDetail = rest.postForObject(Constants.url + "/getStockDetail",map,
 						StockDetail[].class);
 				stockDetailList = new ArrayList<StockDetail>(Arrays.asList(itemStockDetail));
-				 
-				date = stockHeader.getDate();
+				SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+				SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
+				date = sf.format(finalDate.parse(stockHeader.getDate()));
 				cratesOpn = stockHeader.getCratesOpQty();
 			}
 			else
@@ -102,7 +103,8 @@ public class StockController {
 	@RequestMapping(value = "/submitStock", method = RequestMethod.POST)
 	public String submitStock(HttpServletRequest request, HttpServletResponse response) {
 
-		 
+		SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 		RestTemplate rest = new RestTemplate();
 		try {
 			 int cratesOpn = Integer.parseInt(request.getParameter("cratesOpn"));
@@ -127,7 +129,7 @@ public class StockController {
 			 {
 				 
 				 stockHeader = new StockHeader();
-				 stockHeader.setDate(request.getParameter("date"));
+				 stockHeader.setDate(finalDate.format(sf.parse(request.getParameter("date"))));
 				 stockHeader.setStockDetailList(stockDetailList); 
 				 stockHeader.setCratesOpQty(cratesOpn); 
 				 StockHeader insert = rest.postForObject(Constants.url + "saveStock",stockHeader,
@@ -160,7 +162,7 @@ public class StockController {
 			 if(updateStatus.getStockHeaderId()!=0) 
 			 { 
 				 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-				 map.add("date",DateConvertor.convertToYMD(updateStatus.getDate()));
+				 map.add("date",updateStatus.getDate());
 				 GetCurrentStock[] currentStock = rest.postForObject(Constants.url + "getCurrentStock",map,
 						  GetCurrentStock[].class); 
 				  getCurrentStock = new ArrayList<GetCurrentStock>(Arrays.asList(currentStock));
@@ -168,7 +170,7 @@ public class StockController {
 				  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
 						  GetCratesStock.class); 
 				  
-				 SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+				 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 					Date date = new Date();
 					Calendar c = Calendar.getInstance();
 					c.setTime(date);
@@ -176,9 +178,12 @@ public class StockController {
 					date=c.getTime();
 					c.add(Calendar.DATE, -1);
 					Date yesterDay=c.getTime();
+					System.out.println("tommorowDate" +sf.format(date) );
+					System.out.println("yesterDay" +sf.format(yesterDay) );
 				model.addObject("getCratesStock",getCratesStock);
 				model.addObject("currentStockList",getCurrentStock); 
 				model.addObject("stockDate",updateStatus.getDate());
+				model.addObject("stockDatedd",DateConvertor.convertToDMY(updateStatus.getDate()));
 				model.addObject("tommorowDate",sf.format(date));
 				model.addObject("yesterDay",sf.format(yesterDay));
 			 }
@@ -201,12 +206,13 @@ public class StockController {
 		RestTemplate rest = new RestTemplate();
 		try {
 			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
-			Date date = sf.parse(updateStatus.getDate());
+			SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = finalDate.parse(updateStatus.getDate());
 			Calendar c = Calendar.getInstance();
 			c.setTime(date);
 			c.add(Calendar.DATE, 1);
 			date=c.getTime();
-			System.out.println(date);
+			System.err.println(date);
 			
 			int cratesStock = Integer.parseInt(request.getParameter("closingCratesQty"));
 			
@@ -216,10 +222,14 @@ public class StockController {
 					 StockDetail[].class);
 			List<StockDetail> updateStockDetailList = new ArrayList<StockDetail>(Arrays.asList(StockDetailList));
 			
-			for(int i=0;i<updateStockDetailList.size();i++)
+			 for(int j=0;j<getCurrentStock.size();j++)
 			 {
-				updateStockDetailList.get(i).setClosingQty(Integer.parseInt(request.getParameter("closingQty"+updateStockDetailList.get(i).getItemId())));
-				 
+				 for(int i=0;i<updateStockDetailList.size();i++)
+				 {
+					 if(updateStockDetailList.get(i).getItemId()==getCurrentStock.get(j).getItemId()) 
+						 updateStockDetailList.get(i).setClosingQty(Integer.parseInt(request.getParameter("closingQty"+updateStockDetailList.get(i).getItemId())));
+					 
+				 }
 			 }
 			
 			updateStatus.setStatus(1);
@@ -232,7 +242,7 @@ public class StockController {
 			 if(udateStockStatus!=null) 
 			 {
 				 StockHeader stockHeader = new StockHeader();
-				 stockHeader.setDate(sf.format(date));
+				 stockHeader.setDate(finalDate.format(date));
 				 stockHeader.setCratesOpQty(cratesStock);
 				 List<StockDetail> stockDetailList = new ArrayList<StockDetail>();
 				 
@@ -249,7 +259,8 @@ public class StockController {
 				 
 				
 				 stockHeader.setStockDetailList(stockDetailList);
-				 StockHeader insert = rest.postForObject(Constants.url + "saveStock",stockHeader,
+				 System.err.println("stockHeader "+stockHeader);
+				StockHeader insert = rest.postForObject(Constants.url + "saveStock",stockHeader,
 						 StockHeader.class); 
 				 System.out.println("insert "+insert);
 				 

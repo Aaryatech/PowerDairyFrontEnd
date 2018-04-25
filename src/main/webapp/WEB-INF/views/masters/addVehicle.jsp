@@ -4,7 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
  
 
 </head>
@@ -13,16 +13,16 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="editFrSupplier" value="/editFrSupplier"></c:url>
-<!--     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>  
 <!--datepicker-->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 <script>
 		$(function() {
-			$("#fromdatepicker").datepicker({
+			$("#datepicker").datepicker({
 				dateFormat : 'dd-mm-yy'
 			});
 		});
@@ -179,7 +179,8 @@
 										 <td class="col-md-1"><c:out value="${vehicleList.vehName}" /></td>
 										<td class="col-md-1"><c:out value="${vehicleList.vehType}" /></td>		 
 										<td class="col-md-1"><c:out value="${vehicleList.vehOpKms}" /></td>	
-										<td class="col-md-1"><c:out value="${vehicleList.vehOpKmsDate}" /></td>	
+										<td class="col-md-1">${vehicleList.vehOpKmsDate}<%-- <fmt:formatDate pattern = "dd-MM-yyyy"
+																value="${vehicleList.vehOpKmsDate}"/> --%> </td>	
 									 <td>
 									 <a href="${pageContext.request.contextPath}/editVehicle/${vehicleList.vehId}"><abbr title="Edit"><i  class="fa fa-edit"></i></abbr></a> 
 									 <a href="${pageContext.request.contextPath}/deleteVehicle/${vehicleList.vehId}"><abbr title="Delete"><i class="fa fa-trash"></i></abbr></a></td>

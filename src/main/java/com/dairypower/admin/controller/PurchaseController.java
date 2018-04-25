@@ -57,7 +57,7 @@ public class PurchaseController {
 			model.addObject("itemList", itemList);
 			
 			
-			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Date today = new Date();
 			model.addObject("today", sf.format(today));
 			
@@ -84,7 +84,7 @@ public class PurchaseController {
 			 String stockDate = request.getParameter("stockDate");
 			 
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-			 map.add("date",DateConvertor.convertToYMD(stockDate));
+			 map.add("date",stockDate);
 			 map.add("itemId", itemId);
 			 GetCurrentStock[] currentStock = rest.postForObject(Constants.url + "getCurrentStockByItemId",map,
 					  GetCurrentStock[].class); 
@@ -111,7 +111,8 @@ public class PurchaseController {
 	@ResponseBody
 	public List<GetPoDetail> addItemInPurchaseBill(HttpServletRequest request, HttpServletResponse response) {
 
-		
+		SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 		try
 		{
 			 String index = request.getParameter("index");
@@ -223,8 +224,8 @@ public class PurchaseController {
 	
 	@RequestMapping(value = "/insertPurchaseBill", method = RequestMethod.POST)
 	public String insertPurchaseBill(HttpServletRequest request, HttpServletResponse response) {
-
-	 
+ 
+		SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();
@@ -236,9 +237,12 @@ public class PurchaseController {
 				String invoiceNo = request.getParameter("invoiceNo");
 				String invoiceDate = request.getParameter("invoiceDate");
 				String remark = request.getParameter("remark");  
+				
+				System.out.println("invoice Date "+invoiceDate);
+				
 				int recievedCreates = Integer.parseInt(request.getParameter("cratesReceivedQty"));
 				PoHeader insert = new PoHeader();
-				insert.setPoDate(invoiceDate);
+				insert.setPoDate(finalDate.format(sf.parse(invoiceDate)));
 				insert.setPoId(Integer.parseInt(invoiceNo));
 				insert.setPoRemarks(remark);
 				insert.setCratesRecievedQty(recievedCreates);
@@ -260,7 +264,7 @@ public class PurchaseController {
 					poDetail.setShortNo(addItemInPurchaseBill.get(i).getShortNo());
 					poDetail.setExtraNo(addItemInPurchaseBill.get(i).getExtraNo());
 					poDetail.setPoLeakageQty(addItemInPurchaseBill.get(i).getPoLeakageQty());
-					poDetail.setMfgDate(addItemInPurchaseBill.get(i).getMfgDate());
+					poDetail.setMfgDate(finalDate.format(sf.parse(addItemInPurchaseBill.get(i).getMfgDate())));
 					poDetail.setPackingDate("");
 					poDetailList.add(poDetail);
 					float total = poDetail.getRate()*poDetail.getItemQty(); 

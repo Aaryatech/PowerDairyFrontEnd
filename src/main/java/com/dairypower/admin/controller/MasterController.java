@@ -1,7 +1,9 @@
 package com.dairypower.admin.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +41,8 @@ import com.dairypower.admin.model.Vehicle;
 @Scope("session")
 public class MasterController {
 	
-	
+	SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+	SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 	RestTemplate rest = new RestTemplate();
 	
 	@RequestMapping(value = "/addCustomer", method = RequestMethod.GET)
@@ -496,11 +499,14 @@ public class MasterController {
 		ModelAndView model = new ModelAndView("masters/addVehicle");
 		try
 		{
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			 map.add("vehId", vehId);
 			 Vehicle vehicleRes = rest.postForObject(Constants.url + "/master/getVehicleById",map, Vehicle.class);
 			List<Vehicle> vehicleList =  rest.getForObject(Constants.url + "/master/getAllVehicles", List.class);
 			model.addObject("vehicleList", vehicleList);
+			vehicleRes.setVehOpKmsDate(sf.format(finalDate.parse(vehicleRes.getVehOpKmsDate())));
 			model.addObject("vehicle",vehicleRes);
 		}catch(Exception e)
 		{
@@ -521,6 +527,10 @@ public class MasterController {
 			int vehOpeningKm = Integer.parseInt(request.getParameter("vehOpeningKm"));
 			String openingKmDate = request.getParameter("openingKmDate");
 			
+			
+			
+			Date date = sf.parse(openingKmDate);
+			
 			Vehicle insert = new Vehicle();
 			if(vehId==null || vehId=="")
 				insert.setVehId(0);
@@ -529,7 +539,7 @@ public class MasterController {
 			insert.setVehName(vehicleName);
 			insert.setVehType(vehType);
 			insert.setVehOpKms(vehOpeningKm);
-			insert.setVehOpKmsDate(openingKmDate); 
+			insert.setVehOpKmsDate(finalDate.format(date)); 
 			Info info = rest.postForObject(Constants.url + "/master/saveVehicle",insert,
 					Info.class);
 			

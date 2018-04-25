@@ -72,8 +72,11 @@
 							<div class="col1title" align="left">Stock Date: </div>
 						</div>
 						<div class="col-md-3">
+						
+						<input id="datedd" class="form-control"
+								placeholder="Stock Date" value="${stockDatedd}" name="datedd"  style="text-align: left;"  type="text" readonly="readonly">
 							<input id="date" class="form-control"
-								placeholder="Stock Date" value="${stockDate}" name="date"  style="text-align: left;"  type="text" readonly="readonly">
+								placeholder="Stock Date" value="${stockDate}" name="date"  style="text-align: left;"  type="hidden" readonly="readonly">
 
 						</div>
 						
@@ -149,7 +152,7 @@
 											<td class="col-md-1"><c:out value="${currentStockList.hubReturnQty}" /></td>
 											
 											<td class="col-md-1" ><input id="closingQty${currentStockList.itemId}" class="form-control"
-								placeholder="Qty"   name="closingQty${currentStockList.itemId}" value="${currentStockList.openingStock+currentStockList.totalPurchase-currentStockList.totalSale+currentStockList.returnQty-currentStockList.hubReturnQty}"   style="text-align: left;"  type="number"  readonly="readonly">		
+								placeholder="Qty"   name="closingQty${currentStockList.itemId}" value="${currentStockList.openingStock+currentStockList.totalPurchase-currentStockList.totalSale+currentStockList.returnQty-currentStockList.hubReturnQty}"   style="text-align: left;"  type="text"  readonly="readonly">		
 	                                   
 									</tr>
 								</c:forEach>
@@ -342,7 +345,8 @@ function getBetweenDateStock()
 
 function compareDate() {
 	 
-	var date = $('#date').val();//delivery Date
+	var date = $('#datedd').val();//delivery Date
+	 
 	var toDate = $('#datepicker1').val();
 	var fromDate = $('#datepicker').val();
 	

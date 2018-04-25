@@ -85,7 +85,7 @@
 								
 									<th class="col-sm-1">Sr No</th>
 									<th class="col-md-1">Item Name</th> 
-									<th class="col-md-1">Rate</th>
+									<th class="col-md-1">Qty</th>
 								
 								</tr>
 											</thead>
