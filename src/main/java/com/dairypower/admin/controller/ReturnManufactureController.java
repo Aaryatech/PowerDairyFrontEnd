@@ -50,14 +50,14 @@ public class ReturnManufactureController {
 		ModelAndView model = new ModelAndView("bill/returnManf");
 		try
 		{
-			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Date today = new Date();
 			model.addObject("today", sf.format(today));
 			
 			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
 					StockHeader.class); 
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-			 map.add("date",DateConvertor.convertToYMD(stockHeader.getDate()));
+			 map.add("date",stockHeader.getDate());
 			 
 			  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
 					  GetCratesStock.class); 
@@ -136,7 +136,7 @@ public class ReturnManufactureController {
 		 
 	 
 		try {
-			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = new Date();
 			PoDetail  update = new PoDetail();

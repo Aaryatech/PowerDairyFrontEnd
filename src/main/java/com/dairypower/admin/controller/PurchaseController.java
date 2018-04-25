@@ -501,9 +501,7 @@ public class PurchaseController {
 	
 	@RequestMapping(value = "/submitEditPurchaseBill", method = RequestMethod.POST)
 	public String submitEditPurchaseBill(HttpServletRequest request, HttpServletResponse response) {
-
-	 
-		SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+ 
 		SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();
 		
@@ -517,7 +515,7 @@ public class PurchaseController {
 				int recievedCreates = Integer.parseInt(request.getParameter("cratesReceivedQty"));
 				PoHeader insert = new PoHeader();
 				insert.setPoHeaderId(editPoHeader.getPoHeaderId());
-				insert.setPoDate(invoiceDate);
+				insert.setPoDate(DateConvertor.convertToYMD(invoiceDate));
 				insert.setPoId(Integer.parseInt(invoiceNo));
 				insert.setPoRemarks(remark);
 				insert.setCratesRecievedQty(recievedCreates);
@@ -541,7 +539,7 @@ public class PurchaseController {
 					poDetail.setShortNo(editPurchaseBillList.get(i).getShortNo());
 					poDetail.setExtraNo(editPurchaseBillList.get(i).getExtraNo());
 					poDetail.setPoLeakageQty(editPurchaseBillList.get(i).getPoLeakageQty());
-					poDetail.setMfgDate(editPurchaseBillList.get(i).getMfgDate());
+					poDetail.setMfgDate(DateConvertor.convertToYMD(editPurchaseBillList.get(i).getMfgDate()));
 					poDetail.setPackingDate("");
 					poDetail.setIsUsed(editPurchaseBillList.get(i).getIsUsed());
 					poDetailList.add(poDetail);
