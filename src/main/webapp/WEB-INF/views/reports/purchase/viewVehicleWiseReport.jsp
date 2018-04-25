@@ -134,18 +134,16 @@ jQuery(document).ready(function(){
 					 -->
 
 					<select name="vehId" class="form-control"
-						placeholder="Vehicle Name" data-rule-required="true" id="vehId"
-						>
+						placeholder="Vehicle Name" data-rule-required="true" id="vehId">
 						<option value="">Select Vehicle</option>
-						<option value="0"><c:out
-									value="All" /></option>
+						<option value="0"><c:out value="All" /></option>
 						<c:forEach items="${vehicleList}" var="vehicle" varStatus="count">
 							<option value="${vehicle.vehId}"><c:out
 									value="${vehicle.vehName}" /></option>
 						</c:forEach>
 					</select>
-					
-					
+
+
 					<!-- <label class="col-sm-3 col-lg-2 control-label">Custom Dropdown Multiple Select</label>
                                       <div class="col-sm-9 col-lg-10 controls">
                                          <select data-placeholder="Your Favorite Football Teams" class="form-control chosen" multiple="multiple" tabindex="6">
@@ -158,7 +156,7 @@ jQuery(document).ready(function(){
                                             
                                          </select>
                                       </div> -->
-					
+
 
 					<div class="col-md-2">
 						<button class="btn search_btn pull-left"
@@ -186,7 +184,7 @@ jQuery(document).ready(function(){
 
 										<th class="col-sm-1">Vehicle No</th>
 										<th class="col-sm-2">Customer Name</th>
-										<th class="col-md-2">OP KM</th>
+										<th class="col-md-1">OP KM</th>
 										<th class="col-md-1">CL KM</th>
 										<th class="col-md-1">Total KM</th>
 
@@ -208,7 +206,7 @@ jQuery(document).ready(function(){
 
 										<th class="col-sm-1">Vehicle No</th>
 										<th class="col-sm-2">Customer Name</th>
-										<th class="col-md-2">OP KM</th>
+										<th class="col-md-1">OP KM</th>
 										<th class="col-md-1">CL KM</th>
 										<th class="col-md-1">Total KM</th>
 
@@ -270,8 +268,7 @@ jQuery(document).ready(function(){
 			var fromDate = document.getElementById("fromdatepicker").value;
 
 			var toDate = document.getElementById("todatepicker").value;
-			
-			
+
 			var vehId = document.getElementById("vehId").value;
 
 			$
@@ -295,7 +292,6 @@ jQuery(document).ready(function(){
 									document.getElementById("PDFButton").disabled = true;
 								}
 								document.getElementById("PDFButton").disabled = false;
-
 
 								$('#table_grid td').remove();
 
@@ -415,7 +411,7 @@ jQuery(document).ready(function(){
 			var toDate = document.getElementById("todatepicker").value;
 			var frId = document.getElementById("frId").value;
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showVehiclewiseReportPdf/'
+					.open('${pageContext.request.contextPath}/showVehiclewiseReportPdf/'
 							+ fromDate + '/' + toDate + '/' + frId);
 		}
 	}

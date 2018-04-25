@@ -292,7 +292,7 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"></td>')
+															'<td class="col-md-1" style="text-align:left"></td>')
 																	.html(
 																			billWisePurchaseData.custName));
 
@@ -346,7 +346,7 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-1"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.outKm));
 													$('#table_grid tbody')

@@ -283,25 +283,25 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-2"></td>')
+																	'<td class="col-md-1" style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poDate));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:left"></td>')
 																	.html(
 																			billWisePurchaseData.day));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-1"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poTotal));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-1"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
 

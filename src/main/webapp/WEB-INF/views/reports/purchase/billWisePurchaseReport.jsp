@@ -227,7 +227,7 @@ jQuery(document).ready(function(){
 
 <script type="text/javascript">
 	function billWisePurchaseReport() {
-		alert("Heee");
+
 		$('#table_grid td').remove();
 
 		var isValid = validate();
@@ -237,7 +237,7 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
-		
+
 			$
 					.getJSON(
 							'${getBillWisePurchase}',
@@ -250,7 +250,6 @@ jQuery(document).ready(function(){
 							},
 							function(data) {
 
-								alert(data)
 								var len = data.length;
 
 								if (data == "") {
@@ -269,7 +268,8 @@ jQuery(document).ready(function(){
 
 													document
 															.getElementById("expExcel").disabled = false;
-													document.getElementById("PDFButton").disabled = false;
+													document
+															.getElementById("PDFButton").disabled = false;
 													document
 															.getElementById('range').style.display = 'block';
 
@@ -295,7 +295,6 @@ jQuery(document).ready(function(){
 																	.html(
 																			billWisePurchaseData.poId));
 
-
 													tr
 															.append($(
 																	'<td class="col-md-2"style="text-align:center"></td>')
@@ -307,26 +306,26 @@ jQuery(document).ready(function(){
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
 													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.shortNo));
-													
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.shortNo));
+
 													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.extraNo));
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.extraNo));
 													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.poLeakageQty));
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.poLeakageQty));
 													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.userName));
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.userName));
 													tr
 															.append($(
 																	'<td class="col-md-2"style="text-align:center"></td>')
@@ -393,10 +392,11 @@ jQuery(document).ready(function(){
 	function genPdf() {
 		var fromDate = document.getElementById("fromdatepicker").value;
 		var toDate = document.getElementById("todatepicker").value;
-		
-			window
-					.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/'+ fromDate + '/' + toDate');
-		
+
+		window
+				.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/'
+						+ fromDate + '/' + toDate);
+
 	}
 </script>
 </body>
