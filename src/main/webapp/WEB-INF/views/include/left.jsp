@@ -494,16 +494,30 @@
 						<div class="ibox-head">
 						<div class="ibox-title">Purchase Reports</div>
 						</div>
-						<a href="${pageContext.request.contextPath}/viewBillWisePurchaseReport"><i class="fa fa-files-o icon"></i> Billwise Purchase Report</a>
-						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Datewise Purchase Report</a>
-						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Itemwise Purchase Report</a>
-						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehiclewise Report</a>
-						
+						<a href="${pageContext.request.contextPath}/viewBillWisePurchaseReport"><i class="fa fa-files-o icon"></i> Bill Wise Purchase Report</a>
+						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Date Wise Purchase Report</a>
+						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Item Wise Purchase Report</a>
+						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>
+						  <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption Report</a>
 								
 						</div>
 						
 					</li>
-							
+							<li class="small-box">
+						
+							<div class="ibox">
+						<div class="ibox-head">
+						<div class="ibox-title">Bill Reports</div>
+						</div>
+						<a href="${pageContext.request.contextPath}/viewBillWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Bill Wise Consumption Report</a>
+						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Date Wise Purchase Report</a>
+						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Item Wise Purchase Report</a>
+						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>
+						  <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption Report</a>
+								
+						</div>
+						
+					</li>
 
 					</ul>
 				</div>
