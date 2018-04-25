@@ -1,7 +1,20 @@
 package com.dairypower.admin.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +39,24 @@ import com.dairypower.admin.model.DateWisePurchaseReport;
 import com.dairypower.admin.model.ExportToExcel;
 import com.dairypower.admin.model.ItemWisePurchaseReport;
 import com.dairypower.admin.model.VehicleWiseReport;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.dairypower.admin.model.Vehicle;
 
 @Controller
 public class ReportController {
+
+	List<BillWisePurchaseReport> billWisePurchaseReportList = null;
 
 	@RequestMapping(value = "/viewBillWisePurchaseReport", method = RequestMethod.GET)
 	public ModelAndView viewBill(HttpServletRequest request, HttpServletResponse response) {
@@ -85,7 +113,6 @@ public class ReportController {
 	@RequestMapping(value = "/findBillWisePurchase", method = RequestMethod.GET)
 	public @ResponseBody List<BillWisePurchaseReport> getBillWisePurchase(HttpServletRequest request,
 			HttpServletResponse response) {
-		List<BillWisePurchaseReport> billWisePurchaseReportList = null;
 		try {
 			System.out.println("in method");
 			String fromDate = request.getParameter("fromDate");
@@ -154,7 +181,243 @@ public class ReportController {
 		return billWisePurchaseReportList;
 
 	}
+	@RequestMapping(value = "/showBillwisePurchasePdf", method = RequestMethod.GET)
+	public void showBillwisePurchasePdf(HttpServletRequest request, HttpServletResponse response)
+			throws FileNotFoundException {
+		BufferedOutputStream outStream = null;
+		System.out.println("Inside Pdf showBillwisePurchasePdf");
 
+		List<BillWisePurchaseReport> billwisePoList = billWisePurchaseReportList;
+
+		// moneyOutList = prodPlanDetailList;
+		Document document = new Document(PageSize.A4);
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+
+		System.out.println("time in Gen Bill PDF ==" + dateFormat.format(cal.getTime()));
+		String timeStamp = dateFormat.format(cal.getTime());
+		String FILE_PATH = Constants.REPORT_SAVE;
+		File file = new File(FILE_PATH);
+
+		PdfWriter writer = null;
+
+		FileOutputStream out = new FileOutputStream(FILE_PATH);
+		try {
+			writer = PdfWriter.getInstance(document, out);
+		} catch (DocumentException e) {
+
+			e.printStackTrace();
+		}
+
+		PdfPTable table = new PdfPTable(10);
+		try {
+			System.out.println("Inside PDF Table try");
+			table.setWidthPercentage(100);
+			table.setWidths(new float[] { 1.4f,3.7f, 2.8f,2.8f,3.2f,3.5f,2.9f,3.3f,2.9f,3.2f});
+			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
+			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+			headFont1.setColor(BaseColor.WHITE);
+			Font f = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.UNDERLINE, BaseColor.BLUE);
+
+			PdfPCell hcell=new PdfPCell();
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			hcell.setPadding(3);
+			hcell = new PdfPCell(new Phrase("Sr.No.", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+
+			hcell = new PdfPCell(new Phrase("PO Date", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("Po. No", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("PO Amt", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Crates Received", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("Short No", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("Extra No", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("PO Leakage Qty", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("User", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			hcell = new PdfPCell(new Phrase("Po Remark", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			
+			int index = 0;
+			for (BillWisePurchaseReport bill : billwisePoList) {
+				index++;
+				PdfPCell cell;
+
+				cell = new PdfPCell(new Phrase(String.valueOf(index), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				  cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(bill.getPoDate(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+
+			
+				cell = new PdfPCell(new Phrase(bill.getPoId(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getPoTotal(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getCratesReceivedQty(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getShortNo(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getExtraNo(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getPoLeakageQty(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getUserName(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				  cell.setPadding(3);
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Phrase(""+bill.getPoRemarks(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+			
+			}
+			document.open();
+			Paragraph company = new Paragraph(
+					"Billwise Purchase Report\n",
+					f);
+			company.setAlignment(Element.ALIGN_CENTER);
+			document.add(company);
+			document.add(new Paragraph(" "));
+		
+			DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
+			String reportDate = DF.format(new Date());
+
+			document.add(new Paragraph(" Date: " + reportDate));
+			document.add(new Paragraph("\n"));
+			document.add(table);
+			
+			int totalPages = writer.getPageNumber();
+
+			System.out.println("Page no " + totalPages);
+
+			document.close();
+			// Atul Sir code to open a Pdf File
+			if (file != null) {
+
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+
+				if (mimeType == null) {
+
+					mimeType = "application/pdf";
+
+				}
+
+				response.setContentType(mimeType);
+
+				response.addHeader("content-disposition", String.format("inline; filename=\"%s\"", file.getName()));
+
+				response.setContentLength((int) file.length());
+
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+				try {
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+				} catch (IOException e) {
+					System.out.println("Excep in Opening a Pdf File");
+					e.printStackTrace();
+				}
+			}
+
+		} catch (DocumentException ex) {
+
+			System.out.println("Pdf Generation Error: BOm Prod  View Prod" + ex.getMessage());
+
+			ex.printStackTrace();
+
+		}
+
+	}
 	// ----------------------------------Date Wise Purchase
 	// Report---------------------------------------------
 	@RequestMapping(value = "/findDateWisePurchase", method = RequestMethod.GET)

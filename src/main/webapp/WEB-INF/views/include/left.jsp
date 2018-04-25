@@ -69,6 +69,13 @@
 						Insert Or Edit Stock<span></span>
 					</div></a></li>
 					
+					<li><a href="#" onClick="openNav3()"><div class="img">
+						<i class="fa fa-file-o icon"></i>
+					</div>
+					<div class="title">
+						<span>Report</span>
+					</div></a></li>
+					
 					<li><a href="${pageContext.request.contextPath}/logout"><div
 						class="img">
 						<i class="fa fa-file-o icon"></i>
@@ -430,7 +437,7 @@
 	<!--2nav-->
 
 	<!--4nav-->
-	<div id="mySidenav4" class="sidenav">
+ 	<div id="mySidenav4" class="sidenav">
 		<div class="topSlide">
 			<div class="topSlide2">
 				<a href="javascript:void(0)" class="closebtn" onClick="closeNav4()"><img
@@ -465,6 +472,38 @@
 					 
 
 						
+
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</div> 
+	<!--4nav-->
+	<div id="mySidenav3" class="sidenav">
+		<div class="topSlide">
+			<div class="topSlide2">
+				<a href="javascript:void(0)" class="closebtn" onClick="closeNav3()"><img
+					src="${pageContext.request.contextPath}/resources//images/closebtn.png"
+					alt="monginis"></a>
+				<div class="listarea">
+					<ul>
+						<li class="small-box">
+						
+							<div class="ibox">
+						<div class="ibox-head">
+						<div class="ibox-title">Purchase Reports</div>
+						</div>
+						<a href="${pageContext.request.contextPath}/viewBillWisePurchaseReport"><i class="fa fa-files-o icon"></i> Billwise Purchase Report</a>
+						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Datewise Purchase Report</a>
+						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Itemwise Purchase Report</a>
+						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehiclewise Report</a>
+						
+								
+						</div>
+						
+					</li>
+							
 
 					</ul>
 				</div>

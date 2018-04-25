@@ -1,5 +1,6 @@
 package com.dairypower.admin.model;
 
+
 public class BillWisePurchaseReport {
 
 	private String poId;
@@ -10,7 +11,63 @@ public class BillWisePurchaseReport {
 
 	private float poTotal;
 
-	private int poRemarks;
+	private String poRemarks;
+	
+	private int poHeaderId;
+	private int shortNo;
+	private int extraNo;
+	private int userId;
+	private int poLeakageQty;
+	private String userName;
+
+	
+	public int getPoHeaderId() {
+		return poHeaderId;
+	}
+
+	public int getShortNo() {
+		return shortNo;
+	}
+
+	public int getExtraNo() {
+		return extraNo;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public int getPoLeakageQty() {
+		return poLeakageQty;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setPoHeaderId(int poHeaderId) {
+		this.poHeaderId = poHeaderId;
+	}
+
+	public void setShortNo(int shortNo) {
+		this.shortNo = shortNo;
+	}
+
+	public void setExtraNo(int extraNo) {
+		this.extraNo = extraNo;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public void setPoLeakageQty(int poLeakageQty) {
+		this.poLeakageQty = poLeakageQty;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public String getPoId() {
 		return poId;
@@ -36,11 +93,11 @@ public class BillWisePurchaseReport {
 		this.cratesReceivedQty = cratesReceivedQty;
 	}
 
-	public int getPoRemarks() {
+	public String getPoRemarks() {
 		return poRemarks;
 	}
 
-	public void setPoRemarks(int poRemarks) {
+	public void setPoRemarks(String poRemarks) {
 		this.poRemarks = poRemarks;
 	}
 
@@ -55,7 +112,9 @@ public class BillWisePurchaseReport {
 	@Override
 	public String toString() {
 		return "BillWisePurchaseReport [poId=" + poId + ", poDate=" + poDate + ", cratesReceivedQty="
-				+ cratesReceivedQty + ", poTotal=" + poTotal + ", poRemarks=" + poRemarks + "]";
+				+ cratesReceivedQty + ", poTotal=" + poTotal + ", poRemarks=" + poRemarks + ", poHeaderId=" + poHeaderId
+				+ ", shortNo=" + shortNo + ", extraNo=" + extraNo + ", userId=" + userId + ", poLeakageQty="
+				+ poLeakageQty + ", userName=" + userName + "]";
 	}
-
+    
 }

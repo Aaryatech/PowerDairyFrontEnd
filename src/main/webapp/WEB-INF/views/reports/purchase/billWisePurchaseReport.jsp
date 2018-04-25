@@ -4,11 +4,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
-<style>
-table, th, td {
-	border: 1px solid #9da88d;
-}
-</style>
+
 
 <%-- <!DOCTYPE html>
 <html>
@@ -144,17 +140,22 @@ jQuery(document).ready(function(){
 
 					<div id="table-scroll" class="table-scroll">
 						<div id="faux-table" class="faux-table" aria="hidden">
-							<table id="table_grid" class="main-table" border="1">
+							<table id="table_grid" class="main-table">
 								<thead>
 									<tr class="bgpink">
 
 										<th class="col-sm-1">Sr.No.</th>
+										<th class="col-md-1">PO Date</th>
 
-										<th class="col-sm-1">Po No</th>
-										<th class="col-sm-2">PO Date</th>
-										<th class="col-md-2">Total Amt</th>
+										<th class="col-md-1">PO No</th>
+										<th class="col-md-1">Total Amt</th>
 										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Po Remark</th>
+										<th class="col-md-1">Short No</th>
+										<th class="col-md-1">Extra No</th>
+										<th class="col-md-1">Leakage Qty</th>
+										<th class="col-md-1">User</th>
+										
+										<th class="col-md-1">Remark</th>
 
 
 									</tr>
@@ -164,17 +165,22 @@ jQuery(document).ready(function(){
 							</table>
 						</div>
 						<div class="table-wrap">
-							<table id="table_grid" class="main-table" border="1">
+							<table id="table_grid" class="main-table" >
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
+											<th class="col-sm-1">Sr.No.</th>
+										<th class="col-md-1">PO Date</th>
 
-										<th class="col-sm-1">Po No</th>
-										<th class="col-sm-2">PO Date</th>
-										<th class="col-md-2">Total Amt</th>
+										<th class="col-md-1">PO No</th>
+										<th class="col-md-1">Total Amt</th>
 										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Po Remark</th>
+										<th class="col-md-1">Short No</th>
+										<th class="col-md-1">Extra No</th>
+										<th class="col-md-1">Leakage Qty</th>
+										<th class="col-md-1">User</th>
+										
+										<th class="col-md-1">Remark</th>
 
 									</tr>
 
@@ -271,36 +277,56 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"></td>')
+																	'<td class="col-sm-1"></td>')
 																	.html(
 																			key + 1));
-
-													tr
-															.append($(
-																	'<td class="col-md-1"></td>')
-																	.html(
-																			billWisePurchaseData.poId));
 
 													tr
 															.append($(
 																	'<td class="col-md-2"></td>')
 																	.html(
 																			billWisePurchaseData.poDate));
+													tr
+															.append($(
+																	'<td class="col-md-1"></td>')
+																	.html(
+																			billWisePurchaseData.poId));
+
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poTotal));
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
-
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:center"></td>')
+															.html(
+																	billWisePurchaseData.shortNo));
+													
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:center"></td>')
+															.html(
+																	billWisePurchaseData.extraNo));
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:center"></td>')
+															.html(
+																	billWisePurchaseData.poLeakageQty));
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:center"></td>')
+															.html(
+																	billWisePurchaseData.userName));
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
+																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poRemarks));
 
@@ -364,12 +390,9 @@ jQuery(document).ready(function(){
 	function genPdf() {
 		var isValid = validate();
 		if (isValid == true) {
-			var fromDate = document.getElementById("fromdatepicker").value;
-			var toDate = document.getElementById("todatepicker").value;
-			var frId = document.getElementById("frId").value;
+		
 			window
-					.open('${pageContext.request.contextPath}/pdf?reportURL=pdf/showPurchaseBillwiseReportPdf/'
-							+ fromDate + '/' + toDate + '/' + frId);
+					.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/');
 		}
 	}
 </script>
