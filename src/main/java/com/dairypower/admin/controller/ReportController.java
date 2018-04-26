@@ -36,6 +36,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.common.DateConvertor;
 import com.dairypower.admin.model.BillWisePurchaseReport;
+import com.dairypower.admin.model.BillwiseConsumption;
+import com.dairypower.admin.model.CatwiseConsumption;
 import com.dairypower.admin.model.CustomerWiseConReport;
 import com.dairypower.admin.model.DateWisePurchaseReport;
 import com.dairypower.admin.model.ExportToExcel;
@@ -60,16 +62,30 @@ public class ReportController {
 
 	List<BillWisePurchaseReport> billWisePurchaseReportList = null;
 
+	List<BillwiseConsumption> billwiseConsumptionList = null;
+
 	List<CustomerWiseConReport> customerWiseConReportList = null;
+	
+	List<CatwiseConsumption> catwiseConsumptionList = null;
 
 	List<DateWisePurchaseReport> dateWisePurchaseReport = null;
 
 	List<ItemWisePurchaseReport> itemWisePurchaseReport = null;
 
+	List<VehicleWiseReport> vehicleWiseReport = null;
+
 	@RequestMapping(value = "/viewBillWisePurchaseReport", method = RequestMethod.GET)
 	public ModelAndView viewBill(HttpServletRequest request, HttpServletResponse response) {
 
 		ModelAndView model = new ModelAndView("reports/purchase/billWisePurchaseReport");
+		return model;
+
+	}
+
+	@RequestMapping(value = "/viewBillWiseConsumptionReport", method = RequestMethod.GET)
+	public ModelAndView viewBillConPur(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("reports/sales/billwiseConsumption");
 		return model;
 
 	}
@@ -81,6 +97,9 @@ public class ReportController {
 
 		return model;
 	}
+	
+	
+	
 
 	@RequestMapping(value = "/viewItemWisePurchaseReport", method = RequestMethod.GET)
 	public ModelAndView viewItem(HttpServletRequest request, HttpServletResponse response) {
@@ -88,6 +107,15 @@ public class ReportController {
 		ModelAndView model = new ModelAndView("reports/purchase/itemWisePurchaseReport");
 
 		return model;
+	}
+	
+	
+	@RequestMapping(value = "/viewCategoryWiseConsumptionReport", method = RequestMethod.GET)
+	public ModelAndView viewCatiseCon(HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("reports/sales/categorywiseConsumption");
+		return model;
+
 	}
 
 	@RequestMapping(value = "/viewCustomerWiseConsumptionReport", method = RequestMethod.GET)
@@ -420,6 +448,378 @@ public class ReportController {
 
 	}
 
+	// -----------------------Bill Wise Consumption
+	// Report-----------
+	@RequestMapping(value = "/findBillWiseConsumption", method = RequestMethod.GET)
+	public @ResponseBody List<BillwiseConsumption> getBillWiseConsumptionPurchase(HttpServletRequest request,
+			HttpServletResponse response) {
+		try {
+			System.out.println("in method");
+			String fromDate = request.getParameter("fromDate");
+			System.out.println("fromDate" + fromDate);
+
+			String toDate = request.getParameter("toDate");
+			System.out.println("toDate" + toDate);
+
+			RestTemplate restTemplate = new RestTemplate();
+
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+
+			map.add("fromDate", DateConvertor.convertToYMD(fromDate));
+			map.add("toDate", DateConvertor.convertToYMD(toDate));
+			map.add("custId", 0);
+
+			BillwiseConsumption[] billWiseConsumption = restTemplate
+					.postForObject(Constants.url + "Test/getAllBillwiseConsumption", map, BillwiseConsumption[].class);
+
+			billwiseConsumptionList = new ArrayList<BillwiseConsumption>(Arrays.asList(billWiseConsumption));
+			System.out.println("billwiseConsumptionList" + billwiseConsumptionList.toString());
+
+			// export to excel
+
+			List<ExportToExcel> exportToExcelList = new ArrayList<ExportToExcel>();
+
+			ExportToExcel expoExcel = new ExportToExcel();
+			List<String> rowData = new ArrayList<String>();
+
+			rowData.add("Sr. No");
+			rowData.add("Bill No.");
+			rowData.add("Bill Date");
+			rowData.add("Customer Name");
+			rowData.add("Bill Amount");
+			rowData.add("Collected Amount");
+			rowData.add("OS Amount");
+			rowData.add("Payment Mode");
+			rowData.add("Crates Total");
+			rowData.add("Crates Received");
+			rowData.add("Crates OS");
+			rowData.add("Total Kms");
+			rowData.add("Remark");
+
+			expoExcel.setRowData(rowData);
+			exportToExcelList.add(expoExcel);
+			int cnt = 1;
+			for (int i = 0; i < billwiseConsumptionList.size(); i++) {
+				expoExcel = new ExportToExcel();
+				rowData = new ArrayList<String>();
+				cnt = cnt + i;
+				rowData.add("" + (cnt));
+				rowData.add("" + billwiseConsumptionList.get(i).getBillId());
+				rowData.add("" + billwiseConsumptionList.get(i).getBillDate());
+				rowData.add("" + billwiseConsumptionList.get(i).getCustName());
+				rowData.add("" + billwiseConsumptionList.get(i).getGrandTotal());
+				rowData.add("" + billwiseConsumptionList.get(i).getCollectedAmt());
+				rowData.add("" + billwiseConsumptionList.get(i).getOutstandingAmt());
+				rowData.add("" + billwiseConsumptionList.get(i).getCollectionPaymode());
+				rowData.add("" + billwiseConsumptionList.get(i).getCratesOpBal());
+				rowData.add("" + billwiseConsumptionList.get(i).getCratesIssued());
+				rowData.add("" + billwiseConsumptionList.get(i).getCratesClBal());
+				rowData.add("" + billwiseConsumptionList.get(i).getCratesReceived());
+				rowData.add("" + billwiseConsumptionList.get(i).getRemarks());
+				// rowData.add("" + billwiseConsumptionList.get(i).get);
+
+				expoExcel.setRowData(rowData);
+				exportToExcelList.add(expoExcel);
+
+			}
+
+			HttpSession session = request.getSession();
+			session.setAttribute("exportExcelList", exportToExcelList);
+			session.setAttribute("excelName", "BillwiseConsumptionList");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
+		return billwiseConsumptionList;
+
+	}
+
+	@RequestMapping(value = "/showBillwiseConsumptionPurchasePdf/{fromDate}/{toDate}", method = RequestMethod.GET)
+	public void showBillwiseConsumptionPurchasePdf(@PathVariable("fromDate") String fromDate,
+			@PathVariable("toDate") String toDate, HttpServletRequest request, HttpServletResponse response)
+			throws FileNotFoundException {
+		BufferedOutputStream outStream = null;
+		System.out.println("Inside Pdf showBillwiseConsumptionPdf");
+
+		List<CustomerWiseConReport> customerWiseConReport = customerWiseConReportList;
+
+		// moneyOutList = prodPlanDetailList;
+		Document document = new Document(PageSize.A4);
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+
+		System.out.println("time in Gen Bill PDF ==" + dateFormat.format(cal.getTime()));
+		String FILE_PATH = Constants.REPORT_SAVE;
+		File file = new File(FILE_PATH);
+
+		PdfWriter writer = null;
+
+		FileOutputStream out = new FileOutputStream(FILE_PATH);
+		try {
+			writer = PdfWriter.getInstance(document, out);
+		} catch (DocumentException e) {
+
+			e.printStackTrace();
+		}
+
+		PdfPTable table = new PdfPTable(14);
+		try {
+			System.out.println("Inside PDF Table try");
+			table.setWidthPercentage(100);
+			table.setWidths(
+					new float[] { 1.4f, 3.7f, 2.8f, 2.8f, 3.2f, 3.5f, 2.9f, 3.3f, 2.9f, 3.2f, 3.2f, 2.2f, 2f, 2f });
+			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
+			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+			headFont1.setColor(BaseColor.WHITE);
+			Font f = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.UNDERLINE, BaseColor.BLUE);
+
+			PdfPCell hcell = new PdfPCell();
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			hcell.setPadding(3);
+			hcell = new PdfPCell(new Phrase("Sr.No.", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Bill No", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Bill Date", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Bill Amount", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Customer Name", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Collected Amount", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("OS Amount", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Payment Mode", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Crates OP", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Crates Issued", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Crates CL", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Crates OS", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Total KM", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Remark", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			int index = 0;
+			for (BillwiseConsumption bill : billwiseConsumptionList) {
+				index++;
+				PdfPCell cell;
+
+				cell = new PdfPCell(new Phrase(String.valueOf(index), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getBillId(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(bill.getBillDate(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(bill.getCustName(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getGrandTotal(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCollectedAmt(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getOutstandingAmt(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCollectionPaymode(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCratesOpBal(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCratesIssued(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCratesClBal(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getCratesReceived(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getRemarks(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+			}
+			document.open();
+			Paragraph name = new Paragraph("Dairy Power\n", f);
+			name.setAlignment(Element.ALIGN_CENTER);
+			document.add(name);
+			document.add(new Paragraph(" "));
+			Paragraph company = new Paragraph("Customer wise Consumption Report\n", f);
+			company.setAlignment(Element.ALIGN_CENTER);
+			document.add(company);
+			document.add(new Paragraph(" "));
+
+			DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
+			String reportDate = DF.format(new Date());
+			Paragraph p1 = new Paragraph("From Date:" + fromDate + "  To Date:" + toDate, headFont);
+			p1.setAlignment(Element.ALIGN_CENTER);
+			document.add(p1);
+			document.add(new Paragraph("\n"));
+			document.add(table);
+
+			int totalPages = writer.getPageNumber();
+
+			System.out.println("Page no " + totalPages);
+
+			document.close();
+			// Atul Sir code to open a Pdf File
+			if (file != null) {
+
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+
+				if (mimeType == null) {
+
+					mimeType = "application/pdf";
+
+				}
+
+				response.setContentType(mimeType);
+
+				response.addHeader("content-disposition", String.format("inline; filename=\"%s\"", file.getName()));
+
+				response.setContentLength((int) file.length());
+
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+				try {
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+				} catch (IOException e) {
+					System.out.println("Excep in Opening a Pdf File");
+					e.printStackTrace();
+				}
+			}
+
+		} catch (DocumentException ex) {
+
+			System.out.println("Pdf Generation Error: BOm Prod  View Prod" + ex.getMessage());
+
+			ex.printStackTrace();
+
+		}
+
+	}
+
 	// ----------------------------------Date Wise Purchase
 	// Report---------------------------------------------
 	@RequestMapping(value = "/findDateWisePurchase", method = RequestMethod.GET)
@@ -525,7 +925,7 @@ public class ReportController {
 		try {
 			System.out.println("Inside PDF Table try");
 			table.setWidthPercentage(100);
-			table.setWidths(new float[] { 1.4f, 3.7f, 2.8f, 2.8f, 3.2f, 3.5f });
+			table.setWidths(new float[] { 1.4f, 3f, 2.8f, 2.8f, 3.2f, 3.5f });
 			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
 			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
 			headFont1.setColor(BaseColor.WHITE);
@@ -554,13 +954,13 @@ public class ReportController {
 			table.addCell(hcell);
 
 			hcell = new PdfPCell(new Phrase("PO Day", headFont1));
-			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			hcell.setBackgroundColor(BaseColor.PINK);
 
 			table.addCell(hcell);
 
 			hcell = new PdfPCell(new Phrase("Total Amount", headFont1));
-			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			hcell.setBackgroundColor(BaseColor.PINK);
 
 			table.addCell(hcell);
@@ -779,7 +1179,7 @@ public class ReportController {
 		try {
 			System.out.println("Inside PDF Table try");
 			table.setWidthPercentage(100);
-			table.setWidths(new float[] { 1.4f, 3.7f, 2.8f ,3.4f});
+			table.setWidths(new float[] { 1.4f, 3.7f, 2.8f, 3.4f });
 			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
 			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
 			headFont1.setColor(BaseColor.WHITE);
@@ -905,6 +1305,97 @@ public class ReportController {
 		}
 
 	}
+	
+	
+	
+	
+	/*
+	// -----------------------Category Wise Consumption
+		// Report-----------
+		@RequestMapping(value = "/findCategoryWiseConsumption", method = RequestMethod.GET)
+		public @ResponseBody List<CatwiseConsumption> getCatWiseConsumptionPurchase(HttpServletRequest request,
+				HttpServletResponse response) {
+			try {
+				System.out.println("in method");
+				String fromDate = request.getParameter("fromDate");
+				System.out.println("fromDate" + fromDate);
+
+				String toDate = request.getParameter("toDate");
+				System.out.println("toDate" + toDate);
+
+				RestTemplate restTemplate = new RestTemplate();
+
+				MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+
+				map.add("fromDate", DateConvertor.convertToYMD(fromDate));
+				map.add("toDate", DateConvertor.convertToYMD(toDate));
+				map.add("catId", 0);
+
+				CatwiseConsumption[] catwiseConsumption = restTemplate
+						.postForObject(Constants.url + "Test/getAllCatwiseConsumption", map, CatwiseConsumption[].class);
+
+				catwiseConsumptionList = new ArrayList<CatwiseConsumption>(Arrays.asList(catwiseConsumption));
+				System.out.println("catwiseConsumptionList" + catwiseConsumptionList.toString());
+
+				// export to excel
+
+				List<ExportToExcel> exportToExcelList = new ArrayList<ExportToExcel>();
+
+				ExportToExcel expoExcel = new ExportToExcel();
+				List<String> rowData = new ArrayList<String>();
+
+				rowData.add("Sr. No");
+				rowData.add("Bill No.");
+				rowData.add("Bill Date");
+				rowData.add("Customer Name");
+				rowData.add("Bill Amount");
+				rowData.add("Collected Amount");
+				rowData.add("OS Amount");
+				rowData.add("Payment Mode");
+				rowData.add("Crates Total");
+				rowData.add("Crates Received");
+				rowData.add("Crates OS");
+				rowData.add("Total Kms");
+				rowData.add("Remark");
+
+				expoExcel.setRowData(rowData);
+				exportToExcelList.add(expoExcel);
+				int cnt = 1;
+				for (int i = 0; i < catwiseConsumptionList.size(); i++) {
+					expoExcel = new ExportToExcel();
+					rowData = new ArrayList<String>();
+					cnt = cnt + i;
+					rowData.add("" + (cnt));
+					rowData.add("" + catwiseConsumptionList.get(i).getBillId());
+					rowData.add("" + catwiseConsumptionList.get(i).getBillDate());
+					rowData.add("" + catwiseConsumptionList.get(i).getCustName());
+					rowData.add("" + catwiseConsumptionList.get(i).getGrandTotal());
+					rowData.add("" + catwiseConsumptionList.get(i).getCollectedAmt());
+					rowData.add("" + catwiseConsumptionList.get(i).getOutstandingAmt());
+					rowData.add("" + catwiseConsumptionList.get(i).getCollectionPaymode());
+					rowData.add("" + catwiseConsumptionList.get(i).getCratesOpBal());
+					rowData.add("" + catwiseConsumptionList.get(i).getCratesIssued());
+					rowData.add("" + catwiseConsumptionList.get(i).getCratesClBal());
+					rowData.add("" + catwiseConsumptionList.get(i).getCratesReceived());
+					rowData.add("" + catwiseConsumptionList.get(i).getRemarks());
+					// rowData.add("" + billwiseConsumptionList.get(i).get);
+
+					expoExcel.setRowData(rowData);
+					exportToExcelList.add(expoExcel);
+
+				}
+
+				HttpSession session = request.getSession();
+				session.setAttribute("exportExcelList", exportToExcelList);
+				session.setAttribute("excelName", "BillwiseConsumptionList");
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+			}
+
+			return catwiseConsumption;
+
+		}*/
 
 	// ---------------------------------Customer Wise Consumption Report
 	// Report---------------------------------------------
@@ -931,7 +1422,7 @@ public class ReportController {
 
 			customerWiseConReportList = new ArrayList<CustomerWiseConReport>(Arrays.asList(cutwiseCons));
 
-			System.out.println("new List cust wise consumption " + customerWiseConReportList.toString());
+			System.out.println("new List cat wise consumption " + customerWiseConReportList.toString());
 			// export to excel
 
 			List<ExportToExcel> exportToExcelList = new ArrayList<ExportToExcel>();
@@ -1245,7 +1736,7 @@ public class ReportController {
 	@RequestMapping(value = "/findVehicleWiseWiseReport", method = RequestMethod.GET)
 	public @ResponseBody List<VehicleWiseReport> getVehicleWise(HttpServletRequest request,
 			HttpServletResponse response) {
-		List<VehicleWiseReport> vehicleWiseReport = null;
+
 		try {
 			System.out.println("in method");
 			String fromDate = request.getParameter("fromDate");
@@ -1314,6 +1805,191 @@ public class ReportController {
 			System.out.println(e.getMessage());
 		}
 		return vehicleWiseReport;
+
+	}
+
+	@RequestMapping(value = "/showVehiclewiseReportPdf/{fromDate}/{toDate}", method = RequestMethod.GET)
+	public void showVehiclewiseReportPdf(@PathVariable("fromDate") String fromDate,
+			@PathVariable("toDate") String toDate, HttpServletRequest request, HttpServletResponse response)
+			throws FileNotFoundException {
+		BufferedOutputStream outStream = null;
+		System.out.println("Inside Pdf showBillwisePurchasePdf");
+
+		// moneyOutList = prodPlanDetailList;
+		Document document = new Document(PageSize.A4);
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+
+		System.out.println("time in Gen Bill PDF ==" + dateFormat.format(cal.getTime()));
+		String FILE_PATH = Constants.REPORT_SAVE;
+		File file = new File(FILE_PATH);
+
+		PdfWriter writer = null;
+
+		FileOutputStream out = new FileOutputStream(FILE_PATH);
+		try {
+			writer = PdfWriter.getInstance(document, out);
+		} catch (DocumentException e) {
+
+			e.printStackTrace();
+		}
+
+		PdfPTable table = new PdfPTable(6);
+		try {
+			System.out.println("Inside PDF Table try");
+			table.setWidthPercentage(100);
+			table.setWidths(new float[] { 1.4f, 3.7f, 2.8f, 2.8f, 3.2f, 3.3f });
+			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
+			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+			headFont1.setColor(BaseColor.WHITE);
+			Font f = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.UNDERLINE, BaseColor.BLUE);
+
+			PdfPCell hcell = new PdfPCell();
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			hcell.setPadding(3);
+			hcell = new PdfPCell(new Phrase("Sr.No.", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Vehicle Id", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Customer Name", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("OP KM", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("CL KM", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Total KM", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+
+			int index = 0;
+			for (VehicleWiseReport bill : vehicleWiseReport) {
+				index++;
+				PdfPCell cell;
+
+				cell = new PdfPCell(new Phrase(String.valueOf(index), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getVehId(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(bill.getCustName(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getOutKm(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getInKms(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+				cell = new PdfPCell(new Phrase("" + bill.getTotalKm(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+
+			}
+			document.open();
+			Paragraph name = new Paragraph("Dairy Power\n", f);
+			name.setAlignment(Element.ALIGN_CENTER);
+			document.add(name);
+			document.add(new Paragraph(" "));
+			Paragraph company = new Paragraph("Vehicle wise Consumption Report\n", f);
+			company.setAlignment(Element.ALIGN_CENTER);
+			document.add(company);
+			document.add(new Paragraph(" "));
+
+			DateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
+			String reportDate = DF.format(new Date());
+			Paragraph p1 = new Paragraph("From Date:" + fromDate + "  To Date:" + toDate, headFont);
+			p1.setAlignment(Element.ALIGN_CENTER);
+			document.add(p1);
+			document.add(new Paragraph("\n"));
+			document.add(table);
+
+			int totalPages = writer.getPageNumber();
+
+			System.out.println("Page no " + totalPages);
+
+			document.close();
+			// Atul Sir code to open a Pdf File
+			if (file != null) {
+
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+
+				if (mimeType == null) {
+
+					mimeType = "application/pdf";
+
+				}
+
+				response.setContentType(mimeType);
+
+				response.addHeader("content-disposition", String.format("inline; filename=\"%s\"", file.getName()));
+
+				response.setContentLength((int) file.length());
+
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+				try {
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+				} catch (IOException e) {
+					System.out.println("Excep in Opening a Pdf File");
+					e.printStackTrace();
+				}
+			}
+
+		} catch (DocumentException ex) {
+
+			System.out.println("Pdf Generation Error: BOm Prod  View Prod" + ex.getMessage());
+
+			ex.printStackTrace();
+
+		}
 
 	}
 

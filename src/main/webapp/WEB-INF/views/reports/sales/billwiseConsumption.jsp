@@ -64,7 +64,7 @@ jQuery(document).ready(function(){
 </script>
 <!--datepicker-->
 
-<c:url var="getBillWiseConsumption" value="/getBillWiseConsumption" />
+<c:url var="getBillWiseConsumption" value="/findBillWiseConsumption" />
 
 <div class="sidebarOuter"></div>
 
@@ -121,20 +121,20 @@ jQuery(document).ready(function(){
 						<input id="todatepicker" class="texboxitemcode texboxcal"
 							placeholder="DD-MM-YYYY" name="toDate" type="text">
 					</div>
-						<div class="col-md-1">
-							<div class="col1title" align="left">Customer: </div>
-						</div>
-						<div class="col-md-3">
-							<select class="form-control"  title="Please Select" 
-							name="custId" id="custId"  onchange="onCustomerChange(this.value)" required>
-					<option value="0" selected>All</option>
-						
-                       <c:forEach items="${customerList}" var="customerList">
-								<option value="${customerList.custId}">${customerList.custName}</option>
-							</c:forEach> 
-						 </select>
+					<div class="col-md-1">
+						<div class="col1title" align="left">Customer:</div>
+					</div>
+					<div class="col-md-3">
+						<select class="form-control" title="Please Select" name="custId"
+							id="custId" onchange="onCustomerChange(this.value)" required>
+							<option value="0" selected>All</option>
 
-						</div>
+							<c:forEach items="${customerList}" var="customerList">
+								<option value="${customerList.custId}">${customerList.custName}</option>
+							</c:forEach>
+						</select>
+
+					</div>
 					<div class="col-md-2">
 						<button class="btn search_btn pull-left"
 							onclick="billWiseConsumptionReport()">Search</button>
@@ -165,11 +165,11 @@ jQuery(document).ready(function(){
 										<th class="col-md-1">Collected Amt</th>
 										<th class="col-md-1">Outstanding Amt</th>
 										<th class="col-md-1">Paymode</th>
-							            <th class="col-md-1">Crates Total</th>
+										<th class="col-md-1">Crates Total</th>
 										<th class="col-md-1">Crates Received</th>
 										<th class="col-md-1">Crates Outstanding</th>
 										<th class="col-md-1">Total Kms</th>
-                                        <th class="col-md-1">Remark</th>
+										<th class="col-md-1">Remark</th>
 									</tr>
 
 								</thead>
@@ -181,7 +181,7 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.</th>
+										<th class="col-sm-1">Sr.No</th>
 										<th class="col-md-1">Bill No.</th>
 										<th class="col-md-1">Bill Date</th>
 										<th class="col-md-1">Customer</th>
@@ -189,11 +189,11 @@ jQuery(document).ready(function(){
 										<th class="col-md-1">Collected Amt</th>
 										<th class="col-md-1">Outstanding Amt</th>
 										<th class="col-md-1">Paymode</th>
-							            <th class="col-md-1">Crates Total</th>
+										<th class="col-md-1">Crates Total</th>
 										<th class="col-md-1">Crates Received</th>
 										<th class="col-md-1">Crates Outstanding</th>
 										<th class="col-md-1">Total Kms</th>
-                                        <th class="col-md-1">Remark</th>
+										<th class="col-md-1">Remark</th>
 									</tr>
 
 								</thead>
@@ -249,7 +249,7 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
-		
+
 			$
 					.getJSON(
 							'${getBillWiseConsumption}',
@@ -281,7 +281,8 @@ jQuery(document).ready(function(){
 
 													document
 															.getElementById("expExcel").disabled = false;
-													document.getElementById("PDFButton").disabled = false;
+													document
+															.getElementById("PDFButton").disabled = false;
 													document
 															.getElementById('range').style.display = 'block';
 
@@ -300,50 +301,69 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-2"></td>')
 																	.html(
-																			billWisePurchaseData.poDate));
+																			billWisePurchaseData.billId));
 													tr
 															.append($(
 																	'<td class="col-md-1"></td>')
 																	.html(
-																			billWisePurchaseData.poId));
+																			billWisePurchaseData.billDate));
 
+													tr
+															.append($(
+																	'<td class="col-md-2"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.custName));
+													tr
+															.append($(
+																	'<td class="col-md-2"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.grandTotal));
+													tr
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.collectedAmt));
+
+													tr
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.outstandingAmt));
+													tr
+															.append($(
+																	'<td class="col-md-1"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.collectionPaymode));
+												
+													tr
+															.append($(
+																	'<td class="col-md-2"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.cratesOpBal));
 
 													tr
 															.append($(
 																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
-																			billWisePurchaseData.poTotal));
+																			billWisePurchaseData.cratesIssued));
+
 													tr
 															.append($(
 																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
-																			billWisePurchaseData.cratesReceivedQty));
-													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.shortNo));
-													
-													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.extraNo));
-													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.poLeakageQty));
-													tr
-													.append($(
-															'<td class="col-md-1"style="text-align:center"></td>')
-															.html(
-																	billWisePurchaseData.userName));
+																			billWisePurchaseData.cratesClBal));
+
 													tr
 															.append($(
 																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
-																			billWisePurchaseData.poRemarks));
+																			billWisePurchaseData.cratesReceived));
+
+													tr
+															.append($(
+																	'<td class="col-md-2"style="text-align:center"></td>')
+																	.html(
+																			billWisePurchaseData.remarks));
 
 													$('#table_grid tbody')
 															.append(tr);
@@ -405,10 +425,11 @@ jQuery(document).ready(function(){
 	function genPdf() {
 		var fromDate = document.getElementById("fromdatepicker").value;
 		var toDate = document.getElementById("todatepicker").value;
-		
-			window
-					.open('${pageContext.request.contextPath}/showBillwisePurchasePdf/'+ fromDate + '/' + toDate');
-		
+
+		window
+				.open('${pageContext.request.contextPath}/showBillwiseConsumptionPurchasePdf/'
+						+ fromDate + '/' + toDate);
+
 	}
 </script>
 </body>
