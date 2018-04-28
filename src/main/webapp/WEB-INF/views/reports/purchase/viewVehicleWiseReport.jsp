@@ -132,17 +132,16 @@ jQuery(document).ready(function(){
 							placeholder="Vehicle Id" name="vehId" class="form-control" type="text">
 					</div>
 					 -->
-
+	<div class="col-md-2">
 					<select name="vehId" class="form-control"
 						placeholder="Vehicle Name" data-rule-required="true" id="vehId">
-						<option value="">Select Vehicle</option>
-						<option value="0"><c:out value="All" /></option>
+						<option value="0" selected><c:out value="All" /></option>
 						<c:forEach items="${vehicleList}" var="vehicle" varStatus="count">
 							<option value="${vehicle.vehId}"><c:out
 									value="${vehicle.vehName}" /></option>
 						</c:forEach>
 					</select>
-
+      </div> 
 
 					<!-- <label class="col-sm-3 col-lg-2 control-label">Custom Dropdown Multiple Select</label>
                                       <div class="col-sm-9 col-lg-10 controls">
@@ -179,16 +178,6 @@ jQuery(document).ready(function(){
 							<table id="table_grid" class="main-table" border="1">
 								<thead>
 									<tr class="bgpink">
-
-										<th class="col-sm-1">Sr.No.</th>
-
-										<th class="col-sm-1">Vehicle No</th>
-										<th class="col-sm-2">Customer Name</th>
-										<th class="col-md-1">OP KM</th>
-										<th class="col-md-1">CL KM</th>
-										<th class="col-md-1">Total KM</th>
-
-
 
 									</tr>
 

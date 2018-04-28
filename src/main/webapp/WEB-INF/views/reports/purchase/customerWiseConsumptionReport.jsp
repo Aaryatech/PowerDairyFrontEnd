@@ -105,12 +105,11 @@ jQuery(document).ready(function(){
 
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="pageTitle">Customerwise Consumption Report</h2>
+						<h2 class="pageTitle">Customer Wise Consumption Report</h2>
 					</div>
 				</div>
 
 				<div class="row">
-					<input type="hidden" name="frId" id="frId" value="${frId}">
 
 					<div class="col-md-2 from_date">
 						<h4 class="pull-left">From Date:-</h4>
@@ -126,11 +125,23 @@ jQuery(document).ready(function(){
 						<input id="todatepicker" class="texboxitemcode texboxcal"
 							placeholder="DD-MM-YYYY" name="toDate" type="text">
 					</div>
+					<div class="col-md-1">
+							<div class="col1title" align="left">Customer *: </div>
+						</div>
+						<div class="col-md-2">
+							<select  data-live-search="true" title="Please Select"  class="form-control"
+							name="custId" id="custId"  required>
+							<option value="0">All</option>
+							<c:forEach items="${customerList}" var="customerList">
+								<option value="${customerList.custId}">${customerList.custName}</option>
+							</c:forEach> 
+						 </select>
+
+						</div>
 					<div class="col-md-2">
 						<button class="btn search_btn pull-left"
 							onclick="customerWiseConsumption()">Search</button>
-						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
- --%>
+	
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
 							onclick="genPdf()" disabled="disabled">PDF</button>
 
@@ -148,21 +159,7 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-
-										<th class="col-sm-1">Customer Name</th>
-										<th class="col-sm-1">Bill Amount</th>
-										<th class="col-md-1">Received Amount</th>
-										<th class="col-md-1">OS Amount</th>
-										<th class="col-md-1">Payment Mode</th>
-										<th class="col-md-1">Crates OP</th>
-										<th class="col-md-1">Crates Issued</th>
-										<th class="col-md-1">Crates CL</th>
-										<th class="col-md-1">Crates OS</th>
-										<th class="col-md-1">Out Km</th>
-
-
-
+									
 									</tr>
 
 								</thead>
@@ -180,15 +177,10 @@ jQuery(document).ready(function(){
 										<th class="col-sm-1">Bill Amount</th>
 										<th class="col-md-1">Received Amount</th>
 										<th class="col-md-1">OS Amount</th>
-										<th class="col-md-1">Payment Mode</th>
 										<th class="col-md-1">Crates OP</th>
 										<th class="col-md-1">Crates Issued</th>
-										<th class="col-md-1">Crates CL</th>
+										<th class="col-md-1">Crates Received</th>
 										<th class="col-md-1">Crates OS</th>
-										<th class="col-md-1">Out Km</th>
-
-
-
 
 									</tr>
 
@@ -244,6 +236,8 @@ jQuery(document).ready(function(){
 			var fromDate = document.getElementById("fromdatepicker").value;
 
 			var toDate = document.getElementById("todatepicker").value;
+			var custId = document.getElementById("custId").value;
+
 
 			$
 					.getJSON(
@@ -252,6 +246,7 @@ jQuery(document).ready(function(){
 
 								fromDate : fromDate,
 								toDate : toDate,
+								custId:custId,
 								ajax : 'true',
 
 							},
@@ -278,9 +273,6 @@ jQuery(document).ready(function(){
 															.getElementById("expExcel").disabled = false;
 													document
 															.getElementById('range').style.display = 'block';
-
-													var partyname = "GFPL";
-													var gstNo = "#012";
 
 													var tr = $('<tr></tr>');
 
@@ -313,12 +305,7 @@ jQuery(document).ready(function(){
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.outstandingAmt));
-
-													tr
-															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.collectionPaymode));
+                                            
 
 													tr
 															.append($(
@@ -332,11 +319,6 @@ jQuery(document).ready(function(){
 																	.html(
 																			billWisePurchaseData.cratesIssued));
 
-													tr
-															.append($(
-																	'<td class="col-md-1"style="text-align:right"></td>')
-																	.html(
-																			billWisePurchaseData.cratesClBal));
 
 													tr
 															.append($(
@@ -346,9 +328,9 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.outKm));
+																	'<td class="col-md-1"style="text-align:right"></td>')
+																	.html((billWisePurchaseData.cratesOpBal+billWisePurchaseData.cratesIssued)-billWisePurchaseData.cratesReceived));
+												
 													$('#table_grid tbody')
 															.append(tr);
 
@@ -364,7 +346,7 @@ jQuery(document).ready(function(){
 
 		var fromDate = $("#fromdatepicker").val();
 		var toDate = $("#todatepicker").val();
-
+		var custId= $("#custId").val();
 		var isValid = true;
 
 		if (fromDate == "" || fromDate == null) {
@@ -375,7 +357,7 @@ jQuery(document).ready(function(){
 
 			isValid = false;
 			alert("Please select To Date");
-		}
+		} 
 		return isValid;
 
 	}
@@ -413,7 +395,7 @@ jQuery(document).ready(function(){
 		if (isValid == true) {
 		
 			window
-					.open('${pageContext.request.contextPath}/showPurchaseCustomerwiseConsumptionReportPdf/'+fromDate+'/'+toDate);
+					.open('${pageContext.request.contextPath}/showCustomerwiseConsumptionReportPdf/'+fromDate+'/'+toDate);
 		}
 	}
 </script>

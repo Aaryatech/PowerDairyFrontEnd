@@ -243,7 +243,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="collectedAmt" style="text-align: right;" class="form-control"
-								placeholder="Collected Amt" name="collectedAmt"  value="0" type="number" onblur="calRemainingAmt(this.value)" required>
+								placeholder="Collected Amt" name="collectedAmt"  value="0" type="number" onchange="calRemainingAmt(this.value)" required readonly>
 
 						</div>
 					 
@@ -300,6 +300,16 @@
 					 </div>
 					<div class="colOuter">
 					<div class="col-md-2">
+							<div class="col1title" align="left">Vehicle Out KM*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="vehInKm" class="form-control" style="text-align: right;"
+								placeholder="Vehicle Out KM" name="vehOutKm"   type="number" value="${outKm}"  readonly>
+
+						</div>
+							<div class="col-md-1"> 
+						</div>
+					<div class="col-md-2">
 							<div class="col1title" align="left">Vehicle In KM*: </div>
 						</div>
 						<div class="col-md-3">
@@ -307,22 +317,10 @@
 								placeholder="Vehicle In KM" name="vehInKm"   type="number"  required>
 
 						</div>
+							
 						
-						<div class="col-md-1"> 
-								</div>
-						 <div class="col-md-2">
-							<div class="col1title" align="left">Remark : </div>
-						</div>
-						<div class="col-md-3">
-							<input id="remark" class="form-control" style="text-align: left;"
-								placeholder="Remark" name="remark"   type="text" value="NA">
- 
-					</div>
-						<div class="col-md-1"> 
-						</div>
+					
 						
-						
-
 						</div>
 						
 						<div class="colOuter">
@@ -343,12 +341,12 @@
 						<div class="col-md-1"> 
 								</div>
 							    <div class="col-md-2">
-									<div class="col1title" align="left">Check No : </div>
+									<div class="col1title" align="left">Cheque No : </div>
 								</div>
 								<div class="col-md-3">
 								 
 									 <input id="checkNo" class="form-control"
-										placeholder="Check No" name="checkNo" style="text-align: left;" value="0"  type="number" required readOnly> 
+										placeholder="Cheque No" name="checkNo" style="text-align: left;" value="0"  type="number" required readOnly> 
 		
 								</div>
 								 
@@ -356,23 +354,23 @@
 						</div>
 						<div class="colOuter">
 						<div class="col-md-2">
-									<div class="col1title" align="left">Check Amount: </div>
+									<div class="col1title" align="left">Cheque Amount: </div>
 								</div>
 								<div class="col-md-3">
 								 
 									 <input id="checkAmt" class="form-control"
-										placeholder="Check Amount" name="checkAmt" type="text"  style="text-align: left;" value="0" required readOnly> 
+										placeholder="Cheque Amount" name="checkAmt" type="text"  style="text-align: right;" value="0" onchange="calculateCollectedAmt(this.value) "required readOnly > 
 		
 								</div>
 								<div class="col-md-1"> 
 								</div>
 						<div class="col-md-2">
-									<div class="col1title" align="left">Check Date: </div>
+									<div class="col1title" align="left">Cheque Date: </div>
 								</div>
 								<div class="col-md-3">
 								 
 									 <input id="fromdatepicker" class="form-control"
-										placeholder="Check Date" name="checkDate" type="text"  style="text-align: left;"  required readOnly> 
+										placeholder="Cheque Date" name="checkDate" type="text"  style="text-align: left;"  required readOnly> 
 		
 								</div>
 						
@@ -388,6 +386,16 @@
 										placeholder="Bank Name" name="bankName" style="text-align: left;"  required readOnly> 
 		
 								</div>	
+									<div class="col-md-1"> 
+								</div>
+					 <div class="col-md-2">
+							<div class="col1title" align="left">Remark : </div>
+						</div>
+						<div class="col-md-3">
+							<input id="remark" class="form-control" style="text-align: left;"
+								placeholder="Remark" name="remark"   type="text" value="NA">
+ 
+					</div>
 								</div>	
  				<div id="currencyTable" style="display: none">
 					<div id="table-scroll" class="table-scroll">
@@ -403,6 +411,8 @@
 												</tr>
 											</thead>
 											<tbody>
+											<input type="hidden" name="totCurrAmt" id="totCurrAmt" value="0"/>
+											<input type="hidden" name="currencyListSize" id="currencyListSize" value="${currencyListSize}"/>
 											 <c:forEach items="${currencyList}" var="currencyList" varStatus="count">
 										<input id="currValue${count.index}" class="form-control" style="text-align: right;"
 								 name="currValue${count.index}"   type="hidden"   value="${currencyList.currencyValue}">
@@ -410,7 +420,7 @@
 												 <td >${count.index+1}</td>
 													<td >${currencyList.description}</td>
 													<td ><input id="qty${count.index}" class="form-control" style="text-align: center;width:90px" 
-								 name="qty${count.index}"   type="number"  value="0" onchange="calCurrency(this.value,${count.index})" required>
+								 name="qty${count.index}"   type="number" min="0" value="0" onchange="calCurrency(this.value,${count.index})" required>
 </td>
 													<td id="currencyTotal${count.index}">0
 											
@@ -424,14 +434,24 @@
 										</table>
 									</div>
 								</div>
-					</div>
+					
 					<div class="colOuter">
-						
-						<div class="col-md-1"> 
-						</div>
-						 
-					</div>
-						 
+					
+					
+					<div class="col-md-7"> 
+								</div>
+							    <div class="col-md-2">
+									<div class="col1title" align="left">Total Currency Cash: </div>
+								</div>
+								<div class="col-md-3">
+								 
+									 <input id="cash" class="form-control"
+										placeholder="Currency Cash" name="cash" style="text-align: right;" value="0"  type="number" readOnly> 
+		
+								</div>
+								
+				
+					</div>	 </div>
 					<div class="colOuter">
 						<div align="center">
 							<input name="submit" class="buttonsaveorder" value="Submit"
@@ -468,44 +488,111 @@
 
 <script>
  
-
+function calculateCollectedAmt(val)
+{
+	var payMode = document.getElementById("payMode").value;
+	var	checkAmt=parseInt($("#checkAmt").val());
+	    if(payMode==1)
+		{
+	    	document.getElementById("collectedAmt").value=(checkAmt);
+	    	calRemainingAmt(checkAmt);
+		}
+	    else if(payMode==3)
+		{
+		  var totCurrAmt=parseInt($("#totCurrAmt").val());
+		  document.getElementById("collectedAmt").value=(checkAmt+totCurrAmt);
+		  calRemainingAmt(checkAmt+totCurrAmt);
+		}
+	
+	
+	
+}
 function selectionCurrency() {
 //alert("ala");
 	var payMode = document.getElementById("payMode").value;
 	//alert("payMode" + payMode);
 	  if(payMode==0)
     	{
+		  document.getElementById("collectedAmt").value=0;
+		  calRemainingAmt(0);
+	    	document.getElementById("checkAmt").value=0;
+	    	var currencyListSize=parseInt($("#currencyListSize").val());
+	    	for(var i=0;i<currencyListSize;i++)
+			{
+	    		  document.getElementById("qty"+i).value=0;
+	    		  document.getElementById("currTotal"+i).value=0;
+	    		  $('#currencyTotal'+i).html(0);
+			}
+	    	document.getElementById("totCurrAmt").value=0;
+	    	document.getElementById("cash").value=0;	
 		  document.getElementById("checkNo").readOnly=true;
 	    	document.getElementById("fromdatepicker").readOnly=true;
 	    	document.getElementById("checkAmt").readOnly=true;
 	    	document.getElementById("bankName").readOnly=true;
-	    	 
+	    	
 	    	$("#currencyTable").hide();
     	}
 	  else if(payMode==2)
     	{
+			document.getElementById("collectedAmt").value=0;
+			calRemainingAmt(0);
+	    	document.getElementById("checkAmt").value=0;
+	    	var currencyListSize=parseInt($("#currencyListSize").val());
+	    	for(var i=0;i<currencyListSize;i++)
+			{
+	    		  document.getElementById("qty"+i).value=0;
+	    		  document.getElementById("currTotal"+i).value=0;
+	    		  $('#currencyTotal'+i).html(0);
+			}
+	    	document.getElementById("totCurrAmt").value=0;
+	    	document.getElementById("cash").value=0;
     	document.getElementById("checkNo").readOnly=true;
     	document.getElementById("fromdatepicker").readOnly=true;
     	document.getElementById("checkAmt").readOnly=true;
     	document.getElementById("bankName").readOnly=true;
+    
     	$("#currencyTable").show();
     	}
     else  if(payMode==1)
     	{
+    	document.getElementById("collectedAmt").value=0;
+    	calRemainingAmt(0);
+    	document.getElementById("checkAmt").value=0;
+    	var currencyListSize=parseInt($("#currencyListSize").val());
+    	for(var i=0;i<currencyListSize;i++)
+		{
+    		  document.getElementById("qty"+i).value=0;
+    		  document.getElementById("currTotal"+i).value=0;
+    		  $('#currencyTotal'+i).html(0);
+		}
+    	document.getElementById("totCurrAmt").value=0;
+    	document.getElementById("cash").value=0;
     	document.getElementById("checkNo").readOnly=false;
     	document.getElementById("fromdatepicker").readOnly=false;
     	document.getElementById("checkAmt").readOnly=false;
     	document.getElementById("bankName").readOnly=false;
-    	 
+    
     	$("#currencyTable").hide();
     	}
     else  if(payMode==3)
     	{
-    	
+    	document.getElementById("collectedAmt").value=0;
+    	calRemainingAmt(0);
+    	document.getElementById("checkAmt").value=0;
+    	var currencyListSize=parseInt($("#currencyListSize").val());
+    	for(var i=0;i<currencyListSize;i++)
+		{
+    		  document.getElementById("qty"+i).value=0;
+    		  document.getElementById("currTotal"+i).value=0;
+    		  $('#currencyTotal'+i).html(0);
+		}
+    	document.getElementById("totCurrAmt").value=0;
+    	document.getElementById("cash").value=0;
     	document.getElementById("checkNo").readOnly=false;
     	document.getElementById("fromdatepicker").readOnly=false;
     	document.getElementById("checkAmt").readOnly=false;
     	document.getElementById("bankName").readOnly=false;
+    
     	$("#currencyTable").show();
     	
     	}
@@ -713,11 +800,34 @@ function calBalanceCrates(receivedCrates)
 }
 function calCurrency(qty,index)
 {
+	var CurrencyTotal=0;
+	var payMode = document.getElementById("payMode").value;
+
+	var currencyListSize=parseInt($("#currencyListSize").val());
 	var currValue=parseInt($("#currValue"+index).val());
 	var total=currValue*qty;
 	$('#currencyTotal'+index).html(total);
-
 	document.getElementById("currTotal"+index).value=total;
+	for(var i=0;i<currencyListSize;i++)
+		{
+		   var curr=parseInt($('#currTotal'+i).val());
+		   CurrencyTotal=CurrencyTotal+curr;
+		   
+		}
+	document.getElementById("totCurrAmt").value=(CurrencyTotal);
+	document.getElementById("cash").value=(CurrencyTotal);
+
+	if(payMode==2)
+		{
+		document.getElementById("collectedAmt").value=(CurrencyTotal);
+		calRemainingAmt(CurrencyTotal);
+		}
+	else if(payMode==3)
+		{
+		var checkAmt=parseInt($("#checkAmt").val());
+		document.getElementById("collectedAmt").value=(checkAmt+CurrencyTotal);
+		calRemainingAmt(CurrencyTotal);
+		}
 }
 </script>
 </body>

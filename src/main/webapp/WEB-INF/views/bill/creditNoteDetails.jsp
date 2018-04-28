@@ -122,22 +122,7 @@ table, th, td {
 						</div>
 				 
 					</div>
-					
-					 
-					
-					<div class="colOuter">
-						<div class="col-md-2">
-							<div class="col1title" align="left">Scrap Type: </div>
-						</div>
-						<div class="col-md-1" align="left">
-							${crnHeader.scrapType}
-
-						</div>
-						 
 				 
-					</div>
-					
-					  
 					
 					<div id="table-scroll" class="table-scroll">
 					<div id="faux-table" class="faux-table" aria="hidden"></div>
@@ -149,7 +134,9 @@ table, th, td {
 												<th class="col-sm-1">Sr no.</th>
 													<th class="col-md-1">Batch No</th>
 													<th class="col-md-2">Item Name</th>
-													<th class="col-md-1">Qty</th>   
+													<th class="col-md-1">Leakage Qty</th>   
+													<th class="col-md-1">Expire Qty</th>   
+													
 													<th class="col-md-1">Rate</th> 
 													<th class="col-md-1">Total</th> 
 																	</tr>
@@ -169,11 +156,14 @@ table, th, td {
 												value="${creditNoteDetail.itemName}" /></td>
 										
 										<td class="col-md-1" ><c:out
-												value="${creditNoteDetail.qty}" /></td>
+												value="${creditNoteDetail.leakageQty}" /></td>
+												
+										<td class="col-md-1" ><c:out
+												value="${creditNoteDetail.expireQty}" /></td>
 										<td class="col-md-1" ><c:out
 												value="${creditNoteDetail.rate}" /></td>
 											<td class="col-md-1" ><c:out
-												value="${creditNoteDetail.qty*creditNoteDetail.rate}" /></td>
+												value="${(creditNoteDetail.leakageQty+creditNoteDetail.expireQty)*creditNoteDetail.rate}" /></td>
 									</tr>
 								</c:forEach>
 						</table>

@@ -4,7 +4,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
-
+<style type="text/css">
+table, th, td {
+    border: 1px solid #9da88d;
+}
+</style>
 
 <%-- <!DOCTYPE html>
 <html>
@@ -64,7 +68,7 @@ jQuery(document).ready(function(){
 </script>
 <!--datepicker-->
 
-<c:url var="getBillWiseConsumption" value="/findBillWiseConsumption" />
+<c:url var="getCategoryWiseConsumption" value="/findCategoryWiseConsumption" />
 
 <div class="sidebarOuter"></div>
 
@@ -101,7 +105,7 @@ jQuery(document).ready(function(){
 
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="pageTitle">Billwise Consumption Report</h2>
+						<h2 class="pageTitle">Category Wise Consumption Report</h2>
 					</div>
 				</div>
 
@@ -122,22 +126,22 @@ jQuery(document).ready(function(){
 							placeholder="DD-MM-YYYY" name="toDate" type="text">
 					</div>
 					<div class="col-md-1">
-						<div class="col1title" align="left">Customer:</div>
+						<div class="col1title" align="left">Category:</div>
 					</div>
 					<div class="col-md-3">
-						<select class="form-control" title="Please Select" name="custId"
-							id="custId" onchange="onCustomerChange(this.value)" required>
+						<select class="form-control" title="Select Category" name="catId"
+							id="catId" required>
 							<option value="0" selected>All</option>
 
-							<c:forEach items="${customerList}" var="customerList">
-								<option value="${customerList.custId}">${customerList.custName}</option>
+							<c:forEach items="${catList}" var="catList">
+								<option value="${catList.catId}">${catList.catName}</option>
 							</c:forEach>
 						</select>
 
 					</div>
 					<div class="col-md-2">
 						<button class="btn search_btn pull-left"
-							onclick="billWiseConsumptionReport()">Search</button>
+							onclick="categoryConsumptionReport()">Search</button>
 						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
  --%>
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
@@ -157,19 +161,6 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.</th>
-										<th class="col-md-1">Bill No.</th>
-										<th class="col-md-1">Bill Date</th>
-										<th class="col-md-1">Customer</th>
-										<th class="col-md-1">Bill Amt</th>
-										<th class="col-md-1">Collected Amt</th>
-										<th class="col-md-1">Outstanding Amt</th>
-										<th class="col-md-1">Paymode</th>
-										<th class="col-md-1">Crates Total</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Crates Outstanding</th>
-										<th class="col-md-1">Total Kms</th>
-										<th class="col-md-1">Remark</th>
 									</tr>
 
 								</thead>
@@ -181,19 +172,18 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No</th>
-										<th class="col-md-1">Bill No.</th>
-										<th class="col-md-1">Bill Date</th>
-										<th class="col-md-1">Customer</th>
-										<th class="col-md-1">Bill Amt</th>
-										<th class="col-md-1">Collected Amt</th>
-										<th class="col-md-1">Outstanding Amt</th>
-										<th class="col-md-1">Paymode</th>
-										<th class="col-md-1">Crates Total</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Crates Outstanding</th>
-										<th class="col-md-1">Total Kms</th>
-										<th class="col-md-1">Remark</th>
+										<th class="col-sm-1"style="text-align: center;">Sr.No</th>
+										<th class="col-md-2"style="text-align: center;">Item Name</th>
+										<th class="col-md-1"style="text-align: center;">Qty</th>
+											<th class="col-md-1"style="text-align: center;">Return Qty</th>
+										<th class="col-md-1"style="text-align: center;">Dist Leakage Qty</th>
+									
+										<th class="col-md-1"style="text-align: center;">Rate</th>
+										<th class="col-md-1"style="text-align: center;">Taxable Amount</th>
+										<th class="col-md-1"style="text-align: center;">Tax %</th>
+										<th class="col-md-1"style="text-align: center;">Tax Amount</th>
+										<th class="col-md-1"style="text-align: center;">Total Amount</th>
+									
 									</tr>
 
 								</thead>
@@ -238,8 +228,7 @@ jQuery(document).ready(function(){
 
 
 <script type="text/javascript">
-	function billWiseConsumptionReport() {
-		alert("Heee");
+	function categoryConsumptionReport() {
 		$('#table_grid td').remove();
 
 		var isValid = validate();
@@ -249,20 +238,21 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
+			var catId = document.getElementById("catId").value;
 
 			$
 					.getJSON(
-							'${getBillWiseConsumption}',
+							'${getCategoryWiseConsumption}',
 							{
 
 								fromDate : fromDate,
 								toDate : toDate,
+								catId:catId,
 								ajax : 'true',
 
 							},
 							function(data) {
 
-								alert(data)
 								var len = data.length;
 
 								if (data == "") {
@@ -277,7 +267,7 @@ jQuery(document).ready(function(){
 										.each(
 												data,
 												function(key,
-														billWisePurchaseData) {
+														item) {
 
 													document
 															.getElementById("expExcel").disabled = false;
@@ -286,87 +276,44 @@ jQuery(document).ready(function(){
 													document
 															.getElementById('range').style.display = 'block';
 
-													var partyname = "GFPL";
-													var gstNo = "#012";
 
 													var tr = $('<tr></tr>');
 
-													tr
-															.append($(
-																	'<td class="col-sm-1"></td>')
-																	.html(
-																			key + 1));
+												  	tr.append($('<td></td>').html(key+1));
 
-													tr
-															.append($(
-																	'<td class="col-md-2"></td>')
-																	.html(
-																			billWisePurchaseData.billId));
-													tr
-															.append($(
-																	'<td class="col-md-1"></td>')
-																	.html(
-																			billWisePurchaseData.billDate));
+												  	tr.append($('<td></td>').html(item.itemName));
+												  	
+													var qty=item.billQty-(item.returnQty+item.distLeakageQty);
+													
+												  	tr.append($('<td></td>').html(item.billQty));
+												 	tr.append($('<td style="text-align:right;"></td>').html(item.returnQty));
+												  	tr.append($('<td style="text-align:right;"></td>').html(item.distLeakageQty));
+												  	
+												  	var taxPer=(item.cgstPer+item.sgstPer);
 
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.custName));
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.grandTotal));
-													tr
-															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.collectedAmt));
+												  	var baseRate=(item.rate*100)/(100+taxPer);
+												  	
+												  	var taxableAmt=(baseRate*qty);
+												  	
+												  	var cgstRs=(taxableAmt*item.cgstPer)/100;
+													var sgstRs=(taxableAmt*item.sgstPer)/100;
+													
+													var totalTax=cgstRs+sgstRs;
+													
+												  	tr.append($('<td style="text-align:right;"></td>').html((baseRate).toFixed(2)));
 
-													tr
-															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.outstandingAmt));
-													tr
-															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.collectionPaymode));
-												
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesOpBal));
+												  	tr.append($('<td style="text-align:right;"></td>').html((taxableAmt).toFixed(2)));
 
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesIssued));
+												 
+												  	tr.append($('<td style="text-align:right;"></td>').html((taxPer).toFixed(2)));
+												  
+												  	tr.append($('<td style="text-align:right;"></td>').html((totalTax).toFixed(2)));
+												 	
+										           var total=taxableAmt+totalTax;
+												  	tr.append($('<td style="text-align:right;"></td>').html((total).toFixed(2)));
+												 
 
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesClBal));
-
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesReceived));
-
-													tr
-															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.remarks));
-
-													$('#table_grid tbody')
-															.append(tr);
+													$('#table_grid tbody').append(tr);
 
 												});
 							}
@@ -427,7 +374,7 @@ jQuery(document).ready(function(){
 		var toDate = document.getElementById("todatepicker").value;
 
 		window
-				.open('${pageContext.request.contextPath}/showBillwiseConsumptionPurchasePdf/'
+				.open('${pageContext.request.contextPath}/showCategoryWiseItemReportPdf/'
 						+ fromDate + '/' + toDate);
 
 	}

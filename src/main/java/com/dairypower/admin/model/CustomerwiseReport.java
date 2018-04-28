@@ -1,16 +1,20 @@
 package com.dairypower.admin.model;
 
-import java.util.Date;
 
-public class CustomerWiseConReport {
+public class CustomerwiseReport {
+
 	
 	private int billTempId;
 
 	private int custId;
 	
 	private int billId;
+	
+	private int inKms;
+	
+	private int outKm;
 
-	private Date billDate;
+	private String billDate;
 
 	private String custName;
 
@@ -24,9 +28,8 @@ public class CustomerWiseConReport {
 
 	private int cratesIssued;
 
-	private int cratesClBal;
 
-	private int cratesReceived;
+	private int crates_received;
 	
 	private float grandTotal;
 
@@ -54,12 +57,27 @@ public class CustomerWiseConReport {
 		this.billId = billId;
 	}
 
+	public int getInKms() {
+		return inKms;
+	}
 
-	public Date getBillDate() {
+	public void setInKms(int inKms) {
+		this.inKms = inKms;
+	}
+
+	public int getOutKm() {
+		return outKm;
+	}
+
+	public void setOutKm(int outKm) {
+		this.outKm = outKm;
+	}
+
+	public String getBillDate() {
 		return billDate;
 	}
 
-	public void setBillDate(Date billDate) {
+	public void setBillDate(String billDate) {
 		this.billDate = billDate;
 	}
 
@@ -111,22 +129,13 @@ public class CustomerWiseConReport {
 		this.cratesIssued = cratesIssued;
 	}
 
-	public int getCratesClBal() {
-		return cratesClBal;
+
+	public int getCrates_received() {
+		return crates_received;
 	}
 
-	public void setCratesClBal(int cratesClBal) {
-		this.cratesClBal = cratesClBal;
-	}
-
-	
-
-	public int getCratesReceived() {
-		return cratesReceived;
-	}
-
-	public void setCratesReceived(int cratesReceived) {
-		this.cratesReceived = cratesReceived;
+	public void setCrates_received(int crates_received) {
+		this.crates_received = crates_received;
 	}
 
 	public float getGrandTotal() {
@@ -139,10 +148,11 @@ public class CustomerWiseConReport {
 
 	@Override
 	public String toString() {
-		return "CustomerwiseReport [billTempId=" + billTempId + ", custId=" + custId + ", billId=" + billId + ", billDate=" + billDate + ", custName=" + custName + ", collectedAmt="
+		return "CustomerwiseReport [billTempId=" + billTempId + ", custId=" + custId + ", billId=" + billId + ", inKms="
+				+ inKms + ", outKm=" + outKm + ", billDate=" + billDate + ", custName=" + custName + ", collectedAmt="
 				+ collectedAmt + ", outstandingAmt=" + outstandingAmt + ", collectionPaymode=" + collectionPaymode
-				+ ", cratesOpBal=" + cratesOpBal + ", cratesIssued=" + cratesIssued + ", cratesClBal=" + cratesClBal
-				+ " grandTotal=" + grandTotal + "]";
+				+ ", cratesOpBal=" + cratesOpBal + ", cratesIssued=" + cratesIssued  
+				+ ", crates_received=" + crates_received + ", grandTotal=" + grandTotal + "]";
 	}
 	
 	

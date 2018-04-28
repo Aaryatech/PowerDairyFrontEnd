@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class VehicleWiseReport {
 	
-private int tVehId;
+    private int tVehId;
 	
 	private int vehId;
 

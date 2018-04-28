@@ -263,7 +263,7 @@ public class ReturnManufactureController {
  
 	 
 		try {
-			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = new Date();
 		  

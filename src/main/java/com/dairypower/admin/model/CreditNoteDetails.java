@@ -16,7 +16,11 @@ public class CreditNoteDetails {
     
     private String itemName;
 	
-    private int qty;
+    private int scrapType;
+	
+    private int leakageQty;
+	
+    private int expireQty;
 	
     private float rate;
 
@@ -44,10 +48,7 @@ public class CreditNoteDetails {
 		return itemName;
 	}
 
-	public int getQty() {
-		return qty;
-	}
-
+	
 	public float getRate() {
 		return rate;
 	}
@@ -76,8 +77,30 @@ public class CreditNoteDetails {
 		this.itemName = itemName;
 	}
 
-	public void setQty(int qty) {
-		this.qty = qty;
+	
+
+	public int getScrapType() {
+		return scrapType;
+	}
+
+	public int getLeakageQty() {
+		return leakageQty;
+	}
+
+	public int getExpireQty() {
+		return expireQty;
+	}
+
+	public void setScrapType(int scrapType) {
+		this.scrapType = scrapType;
+	}
+
+	public void setLeakageQty(int leakageQty) {
+		this.leakageQty = leakageQty;
+	}
+
+	public void setExpireQty(int expireQty) {
+		this.expireQty = expireQty;
 	}
 
 	public void setRate(float rate) {
@@ -87,9 +110,9 @@ public class CreditNoteDetails {
 	@Override
 	public String toString() {
 		return "CreditNoteDetails [crnDetailId=" + crnDetailId + ", crnHeaderId=" + crnHeaderId + ", batchId=" + batchId
-				+ ", packDate=" + packDate + ", itemId=" + itemId + ", itemName=" + itemName + ", qty=" + qty
-				+ ", rate=" + rate + "]";
+				+ ", packDate=" + packDate + ", itemId=" + itemId + ", itemName=" + itemName + ", scrapType="
+				+ scrapType + ", leakageQty=" + leakageQty + ", expireQty=" + expireQty + ", rate=" + rate + "]";
 	}
-    
+
     
 }

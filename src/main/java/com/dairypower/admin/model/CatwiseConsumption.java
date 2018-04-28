@@ -1,7 +1,8 @@
 package com.dairypower.admin.model;
 
 public class CatwiseConsumption {
-private int billDetailId;
+
+	private int billDetailId;
 	
 	private int billTempId;
 

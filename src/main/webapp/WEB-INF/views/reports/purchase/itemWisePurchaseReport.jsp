@@ -148,14 +148,6 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-
-										<th class="col-sm-1">Item No</th>
-										<th class="col-sm-2">Item Name</th>
-										<th class="col-md-2">Total</th>
-
-
-
 									</tr>
 
 								</thead>
@@ -166,15 +158,12 @@ jQuery(document).ready(function(){
 							<table id="table_grid" class="main-table" border="1">
 								<thead>
 									<tr class="bgpink">
-
-
-										<th class="col-sm-1">Item No</th>
-										<th class="col-sm-2">Item Name</th>
-										<th class="col-md-2">Total</th>
-
-
+										<th class="col-sm-1"style="text-align:center">Sr. No.</th>
+									
+										<th class="col-sm-1"style="text-align:center">Item No</th>
+										<th class="col-sm-2"style="text-align:center">Item Name</th>
+										<th class="col-md-2"style="text-align:center">Total</th>
 									</tr>
-
 								</thead>
 								<tbody>
 							</table>
@@ -263,10 +252,10 @@ jQuery(document).ready(function(){
 					tr.append($('<td class="col-md-1"></td>').html(
 							billWisePurchaseData.itemId));
 
-					tr.append($('<td class="col-md-2"></td>').html(
+					tr.append($('<td class="col-md-2" style="text-align:left"></td>').html(
 							billWisePurchaseData.itemName));
 
-					tr.append($('<td class="col-md-2"></td>').html(
+					tr.append($('<td class="col-md-2"style="text-align:right"></td>').html(
 							billWisePurchaseData.total));
 
 					$('#table_grid tbody').append(tr);

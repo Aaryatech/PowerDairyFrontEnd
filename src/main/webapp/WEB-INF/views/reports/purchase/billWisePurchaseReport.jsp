@@ -5,7 +5,11 @@
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 
-
+<style type="text/css">
+table, th, td {
+    border: 1px solid #9da88d;
+}
+</style>
 <%-- <!DOCTYPE html>
 <html>
 <head>
@@ -144,19 +148,6 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-										<th class="col-md-1">PO Date</th>
-
-										<th class="col-md-1">PO No</th>
-										<th class="col-md-1">Total Amt</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Short No</th>
-										<th class="col-md-1">Extra No</th>
-										<th class="col-md-1">Leakage Qty</th>
-										<th class="col-md-1">User</th>
-
-										<th class="col-md-1">Remark</th>
-
 
 									</tr>
 
@@ -169,18 +160,18 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-										<th class="col-md-1">PO Date</th>
+										<th class="col-sm-1"style="text-align:center">Sr.No.</th>
+										<th class="col-md-1"style="text-align:center">PO Date</th>
 
-										<th class="col-md-1">PO No</th>
-										<th class="col-md-1">Total Amt</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Short No</th>
-										<th class="col-md-1">Extra No</th>
-										<th class="col-md-1">Leakage Qty</th>
-										<th class="col-md-1">User</th>
+										<th class="col-md-1"style="text-align:center">PO No</th>
+										<th class="col-md-1"style="text-align:center">Total Amt</th>
+										<th class="col-md-1"style="text-align:center">Crates Received</th>
+										<th class="col-md-1"style="text-align:center">Short No</th>
+										<th class="col-md-1"style="text-align:center">Extra No</th>
+										<th class="col-md-1"style="text-align:center">Leakage Qty</th>
+										<th class="col-md-1"style="text-align:center">User</th>
 
-										<th class="col-md-1">Remark</th>
+										<th class="col-md-1"style="text-align:center">Remark</th>
 
 									</tr>
 
@@ -280,13 +271,13 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-sm-1"></td>')
+																	'<td class="col-md-1"></td>')
 																	.html(
 																			key + 1));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"></td>')
+																	'<td class="col-md-2"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.poDate));
 													tr
@@ -297,28 +288,28 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-2"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.poTotal));
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-2"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.shortNo));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.extraNo));
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.poLeakageQty));
 													tr
@@ -328,7 +319,7 @@ jQuery(document).ready(function(){
 																			billWisePurchaseData.userName));
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-2"style="text-align:left"></td>')
 																	.html(
 																			billWisePurchaseData.poRemarks));
 

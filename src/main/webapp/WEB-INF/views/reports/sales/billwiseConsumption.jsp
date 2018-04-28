@@ -4,8 +4,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
-
-
+<style type="text/css">
+table, th, td {
+    border: 1px solid #9da88d;
+}
+</style>
 <%-- <!DOCTYPE html>
 <html>
 <head>
@@ -156,21 +159,7 @@ jQuery(document).ready(function(){
 							<table id="table_grid" class="main-table">
 								<thead>
 									<tr class="bgpink">
-
-										<th class="col-sm-1">Sr.</th>
-										<th class="col-md-1">Bill No.</th>
-										<th class="col-md-1">Bill Date</th>
-										<th class="col-md-1">Customer</th>
-										<th class="col-md-1">Bill Amt</th>
-										<th class="col-md-1">Collected Amt</th>
-										<th class="col-md-1">Outstanding Amt</th>
-										<th class="col-md-1">Paymode</th>
-										<th class="col-md-1">Crates Total</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Crates Outstanding</th>
-										<th class="col-md-1">Total Kms</th>
-										<th class="col-md-1">Remark</th>
-									</tr>
+                                 	</tr>
 
 								</thead>
 								<tbody>
@@ -181,19 +170,19 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No</th>
-										<th class="col-md-1">Bill No.</th>
-										<th class="col-md-1">Bill Date</th>
-										<th class="col-md-1">Customer</th>
-										<th class="col-md-1">Bill Amt</th>
-										<th class="col-md-1">Collected Amt</th>
-										<th class="col-md-1">Outstanding Amt</th>
-										<th class="col-md-1">Paymode</th>
-										<th class="col-md-1">Crates Total</th>
-										<th class="col-md-1">Crates Received</th>
-										<th class="col-md-1">Crates Outstanding</th>
-										<th class="col-md-1">Total Kms</th>
-										<th class="col-md-1">Remark</th>
+										<th class="col-sm-1"style="text-align: center;">Sr.No</th>
+										<th class="col-md-1"style="text-align: center;">Bill No.</th>
+										<th class="col-md-2"style="text-align: center;">Bill Date</th>
+										<th class="col-md-1"style="text-align: center;">Customer</th>
+										<th class="col-md-1"style="text-align: center;">Bill Amt</th>
+										<th class="col-md-1"style="text-align: center;">Collected Amt</th>
+										<th class="col-md-1"style="text-align: center;">Outstanding Amt</th>
+										<th class="col-md-1"style="text-align: center;">Paymode</th>
+										<th class="col-md-1"style="text-align: center;">Crates Total</th>
+										<th class="col-md-1"style="text-align: center;">Crates Received</th>
+										<th class="col-md-1"style="text-align: center;">Crates Outstanding</th>
+										<th class="col-md-1"style="text-align: center;">Total Kms</th>
+										<th class="col-md-1"style="text-align: center;">Remark</th>
 									</tr>
 
 								</thead>
@@ -239,7 +228,6 @@ jQuery(document).ready(function(){
 
 <script type="text/javascript">
 	function billWiseConsumptionReport() {
-		alert("Heee");
 		$('#table_grid td').remove();
 
 		var isValid = validate();
@@ -249,6 +237,7 @@ jQuery(document).ready(function(){
 			//document.getElementById('btn_pdf').style.display = "block";
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
+			var custId= document.getElementById("custId").value;
 
 			$
 					.getJSON(
@@ -257,12 +246,12 @@ jQuery(document).ready(function(){
 
 								fromDate : fromDate,
 								toDate : toDate,
+								custId:custId,
 								ajax : 'true',
 
 							},
 							function(data) {
 
-								alert(data)
 								var len = data.length;
 
 								if (data == "") {
@@ -286,82 +275,101 @@ jQuery(document).ready(function(){
 													document
 															.getElementById('range').style.display = 'block';
 
-													var partyname = "GFPL";
-													var gstNo = "#012";
 
 													var tr = $('<tr></tr>');
 
 													tr
 															.append($(
-																	'<td class="col-sm-1"></td>')
+																	'<td class="col-md-1"></td>')
 																	.html(
 																			key + 1));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"></td>')
+																	'<td class="col-md-1"></td>')
 																	.html(
 																			billWisePurchaseData.billId));
 													tr
 															.append($(
-																	'<td class="col-md-1"></td>')
+																	'<td class="col-md-1" style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.billDate));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:center"></td>')
 																	.html(
 																			billWisePurchaseData.custName));
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.grandTotal));
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.collectedAmt));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.outstandingAmt));
+													if(billWisePurchaseData.collectionPaymode==0)
+														{
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.collectionPaymode));
+																	'<td class="col-md-1"style="text-align:left"></td>')
+																	.html("NA"));
+														}
+													else if(billWisePurchaseData.collectionPaymode==1)
+														{
+														tr
+														.append($(
+																'<td class="col-md-1"style="text-align:left"></td>')
+																.html("Cheque"));
+														}
+													else if(billWisePurchaseData.collectionPaymode==2)
+													{
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:left"></td>')
+															.html("Cash"));
+													}
+													else if(billWisePurchaseData.collectionPaymode==3)
+													{
+													tr
+													.append($(
+															'<td class="col-md-1"style="text-align:left"></td>')
+															.html("Cheque & Cash"));
+													}
 												
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.cratesOpBal));
+																			billWisePurchaseData.cratesOpBal+billWisePurchaseData.cratesIssued));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesIssued));
+																	'<td class="col-md-1"style="text-align:right"></td>')
+																	.html(billWisePurchaseData.cratesReceived));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.cratesClBal));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
-																	.html(
-																			billWisePurchaseData.cratesReceived));
+																	'<td class="col-md-1"style="text-align:right"></td>')
+																	.html(0));
 
 													tr
 															.append($(
-																	'<td class="col-md-2"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:left"></td>')
 																	.html(
 																			billWisePurchaseData.remarks));
 
@@ -427,7 +435,7 @@ jQuery(document).ready(function(){
 		var toDate = document.getElementById("todatepicker").value;
 
 		window
-				.open('${pageContext.request.contextPath}/showBillwiseConsumptionPurchasePdf/'
+				.open('${pageContext.request.contextPath}/showBillwiseConsumptionPdf/'
 						+ fromDate + '/' + toDate);
 
 	}

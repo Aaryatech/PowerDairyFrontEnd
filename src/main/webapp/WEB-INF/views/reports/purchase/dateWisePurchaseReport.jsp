@@ -148,15 +148,6 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-
-										<th class="col-sm-1">PO No</th>
-										<th class="col-sm-2">PO Date</th>
-										<th class="col-md-2">PO Day</th>
-										<th class="col-md-1">Total Amount</th>
-										<th class="col-md-1">Crates Received</th>
-
-
 									</tr>
 
 								</thead>
@@ -168,12 +159,12 @@ jQuery(document).ready(function(){
 								<thead>
 									<tr class="bgpink">
 
-										<th class="col-sm-1">Sr.No.</th>
-										<th class="col-sm-1">PO No</th>
-										<th class="col-sm-2">PO Date</th>
-										<th class="col-md-2">PO Day</th>
-										<th class="col-md-1">Total Amount</th>
-										<th class="col-md-1">Crates Received</th>
+										<th class="col-sm-1"style="text-align:center">Sr.No.</th>
+										<th class="col-sm-1"style="text-align:center">PO No</th>
+										<th class="col-sm-2"style="text-align:center">PO Date</th>
+										<th class="col-md-2"style="text-align:center">PO Day</th>
+										<th class="col-md-1"style="text-align:center">Total Amount</th>
+										<th class="col-md-1"style="text-align:center">Crates Received</th>
 
 
 									</tr>
@@ -295,13 +286,13 @@ jQuery(document).ready(function(){
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.poTotal));
 
 													tr
 															.append($(
-																	'<td class="col-md-1"style="text-align:center"></td>')
+																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
 																			billWisePurchaseData.cratesReceivedQty));
 

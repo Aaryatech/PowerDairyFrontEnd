@@ -35,7 +35,6 @@ import com.dairypower.admin.model.GetBillHeaders;
 import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
-import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.ReturnStockUpdate;
@@ -85,6 +84,7 @@ public class BillController {
             ArrayList<BillHeader> billsList=new ArrayList<BillHeader>(Arrays.asList(allBills));
            
             int outstandingCrates=0;
+            float outstandingAmt=0;
             if(!billsList.isEmpty())
             {
             	for(int i=0;i<billsList.size();i++)
@@ -92,14 +92,17 @@ public class BillController {
             		if(billsList.get(i).getIsSettled()==1)
             		{
             			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesClBal());
+            			outstandingAmt=outstandingAmt+(billsList.get(i).getOutstandingAmt());
             		}else
             		{
             			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesOpBal()+billsList.get(i).getCratesIssued());
+            			outstandingAmt=outstandingAmt+(billsList.get(i).getOutstandingAmt());
             		}
             	}
             }
             outstandingCrates=outstandingCrates+0;
             model.addObject("outstandingCrates", outstandingCrates);
+            model.addObject("outstandingAmount", outstandingAmt);
             model.addObject("pending", billHeaderList.size());
             model.addObject("generated", billHeadersList.size());
 		}catch(Exception e)
@@ -163,10 +166,17 @@ public class BillController {
 			GetPoDetail[]	poDetailListRes=  rest.getForObject(Constants.url + "/getPoDetailsList", GetPoDetail[].class);
 			poDetailList=new ArrayList<GetPoDetail>(Arrays.asList(poDetailListRes));
 			
+			for(int i=0;i<poDetailList.size();i++)
+			{
+				Date date1=new SimpleDateFormat("dd-MM-yyyy").parse(poDetailList.get(i).getMfgDate());  
+			    SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    poDetailList.get(i).setMfgDate(dmyFormat.format(date1));
+			}
+			
 			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
 					StockHeader.class); 
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-			 map.add("date",DateConvertor.convertToYMD(stockHeader.getDate()));
+			 map.add("date",stockHeader.getDate());
 			 
 			  GetCratesStock getCratesStock = rest.postForObject(Constants.url + "getCratesStock",map,
 					  GetCratesStock.class); 
@@ -176,7 +186,7 @@ public class BillController {
 					  getCratesStock.getCratesReceivedBycustomer()-getCratesStock.getCratesReturnQtyTomfg();
 			  model.addObject("crateStock", totalCrates);
 			  
-			  SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			  SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 				Date today = new Date();
 				model.addObject("today", sf.format(today));
 
@@ -401,7 +411,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		
 		int cratesOpnQty=Integer.parseInt(request.getParameter("cratesOpnQty"));
 		float total=Float.parseFloat(request.getParameter("total"));
-		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		billHeader.setBillTempId(0);
 		billHeader.setBillId(0);
 		billHeader.setBillDate(df.format(new Date()));
@@ -429,7 +439,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		    	System.err.println("poListRes:"+poListRes.toString());
 		    	
 			Date date = new Date();
-			String currdDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+			String currdDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		    String strDateTime = sdf.format(date);
 		    
@@ -437,7 +447,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			tVehicleRes.settVehId(0);
 			tVehicleRes.setVehId(vehId);
 			tVehicleRes.setBillTempId(billHeaderRes.getBillTempId());
-			tVehicleRes.setInKms(0);
+			tVehicleRes.setInKms(outKm);
 			tVehicleRes.setOutKm(outKm);
 			tVehicleRes.setDate(currdDate);
 			tVehicleRes.setDatetime(strDateTime);
@@ -465,7 +475,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		ModelAndView model = new ModelAndView("bill/billDetail");
 		try
 		{
-			 
+			 int outKm=0;
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			map.add("billTempId", billTempId);
 			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
@@ -479,10 +489,21 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			try {
 			model.addObject("keySize", header.getBillDetailList().size());
 			}catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
+			}
+			try {
+				map = new LinkedMultiValueMap<String,Object>();
+				map.add("billTempId",billTempId); 
+				VehicleRes vehicleRes=rest.postForObject(Constants.url + "/master/findOutKm",map, VehicleRes.class);
+				outKm=vehicleRes.getVehOpKms();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
 			}
 			List<Currency> currencyList =  rest.getForObject(Constants.url + "/master/getAllCurrency", List.class);
 			model.addObject("currencyList",currencyList);
+			model.addObject("currencyListSize", currencyList.size());
+			model.addObject("outKm", outKm);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -540,6 +561,9 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			map.add("billTempId", billTempId);
 			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
 			//System.err.println("header"+header.toString());
+			Date date1=new SimpleDateFormat("dd-MM-yyyy").parse(header.getBillDate());  
+		    SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+		    header.setBillDate(dmyFormat.format(date1));
 			
 			Currency[] currencyList =  rest.getForObject(Constants.url + "/master/getAllCurrency", Currency[].class);
 			ArrayList<Currency> currencyListRes=new ArrayList<Currency>(Arrays.asList(currencyList));
@@ -551,7 +575,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			
 		    List<CreditNoteDetail> creditNoteDetail=new ArrayList<>();//
 			Date date = new Date();
-			String currDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+			String currDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			
 			map = new LinkedMultiValueMap<String,Object>();
@@ -572,7 +596,6 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				creditNoteHeader.setCrnId(""+crnNo);
 				creditNoteHeader.setCustId(header.getCustId());
 				creditNoteHeader.setRemarks("Credit Note of Distribution Leakage");
-				creditNoteHeader.setScrapType(2);
 				creditNoteHeader.setBillTempId(billTempId);
 				
 			for(int i=0;i<header.getBillDetailList().size();i++)
@@ -585,7 +608,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					header.getBillDetailList().get(i).setReturnQty(returnQty);
 					header.getBillDetailList().get(i).setDistLeakageQty(distLeakageQty);
 				}
-				if(distLeakageQty!=0)
+				if(distLeakageQty>0)
 				{
 					flag=true;
 					CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
@@ -593,7 +616,9 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					creditNoteDetails.setCrnHeaderId(0);
 					creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
 					creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
-					creditNoteDetails.setQty(distLeakageQty);
+					creditNoteDetails.setScrapType(1);
+					creditNoteDetails.setLeakageQty(distLeakageQty);
+					creditNoteDetails.setExpireQty(0);
 					creditNoteDetails.setPackDate(currDate);
 					creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 					creditNoteDetail.add(creditNoteDetails);
@@ -666,7 +691,9 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			{
 				String chequeNo=request.getParameter("checkNo");
 				String checkDate=request.getParameter("checkDate");
-
+				Date date3=new SimpleDateFormat("dd-MM-yyyy").parse(checkDate);  
+ 
+				
 				float chequeAmt=Float.parseFloat(request.getParameter("checkAmt"));
 				String bankName=request.getParameter("bankName");
 				BillPayment billPayment=new BillPayment();
@@ -680,7 +707,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				billPayment.setChequeAmt(chequeAmt);
 				billPayment.setQty(0);
 				billPayment.setTotalAmt(chequeAmt);
-				billPayment.setChequeDate(checkDate);
+				billPayment.setChequeDate(dmyFormat.format(date1));
 				billPaymentList.add(billPayment);
 				
 			}
@@ -688,7 +715,8 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			{
 				String chequeNo=request.getParameter("checkNo");
 				String checkDate=request.getParameter("checkDate");
-
+				Date date2=new SimpleDateFormat("dd-MM-yyyy").parse(checkDate);  
+			    
 				float chequeAmt=Float.parseFloat(request.getParameter("checkAmt"));
 				String bankName=request.getParameter("bankName");
 				BillPayment billPayment=new BillPayment();
@@ -700,7 +728,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				billPayment.setBankName(bankName);
 				billPayment.setPayMode(payMode);
 				billPayment.setChequeAmt(chequeAmt);
-				billPayment.setChequeDate(checkDate);
+				billPayment.setChequeDate(dmyFormat.format(date1));
 
 				billPayment.setQty(0);
 				billPayment.setTotalAmt(chequeAmt);
@@ -763,10 +791,16 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
         			  
             	  }
         	  }
+        		for(int i=0;i<poDetailListRes.size();i++)
+    			{
+    				Date date3=new SimpleDateFormat("dd-MM-yyyy").parse(poDetailListRes.get(i).getMfgDate());  
+    				poDetailListRes.get(i).setMfgDate(dmyFormat.format(date3));
+    			}
+        	  
         	  System.err.println("PO Detail List with updated Balance:"+poDetailListRes.toString());
         	  
         	  List<PoDetail> poListRes=rest.postForObject(Constants.url+"/updatePoDetailList", poDetailListRes, List.class);
-		    	System.err.println("#########poListRes:@@@@@@"+poListRes.toString());
+		    	System.err.println("poListRes:"+poListRes.toString());
         	  
           }
         	
@@ -839,7 +873,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			GetBillHeader header =  rest.postForObject(Constants.url + "/getBillHeaderDetails",map, GetBillHeader.class);
 			System.err.println("header"+header.toString());
 			Date date = new Date();
-			String currDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+			String currDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		    String strDateTime = sdf.format(date);
 		    List<CreditNoteDetail> creditNoteDetail=new ArrayList<>();
@@ -854,14 +888,13 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				creditNoteHeader.setCrnId(""+creditNo);
 				creditNoteHeader.setCustId(custId);
 				creditNoteHeader.setRemarks(remark);
-				creditNoteHeader.setScrapType(1);
 				creditNoteHeader.setBillTempId(billTempId);
 				
 				for(int i=0;i<header.getBillDetailList().size();i++)
 				{
 					int expireQty=Integer.parseInt(request.getParameter("expireQty"+i));
 					int leakageQty=Integer.parseInt(request.getParameter("leakageQty"+i));
-					if(expireQty!=0)
+					if(expireQty>0||leakageQty>0)
 					{
 						flag=true;
 						CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
@@ -869,25 +902,14 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 						creditNoteDetails.setCrnHeaderId(0);
 						creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
 						creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
-						creditNoteDetails.setQty(expireQty);
+						creditNoteDetails.setScrapType(2);
+						creditNoteDetails.setExpireQty(expireQty);
+						creditNoteDetails.setLeakageQty(leakageQty);
 						creditNoteDetails.setPackDate(currDate);
 						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 						creditNoteDetail.add(creditNoteDetails);
 					}
-					if(leakageQty!=0)
-					{
-						flag=true;
-						CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
-						creditNoteDetails.setCrnDetailId(0);
-						creditNoteDetails.setCrnHeaderId(0);
-						creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
-						creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
-						creditNoteDetails.setQty(leakageQty);
-						creditNoteDetails.setPackDate(currDate);
-
-						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
-						creditNoteDetail.add(creditNoteDetails);
-					}
+					
 					
 				}
 				creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
