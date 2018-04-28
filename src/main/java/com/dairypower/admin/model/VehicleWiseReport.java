@@ -8,6 +8,8 @@ public class VehicleWiseReport {
 	
 	private int vehId;
 
+	private String vehName;
+
 	private Date date;
 
 	private int inKms;
@@ -17,6 +19,16 @@ public class VehicleWiseReport {
 	private int totalKm;
 
 	private String custName;
+
+	
+	
+	public String getVehName() {
+		return vehName;
+	}
+
+	public void setVehName(String vehName) {
+		this.vehName = vehName;
+	}
 
 	public int getVehId() {
 		return vehId;

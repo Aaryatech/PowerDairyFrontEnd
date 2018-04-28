@@ -310,7 +310,7 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"></td>')
 																	.html(
-																			billWisePurchaseData.vehId));
+																			billWisePurchaseData.vehName));
 
 													tr
 															.append($(
@@ -322,13 +322,13 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"style="text-align:center"></td>')
 																	.html(
-																			billWisePurchaseData.inKms));
+																			billWisePurchaseData.outKm));
 
 													tr
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.outKm));
+																			billWisePurchaseData.inkms));
 
 													tr
 															.append($(

@@ -508,9 +508,12 @@
 						<div class="ibox-head">
 						<div class="ibox-title">Bill Reports</div>
 						</div>
-						<a href="${pageContext.request.contextPath}/viewBillWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Bill Wise Consumption Report</a>
-					 <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption Report</a>
-							 <a href="${pageContext.request.contextPath}/viewCategoryWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Category Wise Consumption Report</a>
+						<a href="${pageContext.request.contextPath}/viewBillWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Bill Wise Consumption</a>
+					<a href="${pageContext.request.contextPath}/viewDatewiseConsumptionReport"><i class="fa fa-files-o icon"></i> Date Wise Consumption Report</a>
+					 <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption</a>
+						 <a href="${pageContext.request.contextPath}/viewCategoryWiseReport"><i class="fa fa-files-o icon"></i> Category Wise Consumption</a>
+						<a href="${pageContext.request.contextPath}/viewCreditNoteReport"><i class="fa fa-files-o icon"></i> Credit Note Report</a>
+							 <a href="${pageContext.request.contextPath}/viewCategoryWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Category Wise Consumption</a>
 						<%--  <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Date Wise Purchase Report</a>
 						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Item Wise Purchase Report</a>
 						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>

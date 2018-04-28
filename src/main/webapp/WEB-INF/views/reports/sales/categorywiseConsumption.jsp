@@ -105,7 +105,7 @@ jQuery(document).ready(function(){
 
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="pageTitle">Category Wise Consumption Report</h2>
+						<h2 class="pageTitle">Category Wise Item Consumption Report</h2>
 					</div>
 				</div>
 
