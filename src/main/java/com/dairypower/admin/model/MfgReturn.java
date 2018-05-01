@@ -1,5 +1,6 @@
 package com.dairypower.admin.model;
 
+import java.util.List; 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class MfgReturn  {
@@ -14,7 +15,7 @@ public class MfgReturn  {
 	private int entryBy; 
 	private String remark;
 	private int cratesReturnQty;
-	
+	List<MfgReturnDetail> mfgReturnDetailList;
 	
 	public int gettReturnId() {
 		return tReturnId;
@@ -72,11 +73,19 @@ public class MfgReturn  {
 	public void setCratesReturnQty(int cratesReturnQty) {
 		this.cratesReturnQty = cratesReturnQty;
 	}
+	
+	public List<MfgReturnDetail> getMfgReturnDetailList() {
+		return mfgReturnDetailList;
+	}
+	public void setMfgReturnDetailList(List<MfgReturnDetail> mfgReturnDetailList) {
+		this.mfgReturnDetailList = mfgReturnDetailList;
+	}
 	@Override
 	public String toString() {
 		return "MfgReturn [tReturnId=" + tReturnId + ", date=" + date + ", datetime=" + datetime + ", batchId="
 				+ batchId + ", itemId=" + itemId + ", returnQty=" + returnQty + ", entryBy=" + entryBy + ", remark="
-				+ remark + ", cratesReturnQty=" + cratesReturnQty + "]";
+				+ remark + ", cratesReturnQty=" + cratesReturnQty + ", mfgReturnDetailList=" + mfgReturnDetailList
+				+ "]";
 	}
 	
  

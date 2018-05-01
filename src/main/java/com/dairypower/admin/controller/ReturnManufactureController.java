@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,6 +32,7 @@ import com.dairypower.admin.model.GetPoHeader;
 import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.LoginResponse;
 import com.dairypower.admin.model.MfgReturn;
+import com.dairypower.admin.model.MfgReturnDetail;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.StockHeader;
 import com.dairypower.admin.model.TVehicle;
@@ -43,6 +45,9 @@ public class ReturnManufactureController {
 	
 	RestTemplate rest = new RestTemplate();
 	List<PoDetail> getPoDetaillist = new ArrayList<>();
+	List<PoDetail> updatePoDetaillist = new ArrayList<>();
+	List<MfgReturnDetail> mfgReturnDetailList = new ArrayList<MfgReturnDetail>();
+	List<GetMfgReturn>  getMfgReturnRecordBetweenDate = new ArrayList<GetMfgReturn>();
 	
 	@RequestMapping(value = "/returnManf", method = RequestMethod.GET)
 	public ModelAndView returnManf(HttpServletRequest request, HttpServletResponse response) {
@@ -50,6 +55,9 @@ public class ReturnManufactureController {
 		ModelAndView model = new ModelAndView("bill/returnManf");
 		try
 		{
+			 mfgReturnDetailList = new ArrayList<MfgReturnDetail>();
+			 updatePoDetaillist = new ArrayList<>();
+			 
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Date today = new Date();
 			model.addObject("today", sf.format(today));
@@ -91,6 +99,20 @@ public class ReturnManufactureController {
 			map.add("itemId", itemId);
 			PoDetail[] getPoDetail =  rest.postForObject(Constants.url + "/getBatchListByitemId",map, PoDetail[].class);
 			   getPoDetaillist = new ArrayList<PoDetail>(Arrays.asList(getPoDetail));
+			   
+			   for(int j = 0 ; j<mfgReturnDetailList.size();j++)
+			   {   
+				   for(int i = 0 ; i<getPoDetaillist.size();i++)
+					{
+				  
+					   if(mfgReturnDetailList.get(j).getPoDetailId()==getPoDetaillist.get(i).getPoDetailId() )
+						{
+						   getPoDetaillist.get(i).setBalance(getPoDetaillist.get(i).getBalance()-mfgReturnDetailList.get(j).getItemReturnQty());;
+						   break;
+						}
+				   }
+					
+				}
 			 
 			
 		}catch(Exception e)
@@ -99,6 +121,35 @@ public class ReturnManufactureController {
 		}
 
 		return getPoDetaillist;
+	}
+	
+	@RequestMapping(value = "/deleteItemInReturnManufacture", method = RequestMethod.GET)
+	@ResponseBody
+	public List<MfgReturnDetail> deleteItemInReturnManufacture(HttpServletRequest request, HttpServletResponse response) {
+
+		   
+		try
+		{
+			int index = Integer.parseInt(request.getParameter("index"));
+			 
+			mfgReturnDetailList.remove(index);
+			for(int i = 0 ; i<updatePoDetaillist.size();i++)
+			{
+				if(updatePoDetaillist.get(i).getPoDetailId()==mfgReturnDetailList.get(index).getPoDetailId())
+				{
+					updatePoDetaillist.remove(i);
+					mfgReturnDetailList.remove(index);
+					break;
+				}
+			}
+			
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return mfgReturnDetailList;
 	}
 	
 	@RequestMapping(value = "/checkBalance", method = RequestMethod.GET)
@@ -130,6 +181,48 @@ public class ReturnManufactureController {
 		return flag;
 	}
 	
+	@RequestMapping(value = "/addItemInReturnManufacture", method = RequestMethod.GET)
+	@ResponseBody
+	public List<MfgReturnDetail> addItemInReturnManufacture(HttpServletRequest request, HttpServletResponse response) {
+
+		int flag = 0;
+		try
+		{
+			System.out.println("ala");
+			int itemId = Integer.parseInt(request.getParameter("itemId"));
+			int detailNo = Integer.parseInt(request.getParameter("batchNo"));
+			int qty = Integer.parseInt(request.getParameter("qty"));
+			String itemName = request.getParameter("itemName");
+			
+			MfgReturnDetail MfgReturnDetail = new MfgReturnDetail();
+			MfgReturnDetail.setItemId(itemId);
+			MfgReturnDetail.setItemName(itemName);
+			MfgReturnDetail.setItemReturnQty(qty);
+			for(int i = 0 ; i<getPoDetaillist.size();i++)
+			{
+				if(detailNo==getPoDetaillist.get(i).getPoDetailId())
+				{
+					MfgReturnDetail.setBatchNo(getPoDetaillist.get(i).getBatchNo()); 
+					MfgReturnDetail.setPoDetailId(getPoDetaillist.get(i).getPoDetailId());
+					PoDetail poDetail = getPoDetaillist.get(i);
+					poDetail.setBalance(poDetail.getBalance()-qty);
+					updatePoDetaillist.add(poDetail);
+					break;
+				}
+			}
+			
+			
+			mfgReturnDetailList.add(MfgReturnDetail);
+			 
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return mfgReturnDetailList;
+	}
+	
 	@RequestMapping(value = "/submitReturnManufacture", method = RequestMethod.POST)
 	public String submitReturnManufacture(HttpServletRequest request, HttpServletResponse response) {
 
@@ -139,42 +232,32 @@ public class ReturnManufactureController {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = new Date();
-			PoDetail  update = new PoDetail();
+		 
+			HttpSession session = request.getSession(); 
+			LoginResponse login = (LoginResponse) session.getAttribute("UserDetail");
+			System.out.println("userId " + login.getUser().getUserId());
 			
-			
-			int detailNo = Integer.parseInt(request.getParameter("batchNo"));
-			int qty = Integer.parseInt(request.getParameter("qty"));
-			int cratesQty = Integer.parseInt(request.getParameter("cratesQty"));
-			int itemId = Integer.parseInt(request.getParameter("itemId"));
+			 
+			int cratesQty = Integer.parseInt(request.getParameter("cratesQty")); 
 			String remark = request.getParameter("remark");
 			
 			MfgReturn mfgReturn = new MfgReturn();
-			mfgReturn.setItemId(itemId);
-			mfgReturn.setReturnQty(qty);
+			 
 			mfgReturn.setCratesReturnQty(cratesQty);
 			mfgReturn.setRemark(remark);
 			mfgReturn.setDate(sf.format(date));
 			mfgReturn.setDatetime(time.format(date));
-			mfgReturn.setEntryBy(1);
-			for(int i = 0 ; i<getPoDetaillist.size();i++)
-			{
-				if(detailNo==getPoDetaillist.get(i).getPoDetailId())
-				{
-					mfgReturn.setBatchId(getPoDetaillist.get(i).getBatchNo());
-					update = getPoDetaillist.get(i);
-					update.setBalance(getPoDetaillist.get(i).getBalance()-qty);
-					break;
-				}
-			}
+			mfgReturn.setEntryBy(login.getUser().getUserId());
+			mfgReturn.setMfgReturnDetailList(mfgReturnDetailList);
 			
 				 
-				 Info info = rest.postForObject(Constants.url + "/master/saveMfgReturn",mfgReturn,
+				 Info info = rest.postForObject(Constants.url + "/saveMfgReturn",mfgReturn,
 						 Info.class); 
 				 
 				 if(info.isError()==false)
 				 {
-					 PoDetail res = rest.postForObject(Constants.url + "updatePoDetail",update,
-							 PoDetail.class); 
+					 List<PoDetail> res = rest.postForObject(Constants.url + "updatePoDetailList",updatePoDetaillist,
+							 List.class); 
 					 System.out.println("res " + res);
 				 }
 			 
@@ -202,10 +285,12 @@ public class ReturnManufactureController {
 			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 			 map.add("fromDate",consume.format(date));
 			 map.add("toDate",consume.format(date));
-			 List<GetMfgReturn>  getMfgReturnList =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, List .class);
+			 GetMfgReturn[] getMfgReturn =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, GetMfgReturn[] .class);
+			  
+			  getMfgReturnRecordBetweenDate = new ArrayList<GetMfgReturn>(Arrays.asList(getMfgReturn));
 			 model.addObject("fromDate", show.format(date));
 			 model.addObject("toDate", show.format(date));
-			 model.addObject("getMfgReturnList", getMfgReturnList);
+			 model.addObject("getMfgReturnList", getMfgReturnRecordBetweenDate);
 			 
 		}catch(Exception e)
 		{
@@ -219,7 +304,7 @@ public class ReturnManufactureController {
 	@ResponseBody
 	public List<GetMfgReturn> getMfgReturnRecordBetweenDate(HttpServletRequest request, HttpServletResponse response) {
 
-		 List<GetMfgReturn>  getMfgReturnList = new ArrayList<GetMfgReturn>();
+		 
 		try
 		{
 			String fromDate =  request.getParameter("fromDate") ;
@@ -228,8 +313,8 @@ public class ReturnManufactureController {
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			map.add("fromDate", DateConvertor.convertToYMD(fromDate) );
 			map.add("toDate", DateConvertor.convertToYMD(toDate));
-			getMfgReturnList =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, List.class);
-			 
+			GetMfgReturn[] getMfgReturn =  rest.postForObject(Constants.url + "/mfgReturnRecordBetweenDate",map, GetMfgReturn[].class);
+			getMfgReturnRecordBetweenDate = new ArrayList<GetMfgReturn>(Arrays.asList(getMfgReturn));
 			 
 			
 		}catch(Exception e)
@@ -237,7 +322,39 @@ public class ReturnManufactureController {
 			e.printStackTrace();
 		}
 
-		return getMfgReturnList;
+		return getMfgReturnRecordBetweenDate;
+	}
+	
+	@RequestMapping(value = "/manufactureReturnDetail/{tReturnId}", method = RequestMethod.GET)
+	public ModelAndView manufactureReturnDetail(@PathVariable int tReturnId,  HttpServletRequest request, HttpServletResponse response) {
+
+		ModelAndView model = new ModelAndView("bill/manufactureReturnDetail");
+		try
+		{
+			GetMfgReturn mfgReturnHeader = new GetMfgReturn();
+			
+			for(int i = 0;i<getMfgReturnRecordBetweenDate.size();i++)
+			{
+				if(getMfgReturnRecordBetweenDate.get(i).gettReturnId()==tReturnId)
+				{
+					mfgReturnHeader = getMfgReturnRecordBetweenDate.get(i);
+				}
+			}
+			
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+			map.add("tReturnId", tReturnId);
+			List<MfgReturnDetail> mfgReturnDetailList =  rest.postForObject(Constants.url + "/manufactureReturnDetail",map, List.class);
+			
+			System.out.println("mfgReturnDetailList" + mfgReturnDetailList);
+			model.addObject("mfgReturnDetailList", mfgReturnDetailList);
+			model.addObject("mfgReturnHeader", mfgReturnHeader);
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return model;
 	}
 	
 	
