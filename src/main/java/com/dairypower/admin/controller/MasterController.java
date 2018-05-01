@@ -44,6 +44,7 @@ public class MasterController {
 	SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
 	SimpleDateFormat finalDate = new SimpleDateFormat("yyyy-MM-dd");
 	RestTemplate rest = new RestTemplate();
+	List<RsDetail> editRsDetailsList = new ArrayList<RsDetail>();
 	
 	@RequestMapping(value = "/addCustomer", method = RequestMethod.GET)
 	public ModelAndView addCustomer(HttpServletRequest request, HttpServletResponse response) {
@@ -756,12 +757,38 @@ public class MasterController {
 			 map.add("rsHeaderId", rsHeaderId);
 			  RSHeader rsHeaderRes =  rest.postForObject(Constants.url + "/master/getRsHeader",map, RSHeader.class);
 			  
-			 List<RsDetail> rsDetailsList =  rest.postForObject(Constants.url + "/master/getAllRsDetails",map, List.class);
-			 model.addObject("rsDetailsList", rsDetailsList);
+			  RsDetail[] rsDetails  =  rest.postForObject(Constants.url + "/master/getAllRsDetails",map, RsDetail[].class);
+			  
+			  editRsDetailsList = new ArrayList<RsDetail>(Arrays.asList(rsDetails));
 			 
-			 List<GetItem> itemList =  rest.getForObject(Constants.url + "/master/getAllItems", List.class);
-		     model.addObject("itemList", itemList); 
+			 
+			 GetItem[] getItem =  rest.getForObject(Constants.url + "/master/getAllItems", GetItem[].class); 
+			 List<GetItem> itemList = new ArrayList<GetItem>(Arrays.asList(getItem));
+			 
 		     
+		     
+		     for(int j = 0; j<itemList.size();j++)
+	    	 { 
+		    	 int flag = 0;
+			     for(int i = 0 ; i<editRsDetailsList.size();i++)
+			     {
+			    	 if(itemList.get(j).getItemId()==editRsDetailsList.get(i).getItemId())
+			    	 {
+			    		 flag=1;
+			    		 break;
+			    	 }
+		    	 }
+			     if(flag==0)
+			     {
+			    	 RsDetail rsDetail = new RsDetail();
+			    	 rsDetail.setItemId(itemList.get(j).getItemId());
+			    	 rsDetail.setRsHeaderId(editRsDetailsList.get(0).getRsHeaderId());
+			    	 editRsDetailsList.add(rsDetail);
+			     }
+		     }
+		     
+		     model.addObject("rsDetailsList", editRsDetailsList);
+		     model.addObject("itemList", itemList);
 		     model.addObject("rsHeaderRes", rsHeaderRes);
 		}catch(Exception e)
 		{
@@ -818,19 +845,19 @@ public class MasterController {
 			
 			int rsHeaderId = Integer.parseInt(request.getParameter("rsHeaderId"));
 
-			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
+			 /*MultiValueMap<String, Object> map = new LinkedMultiValueMap<String,Object>();
 			 map.add("rsHeaderId", rsHeaderId);
 			 
 			 RsDetail[] rsDetailsList =  rest.postForObject(Constants.url + "/master/getAllRsDetails",map, RsDetail[].class);
 			 ArrayList<RsDetail> rsDetails=new ArrayList<RsDetail>(Arrays.asList(rsDetailsList));
-			 System.err.println("list:"+rsDetails.toString());
+			 System.err.println("list:"+rsDetails.toString());*/
 					 
-		    for(int i=0;i<rsDetails.size();i++)
+		    for(int i=0;i<editRsDetailsList.size();i++)
 		    {
-				float rate = Float.parseFloat(request.getParameter("rate"+rsDetails.get(i).getItemId()));
-				rsDetails.get(i).setRate(rate);
+				float rate = Float.parseFloat(request.getParameter("rate"+editRsDetailsList.get(i).getItemId()));
+				editRsDetailsList.get(i).setRate(rate);
 		    }
-		   Info info = rest.postForObject(Constants.url + "/master/saveRsDetails",rsDetails,Info.class);
+		   Info info = rest.postForObject(Constants.url + "/master/saveRsDetails",editRsDetailsList,Info.class);
 			
 			System.out.println("info " +  info.toString()); 
 			
