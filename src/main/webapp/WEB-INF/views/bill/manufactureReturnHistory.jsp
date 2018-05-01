@@ -102,13 +102,12 @@
 								<table id="table_grid" class="main-table">
 									<thead>
 										<tr class="bgpink">
-										<th class="col-md-1">Sr No</th> 
-										<th class="col-md-1">Item Name</th> 
-											<th class="col-md-1">Date</th> 
-											<th class="col-md-1">Batch No</th>   
-											
-											<th class="col-md-1">Return Qty</th>  
+										<th class="col-md-1">Sr No</th>  
+											<th class="col-md-1">Date</th>  
 											<th class="col-md-1">Crates Return Qty</th> 
+											<th class="col-md-1">Return By</th>  
+											<th class="col-md-1">Remark</th> 
+											<th class="col-md-1">Details</th> 
 										</tr>
 									</thead>
 									<tbody>
@@ -118,13 +117,13 @@
 													  
 													<tr>
 												     
-														<td class="col-sm-1"><c:out value="${count.index+1}" /></td> 
-														<td  class="col-md-2"><c:out value="${getMfgReturnList.itemName}" /> </td>
+														<td class="col-sm-1"><c:out value="${count.index+1}" /></td>  
 														<td class="col-md-1"><c:out value="${getMfgReturnList.date}" /></td> 
-														<td class="col-md-1"><c:out value="${getMfgReturnList.batchId}" /></td> 
-												 	 	<td class="col-md-1" ><c:out value="${getMfgReturnList.itemReturnQy}" /> </td>
 												 	 	<td class="col-md-1" ><c:out value="${getMfgReturnList.cratesReturnQty}" /> </td>
-												 	 	 
+												 	 	 <td class="col-md-1" ><c:out value="${getMfgReturnList.userName}" /> </td>
+												 	 	 <td class="col-md-1" ><c:out value="${getMfgReturnList.remark}" /> </td>
+												 	 	  <td  >  <a href="${pageContext.request.contextPath}/manufactureReturnDetail/${getMfgReturnList.tReturnId}" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a>  
+												 	 	  </td>
 													</tr>
 																 
 												</c:forEach> 
@@ -232,13 +231,12 @@ function serchOtherBill()
 								 
 								var tr = $('<tr></tr>');
 								 
-								tr.append($('<td class="col-sm-1"></td>').html(key+1));
-								tr.append($('<td class="col-md-2"></td>').html(itemList.itemName)); 
-							  	tr.append($('<td class="col-md-1"></td>').html(itemList.date));
-							  	tr.append($('<td class="col-md-1"></td>').html(itemList.batchId)); 
-							  	tr.append($('<td class="col-md-1"></td>').html(itemList.itemReturnQy)); 
+								tr.append($('<td class="col-sm-1"></td>').html(key+1)); 
+							  	tr.append($('<td class="col-md-1"></td>').html(itemList.date)); 
 							  	tr.append($('<td class="col-md-1"></td>').html(itemList.cratesReturnQty)); 
-							   
+							  	tr.append($('<td class="col-md-1"></td>').html(itemList.userName)); 
+							  	tr.append($('<td class="col-md-1"></td>').html(itemList.remark)); 
+							  	tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/manufactureReturnDetail/'+itemList.tReturnId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> ')); 
 							    $('#table_grid tbody').append(tr);
 
 								 

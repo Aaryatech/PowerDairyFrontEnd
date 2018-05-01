@@ -14,6 +14,8 @@
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <c:url var="getBatchListByitemId" value="/getBatchListByitemId"></c:url>
 <c:url var="checkBalance" value="/checkBalance" />
+<c:url var="addItemInReturnManufacture" value="/addItemInReturnManufacture" />
+<c:url var="deleteItemInReturnManufacture" value="/deleteItemInReturnManufacture" />
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
@@ -90,7 +92,7 @@
 						</div>
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" title="Please Select" 
-														onchange="getBatchListByitemId();"	name="itemId" id="itemId" required > 
+														onchange="getBatchListByitemId();"	name="itemId" id="itemId"   > 
 														 
 																<c:forEach items="${itemList}" var="itemList">
 																	<option value="${itemList.itemId}">${itemList.itemName} &nbsp;&nbsp; ${itemList.itemCode}</option>
@@ -106,7 +108,7 @@
 						</div>
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" title="Please Select" 
-															name="batchNo" id="batchNo"  required> 
+															name="batchNo" id="batchNo"   > 
 														 
 																 
 															 </select>
@@ -122,7 +124,7 @@
 						</div>
 						<div class="col-md-3">
 							<input id="qty" class="form-control"
-								placeholder="Qty" name="qty" style="text-align: left;"  type="number" onchange="checkBalance();" required>
+								placeholder="Qty" name="qty" style="text-align: left;"  type="number" onchange="checkBalance();"  >
 
 						</div>
 						<div class="col-md-1"></div>
@@ -155,7 +157,34 @@
 				 
 					 
 					 <div class="colOuter"> 
+					 <input type="button" class="btn additem_btn" value="Add Item" onclick="addItem();"
+												id="b1"/>
 					</div>
+					
+					<div class="colOuter"> 
+					 
+					</div>
+					
+					<div id="table-scroll" class="table-scroll">
+									<div id="faux-table" class="faux-table" aria="hidden"></div>
+									<div class="table-wrap table-wrap-custbill">
+										<table id="table_grid1" class="main-table small-td">
+											<thead>
+												<tr class="bgpink">
+													<th class="col-sm-1">Sr no.</th>
+													<th class="col-md-1">Batch No</th>
+													<th class="col-md-2">Item Name</th> 
+													<th class="col-md-1">Return Qty</th>   
+													<th class="col-md-1">Action</th>
+												</tr>
+											</thead>
+											<tbody>
+
+											</tbody>
+
+										</table>
+									</div>
+								</div>
 					 
 					  
 						 
@@ -163,8 +192,8 @@
 						<div align="center">
 						<c:choose>
 							<c:when test="${today==stockDate }">
-							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
+							<input name="submit" id="submit" class="buttonsaveorder" value="Submit"
+								type="submit" align="center" disabled>
 							</c:when>
 							<c:otherwise>
 							
@@ -211,6 +240,151 @@
 
 
 <script>
+
+function addItem( ) {
+	 
+	var itemId = $("#itemId").val(); 
+	var itemName = $("#itemId option:selected").text();  
+	var batchNo = $("#batchNo").val(); 
+	var qty = $("#qty").val();
+	 
+	var valid=0;
+	    
+	if (itemId=="" || isNaN(itemId)) {
+
+		 
+		alert("Select Item ");
+		valid=1;
+
+	}
+	if (batchNo==""  ) {
+
+		 
+		alert("Enter Batch No ");
+		valid=1;
+
+	}
+	if (qty=="" || isNaN(qty) || qty<1) {
+
+		 
+		alert("Enter Recieved Qty");
+		valid=1;
+
+	}
+	 
+	 
+	 
+	
+	 if(valid==0)
+		 {
+		 
+		 
+	
+	$('#loader').show();
+
+	$
+			.getJSON(
+					'${addItemInReturnManufacture}',
+
+					{
+						 
+						 
+						itemId : itemId,
+						itemName : itemName, 
+						batchNo : batchNo,
+						qty : qty, 
+						ajax : 'true'
+
+					},
+					function(data) { 
+						
+						$('#table_grid1 td').remove();
+						if (data == "") {
+							alert("No records found !!");
+							document.getElementById("submit").disabled=true;
+						}
+						var grandTotal=0;
+						$.each(
+								data,
+								function(key, itemList) {
+									
+									document.getElementById("submit").disabled=false; 
+									var tr = $('<tr></tr>');
+										tr.append($('<td class="col-sm-1"></td>').html(key+1));
+										tr.append($('<td class="col-md-1"></td>').html(itemList.batchNo));
+									  	tr.append($('<td class="col-md-2"></td>').html(itemList.itemName)); 
+									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemReturnQty));  
+									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
+										$('#table_grid1 tbody').append(tr);
+										
+										document.getElementById("itemId").value="";
+										$('.selectpicker').selectpicker('refresh'); 
+										document.getElementById("batchNo").value="";  
+										document.getElementById("qty").value="";  
+										 
+
+								})
+						 
+								 
+					});
+
+ 
+		 }
+
+}
+
+function deleteItem(index) {
+	 
+	 
+	 
+	$('#loader').show();
+
+	$
+			.getJSON(
+					'${deleteItemInReturnManufacture}',
+
+					{
+						 
+						 
+						index : index, 
+						ajax : 'true'
+
+					},
+					function(data) { 
+						
+						$('#table_grid1 td').remove();
+						if (data == "") {
+							alert("No records found !!");
+							document.getElementById("submit").disabled=true; 
+
+						}
+						var grandTotal=0;
+						$.each(
+								data,
+								function(key, itemList) {
+									
+									document.getElementById("submit").disabled=false; 
+									var tr = $('<tr></tr>');
+										tr.append($('<td class="col-sm-1"></td>').html(key+1));
+										tr.append($('<td class="col-md-1"></td>').html(itemList.batchNo));
+									  	tr.append($('<td class="col-md-2"></td>').html(itemList.itemName)); 
+									  	tr.append($('<td class="col-md-1" ></td>').html(itemList.itemReturnQty));  
+									  	tr.append($('<td></td>').html('<span class="glyphicon glyphicon-remove" onclick="deleteItem('+key+');""></span>')); 
+										$('#table_grid1 tbody').append(tr);
+										
+										document.getElementById("itemId").value="";
+										$('.selectpicker').selectpicker('refresh'); 
+										document.getElementById("batchNo").value="";  
+										document.getElementById("qty").value="";  
+										 
+
+								})
+						 
+								 
+					});
+ 
+}
+
 function getBatchListByitemId() {
  
 	var itemId = document.getElementById("itemId").value;
