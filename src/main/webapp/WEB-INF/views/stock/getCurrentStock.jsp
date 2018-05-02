@@ -122,20 +122,46 @@
 					</div>
 					
 					<div id="table-scroll" class="table-scroll" id="currentStockTable">
-									<div id="faux-table" class="faux-table" aria="hidden"></div>
+							<!-- <table id="table_grid" class="main-table"> 
+												<thead>
+													<tr class="bgpink">
+														 <th class="col-sm-1">Sr No</th>
+									<th class="col-md-3">Item Name</th> 
+									<th class="col-md-1">Opening Stock </th>
+									<th class="col-md-1">Total Purchase </th>
+									<th class="col-md-1">Total Sell </th>
+									<th class="col-md-1">Total Return </th>
+									<th class="col-md-1">Return To Manufacture </th>
+									<th class="col-md-1">Closing Qty</th>
+														
+
+
+													</tr>
+												</thead>
+												</table> -->
+									<div id="faux-table" class="faux-table" aria="hidden"> 
+									</div>
 									<div class="table-wrap table-wrap-custbill">
 										<table id="table_grid1" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
 								
-									<th class="col-sm-1">Sr No</th>
+									  <th class="col-sm-1">Sr No</th>
 									<th class="col-md-1">Item Name</th> 
-									<th class="col-md-1">Opening Stock +</th>
-									<th class="col-md-1">Total Purchase +</th>
-									<th class="col-md-1">Total Sell -</th>
-									<th class="col-md-1">Total Return +</th>
-									<th class="col-md-1">Hub Return Qty -</th>
-									<th class="col-md-1">=Closing Qty</th>
+									<th class="col-md-1">Opening Stock </th>
+									<th class="col-md-1">Total Purchase </th>
+									<th class="col-md-1">Total Sell </th>
+									<th class="col-md-1">Total Return </th>
+									<th class="col-md-1">Return To Manufacture </th>
+									<th class="col-md-1">Closing Qty</th> 
+									<!-- <th class="col-sm-1"> </th>
+									<th class="col-md-1"> </th> 
+									<th class="col-md-1"> </th>
+									<th class="col-md-1"> </th>
+									<th class="col-md-1"> </th>
+									<th class="col-md-1"> </th>
+									<th class="col-md-1">  </th>
+									<th class="col-md-1"> </th> -->
 								
 								</tr>
 											</thead>
@@ -174,11 +200,11 @@
 											<thead>
 												<tr class="bgpink">
 								 
-									<th class="col-md-1">Opening Stock +</th>
-									<th class="col-md-1">Total Received By Purchase+</th>
-									<th class="col-md-1">Issue Qty -</th>
-									<th class="col-md-1">Total Return By Customer+</th>
-									<th class="col-md-1"> Return To MFG-</th>
+									<th class="col-md-1">Opening Stock </th>
+									<th class="col-md-1">Total Received By Purchase</th>
+									<th class="col-md-1">Issue Qty To Customer </th>
+									<th class="col-md-1">Total Return By Customer</th>
+									<th class="col-md-1"> Return To MFG</th>
 									<th class="col-md-1">=Closing Qty</th>
 								
 								</tr>
