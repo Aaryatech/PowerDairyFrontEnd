@@ -2850,7 +2850,7 @@ public class ReportController {
 			p1.setAlignment(Element.ALIGN_CENTER);
 			document.add(p1);
 			document.add(new Paragraph("\n"));
-			document.add(table);
+			document.add(table); 
 
 			int totalPages = writer.getPageNumber();
 
