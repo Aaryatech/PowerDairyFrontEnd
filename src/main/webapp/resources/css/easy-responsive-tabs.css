@@ -95,9 +95,9 @@
   background-color: rgba(233, 230, 202, 0.3);
 }
 .cd-tabs-navigation a.selected {
-  background-color: #343690 !important;
+  background-color: #0099e6 !important;
   font-weight:bold;
-  color: #ec268f;border-top:1px solid #ccc;border-right:1px solid #ccc;border-left:1px solid #ccc;border-bottom:1px solid #fff;
+  color: #61c7f2;border-top:1px solid #ccc;border-right:1px solid #ccc;border-left:1px solid #ccc;border-bottom:1px solid #fff;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#eeeeee+0,f6f6f6+38,ffffff+100 */
 background: #eeeeee; /* Old browsers */
 background: -moz-linear-gradient(top, #eeeeee 0%, #f6f6f6 38%, #ffffff 100%); /* FF3.6-15 */
@@ -154,11 +154,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', end
   background-position: -100px -20px;
 }
 .customer_edit,.customer_delete{
-    background-color: #343690;
+    background-color: #0099e6;
 	color:#fff;
 }
 .customer_edit:hover,.customer_delete:hover{
-	background-color:#ec268f !important;
+	background-color:#61c7f2 !important;
 	color:#fff;
 }
 
@@ -222,12 +222,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', end
 	
 	font-size:16px;
 	padding:3px 12px !important;
-	background-color: #343690 !important;
+	background-color: #0099e6 !important;
 	color:#fff;
 	
 }
 .additem_btn:hover{
-	background-color:#ec268f !important;
+	background-color:#61c7f2 !important;
 	color:#fff;
 
 }

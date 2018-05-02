@@ -120,8 +120,8 @@
 						<div class="col-md-2">
 							<div class="col1title" align="left"><b>Collected AMT :</b> ${collection}</div>
 						</div>
-						<div class="col-md-2">
-							<div class="col1title" align="left"><b>Outstanding AMT :</b>${outstandingAmount}</div>
+						<div class="col-md-3">
+							<div class="col1title" align="left"><b>Settled Outstanding AMT :</b>${outstandingAmount}</div>
 						</div>
 						
 						<div class="col-md-2">
@@ -131,6 +131,9 @@
 					</div> 
 					
 					 <div class="colOuter"> 
+					 <div class="col-md-3">
+							<div class="col1title" align="left"><b>Unsettled Outstanding Amt :</b> ${unsettledOutstandingAmt}</div>
+						</div>
 					</div>
 					 <div class="colOuter"> 
 					</div>
@@ -144,6 +147,7 @@
 										<table id="table_grid1" class="main-table small-td">
 											<thead>
 												<tr class="bgpink">
+													<th class=col-md-1> <input type="checkbox" id="selectAll" />ALL</th>
 													<th class=col-md-1>Sr No </th>
 													<th class=col-md-1>Bill Id </th>
 													<th class="col-md-1">Customer Name </th>
@@ -160,6 +164,7 @@
 												
 												  <c:set var="cnt" value="${cnt+1}"/>
 												 <tr>
+					<td><input type="checkbox" class="chk" name="select_to_print"id="${billHeader.billTempId}"	value="${billHeader.billTempId}" disabled/></td>
 												<td class="col-md-1"><c:out value="${cnt}" /></td> 
 												<td class="col-md-1"><c:out value="-" /></td> 
 												<td class="col-md-1"><c:out value="${billHeader.custName}" /></td> 
@@ -170,13 +175,15 @@
 												<td><a href="${pageContext.request.contextPath}/approvedTempBill/${billHeader.billTempId}">
 												Approve</a>
 												
-											<%-- 	<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
-												CRN</a> --%></td>
+											 <%-- 	<a href="${pageContext.request.contextPath}/creditNote/${billHeader.billTempId}">
+												CRN</a> --%> </td>
 												</tr>
 												</c:forEach> 
 												<c:forEach items="${billHeadersList}" var="billHeaders" varStatus="count">
 												<tr  style="color: #fff; background: #72af73;">
 												  <c:set var="cnt" value="${cnt+1}"/>
+								<td><input type="checkbox" class="chk" name="select_to_print"id="${billHeader.billTempId}"	value="${billHeaders.billTempId}"/></td>
+												
 												<td class="col-md-1"><c:out value="${cnt}" /></td> 
 												<td class="col-md-1"><c:out value="${billHeaders.billId}" /></td> 
 												<td class="col-md-1"><c:out value="${billHeaders.custName}" /></td> 
@@ -185,12 +192,11 @@
 												<td class="col-md-1"><c:out value="${billHeaders.grandTotal}" /></td>
 												<td class="col-md-1"><c:out value="${billHeaders.collectedAmt}" /></td>
 												<td>
-												
 												<a href="${pageContext.request.contextPath}/settledBills/${billHeaders.billTempId}">
 												Details</a> 
-												<c:if test="${billHeaders.isCrnGenerated==0}">
+												
 												<a href="${pageContext.request.contextPath}/creditNote/${billHeaders.billTempId}">
-												CRN</a></c:if></td>
+												CRN</a></td>
 												</tr>
 												</c:forEach> 
 											</tbody>
@@ -199,18 +205,13 @@
 									</div>
 								</div>
 					 
-						 
-					<!-- <div class="colOuter">
-						<div align="center">
-							<input name="submit" class="buttonsaveorder" value="Submit"
-								type="submit" align="center">
-								<input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled>
-						</div>
-				 
-					</div> -->
-					
+				<center>
+										<input type="button" margin-right: 5px;" id="btn_submit"
+											class="btn btn-primary" onclick="billPdf()" 
+											value="Bill Pdf" />
+							</center>
 					 
-
+ 
 				
 
 				 
@@ -306,8 +307,32 @@ function cancel1() {
   fauxTable.appendChild(clonedElement2);
 })();
 
+</script>
+<script type="text/javascript">
+function billPdf()
+{
 
-	</script>
+var checkedVals = $('.chk:checkbox:checked').map(function() {
+    return this.value;
+}).get();
+checkedVals=checkedVals.join(",");
 
+if(checkedVals=="")
+	{
+	alert("Please Select Bill")
+	}
+else
+	{
+	   window.open('${pageContext.request.contextPath}/pdf?url=pdf/showBillsPdf/'+checkedVals);
+
+	}
+
+}
+</script>
+<script type="text/javascript">
+$('#selectAll').click(function (e) {
+    $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
+});
+</script>
 </body>
 </html>

@@ -1,11 +1,19 @@
 package com.dairypower.admin.controller;
 
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
+import org.zefer.pd4ml.PD4Constants;
+import org.zefer.pd4ml.PD4ML;
+import org.zefer.pd4ml.PD4PageMark;
 
 import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.common.DateConvertor;
@@ -85,14 +96,28 @@ public class BillController {
            
             int outstandingCrates=0;
             float outstandingAmt=0;
+            float unsettledOutstandingAmt=0;
+
+            
+            if(!billHeaderList.isEmpty())
+            {
+            	for(int i=0;i<billHeaderList.size();i++)
+            	{
+            		unsettledOutstandingAmt=unsettledOutstandingAmt+(billHeaderList.get(i).getOutstandingAmt());
+            		System.err.println(unsettledOutstandingAmt);
+            		
+            	}
+            }
             if(!billsList.isEmpty())
             {
             	for(int i=0;i<billsList.size();i++)
             	{
+            		
             		if(billsList.get(i).getIsSettled()==1)
             		{
             			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesClBal());
             			outstandingAmt=outstandingAmt+(billsList.get(i).getOutstandingAmt());
+
             		}else
             		{
             			outstandingCrates=outstandingCrates+(billsList.get(i).getCratesOpBal()+billsList.get(i).getCratesIssued());
@@ -102,6 +127,7 @@ public class BillController {
             }
             outstandingCrates=outstandingCrates+0;
             model.addObject("outstandingCrates", outstandingCrates);
+            model.addObject("unsettledOutstandingAmt", unsettledOutstandingAmt);
             model.addObject("outstandingAmount", outstandingAmt);
             model.addObject("pending", billHeaderList.size());
             model.addObject("generated", billHeadersList.size());
@@ -598,6 +624,8 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				creditNoteHeader.setRemarks("Credit Note of Distribution Leakage");
 				creditNoteHeader.setBillTempId(billTempId);
 				
+				float total=0;
+				
 			for(int i=0;i<header.getBillDetailList().size();i++)
 			{
 				
@@ -622,6 +650,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					creditNoteDetails.setPackDate(currDate);
 					creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 					creditNoteDetail.add(creditNoteDetails);
+					total=total+(header.getBillDetailList().get(i).getRate()*distLeakageQty);
 				}
 				if(returnQty>0)
 				{
@@ -635,7 +664,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				
 			}
 			creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
-
+            creditNoteHeader.setGrandTotal(total);
 			if(flag==true)
 			{
 	     	CreditNoteHeader crNote = rest.postForObject(Constants.url + "/saveCreditNote",creditNoteHeader,
@@ -890,6 +919,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 				creditNoteHeader.setRemarks(remark);
 				creditNoteHeader.setBillTempId(billTempId);
 				
+				float grandTotal=0;
 				for(int i=0;i<header.getBillDetailList().size();i++)
 				{
 					int expireQty=Integer.parseInt(request.getParameter("expireQty"+i));
@@ -908,11 +938,15 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 						creditNoteDetails.setPackDate(currDate);
 						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 						creditNoteDetail.add(creditNoteDetails);
+						
+						float total=(header.getBillDetailList().get(i).getRate())*(expireQty+leakageQty);
+						grandTotal=grandTotal+total;
 					}
 					
 					
 				}
 				creditNoteHeader.setCreditNoteDetailList(creditNoteDetail);
+				creditNoteHeader.setGrandTotal(grandTotal);
 				if(flag==true)
 				{
 			CreditNoteHeader crNote = rest.postForObject(Constants.url + "/saveCreditNote",creditNoteHeader,
@@ -1014,5 +1048,168 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		}
 
 		return model;
+	}
+
+	@RequestMapping(value = "pdf/showBillsPdf/{billTempId}", method = RequestMethod.GET)
+	public ModelAndView showBillsPdf(@PathVariable("billNos")String[] billTempIds,HttpServletRequest request, HttpServletResponse response) {
+      System.out.println("IN Show bill PDF Method :/showBillPdf");
+		ModelAndView model = new ModelAndView("bill/allBillPdf");
+   		
+   		try {
+   			RestTemplate rest = new RestTemplate();
+			String strBillTempIds=new String();
+			for(int i=0;i<billTempIds.length;i++)
+			{
+				strBillTempIds=strBillTempIds+","+billTempIds[i];
+			}
+			strBillTempIds=strBillTempIds.substring(1);
+			
+			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
+			map.add("billTempIds",billTempIds);
+			GetBillHeader[] billHeaderRes = rest.postForObject(Constants.url + "/findBillsById",map,GetBillHeader[].class);
+			ArrayList<GetBillHeader> billHeaders = new ArrayList<GetBillHeader>(Arrays.asList(billHeaderRes));
+   			
+   		model.addObject("billHeaderList", billHeaders);
+   		}
+   		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	private Dimension format = PD4Constants.A4;
+	private boolean landscapeValue = false;
+	private int topValue = 8;
+	private int leftValue = 0;
+	private int rightValue = 0;
+	private int bottomValue = 8;
+	private String unitsValue = "m";
+	private String proxyHost = "";
+	private int proxyPort = 0;
+
+	private int userSpaceWidth = 750;
+	private static int BUFFER_SIZE = 1024;
+	
+	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
+	public void showPDF(HttpServletRequest request, HttpServletResponse response) {
+
+		String url = request.getParameter("url");
+		System.out.println("URL " + url);
+		// http://monginis.ap-south-1.elasticbeanstalk.com
+	    File f = new File("/home/ats-12/report.pdf");
+		//File f = new File("/home/ats-11/pdf/ordermemo221.pdf");
+		//File f = new File("/Users/MIRACLEINFOTAINMENT/ATS/uplaods/reports/ordermemo221.pdf");
+
+		System.out.println("I am here " + f.toString());
+		try {
+			runConverter(Constants.ReportURL + url, f, request, response);
+			System.out.println("Come on lets get ");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+
+			System.out.println("Pdf conversion exception " + e.getMessage());
+		}
+
+		// get absolute path of the application
+		ServletContext context = request.getSession().getServletContext();
+		String appPath = context.getRealPath("");
+		String filename = "ordermemo221.pdf";
+		 String filePath = "/home/ats-12/report.pdf";
+		//String filePath = "/home/ats-11/pdf/ordermemo221.pdf";
+		//String filePath = "/Users/MIRACLEINFOTAINMENT/ATS/uplaods/reports/ordermemo221.pdf";
+
+		// construct the complete absolute path of the file
+		String fullPath = appPath + filePath;
+		File downloadFile = new File(filePath);
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(downloadFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			// get MIME type of the file
+			String mimeType = context.getMimeType(fullPath);
+			if (mimeType == null) {
+				// set to binary type if MIME mapping not found
+				mimeType = "application/pdf";
+			}
+			System.out.println("MIME type: " + mimeType);
+
+			String headerKey = "Content-Disposition";
+
+			// response.addHeader("Content-Disposition", "attachment;filename=report.pdf");
+			response.setContentType("application/pdf");
+
+			// get output stream of the response
+			OutputStream outStream;
+
+			outStream = response.getOutputStream();
+
+			byte[] buffer = new byte[BUFFER_SIZE];
+			int bytesRead = -1;
+
+			// write bytes read from the input stream into the output stream
+
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
+			}
+
+			inputStream.close();
+			outStream.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void runConverter(String urlstring, File output, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+
+		if (urlstring.length() > 0) {
+			if (!urlstring.startsWith("http://") && !urlstring.startsWith("file:")) {
+				urlstring = "http://" + urlstring;
+			}
+			System.out.println("PDF URL " + urlstring);
+			java.io.FileOutputStream fos = new java.io.FileOutputStream(output);
+
+			PD4ML pd4ml = new PD4ML();
+
+			try {
+
+				PD4PageMark footer = new PD4PageMark();  
+				footer.setPageNumberTemplate("page $[page] of $[total]");  
+				footer.setTitleAlignment(PD4PageMark.LEFT_ALIGN);  
+				footer.setPageNumberAlignment(PD4PageMark.RIGHT_ALIGN);  
+				footer.setInitialPageNumber(1);  
+				footer.setFontSize(8);  
+				footer.setAreaHeight(15); 
+			
+				pd4ml.setPageFooter(footer);
+
+			} catch (Exception e) {
+				System.out.println("Pdf conversion method excep " + e.getMessage());
+			}
+			try {
+				pd4ml.setPageSize(landscapeValue ? pd4ml.changePageOrientation(format) : format);
+			} catch (Exception e) {
+				System.out.println("Pdf conversion ethod excep " + e.getMessage());
+			}
+
+			if (unitsValue.equals("mm")) {
+				pd4ml.setPageInsetsMM(new Insets(topValue, leftValue, bottomValue, rightValue));
+			} else {
+				pd4ml.setPageInsets(new Insets(topValue, leftValue, bottomValue, rightValue));
+			}
+
+			pd4ml.setHtmlWidth(userSpaceWidth);
+
+			
+			
+
+			pd4ml.render(urlstring, fos);
+
+		}
 	}
 }

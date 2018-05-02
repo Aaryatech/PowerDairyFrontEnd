@@ -328,7 +328,7 @@ jQuery(document).ready(function(){
 															.append($(
 																	'<td class="col-md-1"style="text-align:right"></td>')
 																	.html(
-																			billWisePurchaseData.inkms));
+																			billWisePurchaseData.inKms));
 
 													tr
 															.append($(

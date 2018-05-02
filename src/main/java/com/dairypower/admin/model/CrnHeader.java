@@ -18,10 +18,20 @@ public class CrnHeader{
 	
 	private String custName;
 	
+	private float grandTotal;
 	
     private String remarks;
 
 	List<CreditNoteDetails> creditNoteDetailList;
+
+	
+	public float getGrandTotal() {
+		return grandTotal;
+	}
+
+	public void setGrandTotal(float grandTotal) {
+		this.grandTotal = grandTotal;
+	}
 
 	public int getCrnHeaderId() {
 		return crnHeaderId;

@@ -326,19 +326,19 @@
 						<div class="col-md-3">
 				 		<c:if test="${billHeader.collectionPaymode==0}">NA</c:if>
 						
-						<c:if test="${billHeader.collectionPaymode==1}">Check</c:if>
+						<c:if test="${billHeader.collectionPaymode==1}">Cheque</c:if>
 	                   <c:if test="${billHeader.collectionPaymode==2}">Cash</c:if>
-		              <c:if test="${billHeader.collectionPaymode==3}">Cash and Check Both</c:if>
+		              <c:if test="${billHeader.collectionPaymode==3}">Cash and Cheque Both</c:if>
 						</div>
 						<div class="col-md-1"> 
 								</div>
 							    <div class="col-md-2">
-									<div class="col1title" align="left">Check No : </div>
+									<div class="col1title" align="left">Cheque No : </div>
 								</div>
 								<div class="col-md-3">
 								 
 									 <input id="checkNo" class="form-control"
-										placeholder="Check No" name="checkNo" style="text-align: left;"   type="number" readonly> 
+										placeholder="Cheque No" name="checkNo" style="text-align: left;"   type="number" readonly> 
 		
 								</div>
 								 

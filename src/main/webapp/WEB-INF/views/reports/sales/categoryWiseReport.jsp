@@ -234,7 +234,6 @@ jQuery(document).ready(function(){
 			var fromDate = document.getElementById("fromdatepicker").value;
 			var toDate = document.getElementById("todatepicker").value;
 			var catId = document.getElementById("catId").value;
-alert("kk")
 			$
 					.getJSON(
 							'${getCategoryWiseReport}',

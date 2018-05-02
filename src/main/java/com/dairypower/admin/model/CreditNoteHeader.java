@@ -16,11 +16,21 @@ public class CreditNoteHeader{
 
     private int custId;
     	
+	private float grandTotal;
+
     private String remarks;
 
 	List<CreditNoteDetail> creditNoteDetailList;
 	
 	
+	public float getGrandTotal() {
+		return grandTotal;
+	}
+
+	public void setGrandTotal(float grandTotal) {
+		this.grandTotal = grandTotal;
+	}
+
 	public int getBillTempId() {
 		return billTempId;
 	}

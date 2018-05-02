@@ -106,7 +106,6 @@
 											<th class="col-md-1">CRN No.</th>
 											<th class="col-md-1">Date</th>   
 											<th class="col-md-1"  >Customer</th> 
-											<th class="col-md-1"  >Scrap</th>  
 											<th class="col-md-1"  >Remark</th>  
 											<th class="col-md-1"  >Action</th> 
 										</tr>
@@ -122,7 +121,6 @@
 														<td ><c:out value="${crnHeaderList.crnId}" /></td>
 														<td ><c:out value="${crnHeaderList.crnDate}" /></td> 
 														<td ><c:out value="${crnHeaderList.custName}" /></td>
-			     										<td ><c:out value="${crnHeaderList.scrapType}" /></td>
 												 	 	<td  ><c:out value="${crnHeaderList.remarks}" /> </td>
 												 	 	 <td  ><a href="${pageContext.request.contextPath}/crnDetails/${crnHeaderList.crnHeaderId}" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a>  
 												 	 	  </td>
@@ -239,10 +237,9 @@ function serchOtherBill()
 								tr.append($('<td ></td>').html(itemList.crnId));
 							  	tr.append($('<td ></td>').html(itemList.crnDate));
 							  	tr.append($('<td  ></td>').html(itemList.custName));
-							  	tr.append($('<td  ></td>').html(itemList.scrapType)); 
 							  	tr.append($('<td  ></td>').html(itemList.remarks)); 
 
-						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
+						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/crnDetails/'+itemList.crnHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
 							  
 							  	
 							    $('#table_grid tbody').append(tr);

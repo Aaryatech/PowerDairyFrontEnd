@@ -826,7 +826,7 @@ function calCurrency(qty,index)
 		{
 		var checkAmt=parseInt($("#checkAmt").val());
 		document.getElementById("collectedAmt").value=(checkAmt+CurrencyTotal);
-		calRemainingAmt(CurrencyTotal);
+		calRemainingAmt(checkAmt+CurrencyTotal);
 		}
 }
 </script>
