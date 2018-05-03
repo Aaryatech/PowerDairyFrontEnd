@@ -219,16 +219,16 @@
 								placeholder="Batch No" name="batchNo"   type="text"  ></td>
 																			
 																		<td><input id="qty" style="text-align: left;" onchange="addQtyInStock();" class="form-control"
-								placeholder="Qty" name="qty"   type="number"  ></td>
+								placeholder="Qty" name="qty"   type="number" value="0" ></td>
 																			
 																		<td><input id="shortNo" style="text-align: left;" class="form-control"
-								placeholder="Short No" name="shortNo"   type="number"  ></td>
+								placeholder="Short No" name="shortNo"   type="number"  value="0"></td>
 								
 																		<td><input id="extraNo" style="text-align: left;" class="form-control"
-								placeholder="Extra No" name="extraNo"   type="number"  ></td>
+								placeholder="Extra No" name="extraNo"   type="number"  value="0"></td>
 								
 																		<td><input id="leakageQty" style="text-align: left;" class="form-control"
-								placeholder="Leakage Qty " name="leakageQty" type="number"  ></td>
+								placeholder="Leakage Qty " name="leakageQty" type="number" value="0" ></td>
 																		
 																		 
 																		 <td ><input type="button" class="btn additem_btn" value="Add Item" onclick="addItem();"
@@ -364,28 +364,34 @@ function addItem( ) {
 		alert("Select Item ");
 		valid=1;
 
-	}
+	}else if (mfgDate=="" || mfgDate==null) {
+
+		 
+		alert("Select Manufacturing Date ");
+		valid=1;
+
+	}else
 	if (batchNo==""  ) {
 
 		 
 		alert("Enter Batch No ");
 		valid=1;
 
-	}
+	}else
 	if (qty=="" || isNaN(qty) || qty<1) {
 
 		 
 		alert("Enter Recieved Qty");
 		valid=1;
 
-	}
+	}else
 	 if (shortNo=="" || isNaN(shortNo) ) {
 
 		 
 		alert("Enter Short No ");
 		valid=1;
 
-	}
+	}else
 	if (extraNo=="" || isNaN(extraNo)) {
 
 		 
@@ -393,7 +399,7 @@ function addItem( ) {
 		valid=1;
 
 	}
-	 
+	else
 	if (leakageQty=="" || isNaN(leakageQty)) {
 
 		 
@@ -457,10 +463,10 @@ function addItem( ) {
 										$('.selectpicker').selectpicker('refresh');
 										document.getElementById("index").value="";
 										document.getElementById("batchNo").value="";  
-										document.getElementById("qty").value="";
-										document.getElementById("shortNo").value="";
-										document.getElementById("extraNo").value="";
-										document.getElementById("leakageQty").value="";
+										document.getElementById("qty").value=0;
+										document.getElementById("shortNo").value=0;
+										document.getElementById("extraNo").value=0;
+										document.getElementById("leakageQty").value=0;
 										document.getElementById("datepicker1").value="";
 										 document.getElementById("itemQty").value=0; 
 										  $("#enterQty").html(0);
@@ -556,10 +562,10 @@ function deleteItem(index) {
 										$('.selectpicker').selectpicker('refresh');
 										document.getElementById("index").value="";
 										document.getElementById("batchNo").value="";  
-										document.getElementById("qty").value="";
-										document.getElementById("shortNo").value="";
-										document.getElementById("extraNo").value="";
-										document.getElementById("leakageQty").value="";
+										document.getElementById("qty").value=0;
+										document.getElementById("shortNo").value=0;
+										document.getElementById("extraNo").value=0;
+										document.getElementById("leakageQty").value=0;
 										document.getElementById("datepicker1").value="";
 
 								})

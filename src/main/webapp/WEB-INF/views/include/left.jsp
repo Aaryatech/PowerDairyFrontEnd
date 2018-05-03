@@ -69,12 +69,12 @@
 						Insert Or Edit Stock<span></span>
 					</div></a></li>
 					
-				<!-- 	<li><a href="#" onClick="openNav3()"><div class="img">
+			<li><a href="#" onClick="openNav3()"><div class="img">
 						<i class="fa fa-file-o icon"></i>
 					</div>
 					<div class="title">
 						<span>Report</span>
-					</div></a></li> -->
+					</div></a></li>
 					
 					<li><a href="${pageContext.request.contextPath}/logout"><div
 						class="img">
@@ -480,7 +480,7 @@
 		</div>
 	</div> 
 	<!--4nav-->
-<%-- 	<div id="mySidenav3" class="sidenav">
+	<div id="mySidenav3" class="sidenav">
 		<div class="topSlide">
 			<div class="topSlide2">
 				<a href="javascript:void(0)" class="closebtn" onClick="closeNav3()"><img
@@ -497,7 +497,6 @@
 						<a href="${pageContext.request.contextPath}/viewBillWisePurchaseReport"><i class="fa fa-files-o icon"></i> Bill Wise Purchase Report</a>
 						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Date Wise Purchase Report</a>
 						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Item Wise Purchase Report</a>
-						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>
 								
 						</div>
 						
@@ -512,13 +511,21 @@
 					<a href="${pageContext.request.contextPath}/viewDatewiseConsumptionReport"><i class="fa fa-files-o icon"></i> Date Wise Consumption Report</a>
 					 <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption</a>
 						 <a href="${pageContext.request.contextPath}/viewCategoryWiseReport"><i class="fa fa-files-o icon"></i> Category Wise Consumption</a>
-						<a href="${pageContext.request.contextPath}/viewCreditNoteReport"><i class="fa fa-files-o icon"></i> Credit Note Report</a>
-							 <a href="${pageContext.request.contextPath}/viewCategoryWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Category Wise Consumption</a>
-						 <a href="${pageContext.request.contextPath}/viewDateWisePurchaseReport"><i class="fa fa-files-o icon"></i> Date Wise Purchase Report</a>
-						 <a href="${pageContext.request.contextPath}/viewItemWisePurchaseReport"><i class="fa fa-files-o icon"></i>Item Wise Purchase Report</a>
-						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>
+							 <a href="${pageContext.request.contextPath}/viewCategoryWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Category Wise Item Consumption</a>
 						  <a href="${pageContext.request.contextPath}/viewCustomerWiseConsumptionReport"><i class="fa fa-files-o icon"></i> Customer Wise Consumption Report</a>
 								
+						</div>
+						
+					</li>
+							<li class="big-box">
+						
+							<div class="ibox">
+						<div class="ibox-head">
+						<div class="ibox-title">CRN Note And Vehicle Reports</div>
+						</div>
+					<a href="${pageContext.request.contextPath}/viewCreditNoteReport"><i class="fa fa-files-o icon"></i> Credit Note Report</a>
+						  <a href="${pageContext.request.contextPath}/viewVehicleWiseReport"><i class="fa fa-files-o icon"></i> Vehicle Wise Report</a>
+								  <a href="${pageContext.request.contextPath}/creditNoteLeakageQtyReport"><i class="fa fa-files-o icon"></i> CRN Leakage Qty  Report</a>
 						</div>
 						
 					</li>
@@ -528,7 +535,7 @@
 
 			</div>
 		</div>
-	</div> --%>
+	</div> 
 	<!--4nav-->
 
 	<!--3nav-->

@@ -4,6 +4,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<style type="text/css">
+table, th, td {
+    border: 1px solid #9da88d;
+}
+</style>
+
 
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 
@@ -41,14 +47,14 @@
 			<!--rightSidebar-->
 			<div class="sidebarright">
 				<div class="order-left">
-					<h2 class="pageTitle">Purchase Bill History </h2>
+					<h2 class="pageTitle">Credit Note Leakage Qty Report </h2>
 					
 
 				</div>
-				<div class="col1title" align="right"> 
+				<%-- <div class="col1title" align="right"> 
 						<a href="${pageContext.request.contextPath}/purchaseBill"><input type="button" value="Purchase Bill" class="btn btn-info">
 										</a>
-										</div>
+										</div> --%>
 				<form id="validation-form">
 
 					<div class="colOuter">
@@ -101,7 +107,13 @@
 
 
 						<div id="table-scroll" class="table-scroll">
-							<div id="faux-table" class="faux-table" aria="hidden"></div>
+							<div id="faux-table" class="faux-table" aria="hidden">
+							<table id="table_grid" class="main-table">
+									<thead>
+										<tr class="bgpink">
+											</tr>
+									</thead>
+									</table></div>
 							<div class="table-wrap">
 								<table id="table_grid" class="main-table">
 									<thead>

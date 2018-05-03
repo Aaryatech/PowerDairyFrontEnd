@@ -2,13 +2,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+	    
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <style type="text/css">
 table, th, td {
     border: 1px solid #9da88d;
 }
 </style>
+
 
 <%-- <!DOCTYPE html>
 <html>
@@ -71,7 +74,7 @@ jQuery(document).ready(function(){
 <c:url var="getCategoryWiseReport" value="/findCategoryWiseReport" />
 
 <div class="sidebarOuter"></div>
-
+<div class="rightSidebar">
 <div class="wrapper">
 
 	<!--topHeader-->
@@ -128,7 +131,7 @@ jQuery(document).ready(function(){
 					<div class="col-md-1">
 						<div class="col1title" align="left">Category:</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-2">
 						<select class="form-control" title="Select Category" name="catId"
 							id="catId" required>
 							<option value="0" selected>All</option>
@@ -139,11 +142,12 @@ jQuery(document).ready(function(){
 						</select>
 
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-3">
 						<button class="btn search_btn pull-left"
 							onclick="categoryWiseReport()">Search</button>
-						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
- --%>
+						
+ <button class="btn btn-primary"
+							onclick="showChart()">Graph</button>
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
 							onclick="genPdf()" disabled="disabled">PDF</button>
 
@@ -199,12 +203,53 @@ jQuery(document).ready(function(){
 								value="EXPORT TO Excel" onclick="exportToExcel();"
 								disabled="disabled">
 						</div>
+						
 					</div>
 				</div>
 			</div>
 
 
 
+
+
+<!-- <div id="chart" style="display: none"><br><br><br>
+	<hr><div  >
+	 
+			<div  id="chart_div" style="width:50%; height:400; float:right;" ></div> 
+		 
+			<div   id="Piechart" style="width:50%%; height:400; float:left: ;" ></div> 
+			</div>
+			 
+			<div class="colOuter" align="right" >
+			 <br>
+				<div   id="PieChart_div" style="width:50%; height:400;" align="left" ></div>
+				
+				<div id="chart_div" style="width: 50%; height: 400;" align="left"></div>
+				</div>
+				 
+				</div> -->
+
+<div id="chart" style="display: none;"><br><br><br>
+	<hr><div>
+	 
+			<div  id="chart_div" style="width:80%; height:300; float:right;" ></div> 
+		 
+			<div   id="Piechart" style="width:80%; height:300; float:left;" ></div> 
+			</div>
+			 
+			<div class="colOuter" align="right" >
+			
+				<div   id="PieChart_div" style="width:80%; height:300;" align="center" ></div>
+				
+				<div id="chart_div" style="width: 80%; height: 300;" align="center"></div>
+				</div>
+				 
+				</div>
+	<!-- 	<div id="chart_div" style="width: 100%; height: 100%;"></div>
+
+
+					<div id="PieChart_div" style="width: 100%; height: 100%;"></div>
+ -->
 
 		</div>
 		<!--rightSidebar-->
@@ -221,10 +266,10 @@ jQuery(document).ready(function(){
 <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
 <!--easyTabs-->
 
-
 <script type="text/javascript">
 	function categoryWiseReport() {
 		$('#table_grid td').remove();
+		   document.getElementById('chart').style="display:none";
 
 		var isValid = validate();
 
@@ -368,5 +413,158 @@ jQuery(document).ready(function(){
 
 	}
 </script>
+
+
+
+<script type="text/javascript">
+
+function showChart(){
+	
+	$("#PieChart_div").empty();
+	$("#chart_div").empty();
+		document.getElementById('chart').style.display = "block";
+		   document.getElementById("table_grid").style="display:none";
+		 
+		   document.getElementById('chart').style.display ="display:none";
+		   document.getElementById("table_grid").style= "block"; 
+			var isValid = validate();
+
+			if (isValid) { 
+				//document.getElementById('btn_pdf').style.display = "block";
+				var fromDate = document.getElementById("fromdatepicker").value;
+				var toDate = document.getElementById("todatepicker").value;
+				var catId = document.getElementById("catId").value;
+				$
+						.getJSON(
+								'${getCategoryWiseReport}',
+								{
+
+									fromDate : fromDate,
+									toDate : toDate,
+									catId:catId,
+									ajax : 'true',
+
+								},
+								function(data) {
+
+							 if (data == "") {
+									alert("No records found !!");
+									$('#loader').hide();
+
+								}
+							 var i=0;
+							 $('#loader').hide();
+							 google.charts.load('current', {'packages':['corechart', 'bar']});
+							 google.charts.setOnLoadCallback(drawStuff);
+
+							 function drawStuff() {
+								 
+								// alert("Inside DrawStuff");
+ 
+							   var chartDiv = document.getElementById('chart_div');
+							   document.getElementById("chart_div").style.border = "thin dotted red";
+							   
+							   
+							   var PiechartDiv = document.getElementById('PieChart_div');
+							   document.getElementById("PieChart_div").style.border = "thin dotted red";
+							   
+							   
+						       var dataTable = new google.visualization.DataTable();
+						       dataTable.addColumn('string', 'Category'); // Implicit domain column.
+						       dataTable.addColumn('number', 'Quantity'); // Implicit data column.
+						       dataTable.addColumn('number', 'Total');
+						       
+						       var piedataTable = new google.visualization.DataTable();
+						       piedataTable.addColumn('string', 'Category'); // Implicit domain column.
+						       piedataTable.addColumn('number', 'Total');
+						       
+						       
+						       $
+								.each(
+										data,
+										function(key,
+												item) {
+
+											var qty=item.billQty-(item.returnQty+item.leakageQty);
+											
+										  	var taxPer=(item.cgstPer+item.sgstPer);
+
+										  	var baseRate=(item.rate*100)/(100+taxPer);
+										  	
+										  	var taxableAmt=(baseRate*qty);
+										  	
+										  	var cgstRs=(taxableAmt*item.cgstPer)/100;
+											var sgstRs=(taxableAmt*item.sgstPer)/100;
+											
+											var totalTax=cgstRs+sgstRs;
+											
+									           var total=taxableAmt+totalTax;
+
+											
+											var catName=item.catName;
+											
+									
+								   dataTable.addRows([
+									 
+									   
+									   [catName, qty,total],
+									   
+								           ]);
+								   
+								   
+								   piedataTable.addRows([
+									 
+									   [catName, total],
+									   
+								           ]);
+								     }) // end of  $.each(data,function(key, report) {-- function
+
+            // Instantiate and draw the chart.
+          						    
+ var materialOptions = {
+          width: 500,
+          chart: {
+            title: 'Categorywise Report',
+            subtitle: 'Quantity And Total',
+
+          },
+          series: {
+            0: { axis: 'distance' }, // Bind series 0 to an axis named 'distance'.
+            1: { axis: 'brightness' } // Bind series 1 to an axis named 'brightness'.
+          },
+          axes: {
+            y: {
+              distance: {label: 'Quantity'}, // Left y-axis.
+              brightness: {side: 'right', label: 'Total'} // Right y-axis.
+            }
+          }
+        };
+						       
+						       function drawMaterialChart() {
+						           var materialChart = new google.charts.Bar(chartDiv);
+						           
+						          // alert("mater chart "+materialChart);
+						           materialChart.draw(dataTable, google.charts.Bar.convertOptions(materialOptions));
+						          // button.innerText = 'Change to Classic';
+						          // button.onclick = drawClassicChart;
+						         }
+						       
+						        var chart = new google.visualization.ColumnChart(
+						                document.getElementById('chart_div'));
+						        
+						        var Piechart = new google.visualization.PieChart(
+						                document.getElementById('PieChart_div'));
+						       chart.draw(dataTable,
+						          {title: 'Categorywise Report'});
+						       
+						       
+						       Piechart.draw(piedataTable,
+								          {title: 'Categorywise Report', is3D:true});
+						      // drawMaterialChart();
+							 };
+										
+							  	});
+}
+			}							</script>
 </body>
 </html>

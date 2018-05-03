@@ -2,7 +2,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
 <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 <style type="text/css">
 table, th, td {
@@ -125,14 +126,16 @@ jQuery(document).ready(function(){
 							placeholder="DD-MM-YYYY" name="toDate" type="text">
 					</div>
 					
-					<div class="col-md-2">
+					<div class="col-md-3">
 						<button class="btn search_btn pull-left"
 							onclick="dateWiseConsumptionReport()">Search</button>
 						<%-- 		  &nbsp;&nbsp;&nbsp;   <a href='${pageContext.request.contextPath}/pdf?reportURL=showPurchaseBillwiseReportPdf' id="btn_pdf" class="btn search_btn" style="display: none">PDF</a>
  --%>
 						<button class="btn btn-primary" value="PDF" id="PDFButton"
 							onclick="genPdf()" disabled="disabled">PDF</button>
-
+						
+ <button class="btn btn-primary"
+							onclick="showChart()">Graph</button>
 					</div>
 
 				</div>
@@ -195,6 +198,22 @@ jQuery(document).ready(function(){
 		</div>
 		<!--rightSidebar-->
 
+<div id="chart" style="display: none;"><br><br><br>
+	<hr><div>
+	 
+			<div  id="chart_div" style="width:80%; height:300; float:right;" ></div> 
+		 
+			<div   id="Piechart" style="width:80%; height:300; float:left;" ></div> 
+			</div>
+			 
+			<div class="colOuter" align="right" >
+			
+				<div   id="PieChart_div" style="width:80%; height:300;" align="center" ></div>
+				
+				<div id="chart_div" style="width: 80%; height: 300;" align="center"></div>
+				</div>
+				 
+				</div>
 	</div>
 	<!--fullGrid-->
 </div>
@@ -365,5 +384,142 @@ jQuery(document).ready(function(){
 
 	}
 </script>
+
+<script type="text/javascript">
+
+function showChart(){
+	
+	$("#PieChart_div").empty();
+	$("#chart_div").empty();
+		document.getElementById('chart').style.display = "block";
+		   document.getElementById("table_grid").style="display:none";
+		 
+		   document.getElementById('chart').style.display ="display:none";
+		   document.getElementById("table_grid").style= "block"; 
+			var isValid = validate();
+
+			if (isValid) { 
+				//document.getElementById('btn_pdf').style.display = "block";
+				var fromDate = document.getElementById("fromdatepicker").value;
+				var toDate = document.getElementById("todatepicker").value;
+				$
+						.getJSON(
+								'${getDateWiseConsumption}',
+								{
+
+									fromDate : fromDate,
+									toDate : toDate,
+									ajax : 'true',
+
+								},
+								function(data) {
+                      
+							 if (data == "") {
+									alert("No records found !!");
+									//$('#loader').hide();
+
+								}
+							 var i=0;
+							// $('#loader').hide();
+							 google.charts.load('current', {'packages':['corechart', 'bar']});
+							 google.charts.setOnLoadCallback(drawStuff);
+
+							 function drawStuff() {
+								 
+								// alert("Inside DrawStuff");
+ 
+							   var chartDiv = document.getElementById('chart_div');
+							   document.getElementById("chart_div").style.border = "thin dotted red";
+							   
+							   
+							   var PiechartDiv = document.getElementById('PieChart_div');
+							   document.getElementById("PieChart_div").style.border = "thin dotted red";
+							   
+							   
+						       var dataTable = new google.visualization.DataTable();
+						       dataTable.addColumn('string', 'Date'); // Implicit data column.
+						       dataTable.addColumn('number', 'Bill Amount');
+						       dataTable.addColumn('number', 'Outstanding Amount');
+						       dataTable.addColumn('number', 'Collected Amount');
+
+						       
+						       var piedataTable = new google.visualization.DataTable();
+						       piedataTable.addColumn('string', 'Date'); // Implicit domain column.
+						       piedataTable.addColumn('number', 'Bill Amount');
+						       
+						       
+						   	$
+							.each(
+									data,
+									function(key,
+											bill) {                       
+
+
+                                  var billdate=bill.billDate;
+                                  var grandTotal=bill.grandTotal;
+                                  var collectedAmt=bill.collectedAmt;
+                                  var outstandingAmt=bill.outstandingAmt;
+								   dataTable.addRows([
+									 
+									   
+									   [billdate,grandTotal,outstandingAmt,collectedAmt],
+									   
+								           ]);
+								   
+								   
+								   piedataTable.addRows([
+									 
+									   [billdate, grandTotal],
+									   
+								           ]);
+								     }); // end of  $.each(data,function(key, report) {-- function
+
+            // Instantiate and draw the chart.
+          						    
+ var materialOptions = {
+          width: 500,
+          chart: {
+            title: 'Datewise Consumption  Report',
+            subtitle: 'Quantity And Total',
+
+          },
+          series: {
+            0: { axis: 'distance' }, // Bind series 0 to an axis named 'distance'.
+            1: { axis: 'brightness' } // Bind series 1 to an axis named 'brightness'.
+          },
+          axes: {
+            y: {
+              distance: {label: 'Quantity'}, // Left y-axis.
+              brightness: {side: 'right', label: 'Total'} // Right y-axis.
+            }
+          }
+        };
+						       
+						       function drawMaterialChart() {
+						           var materialChart = new google.charts.Bar(chartDiv);
+						           
+						          // alert("mater chart "+materialChart);
+						           materialChart.draw(dataTable, google.charts.Bar.convertOptions(materialOptions));
+						          // button.innerText = 'Change to Classic';
+						          // button.onclick = drawClassicChart;
+						         }
+						       
+						        var chart = new google.visualization.ColumnChart(
+						                document.getElementById('chart_div'));
+						        
+						        var Piechart = new google.visualization.PieChart(
+						                document.getElementById('PieChart_div'));
+						       chart.draw(dataTable,
+						          {title: 'Datewise Consumption Report'});
+						       
+						       
+						       Piechart.draw(piedataTable,
+								          {title: 'Datewise Consumption Report', is3D:true});
+						      // drawMaterialChart();
+							 };
+										
+							  	});
+}
+			}							</script>
 </body>
 </html>

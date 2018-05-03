@@ -35,6 +35,7 @@ import com.dairypower.admin.common.Constants;
 import com.dairypower.admin.common.DateConvertor;
 import com.dairypower.admin.model.BillDetail;
 import com.dairypower.admin.model.BillHeader;
+import com.dairypower.admin.model.BillHeaderReport;
 import com.dairypower.admin.model.BillPayment;
 import com.dairypower.admin.model.CreditNoteDetail;
 import com.dairypower.admin.model.CreditNoteHeader;
@@ -1051,7 +1052,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 	}
 
 	@RequestMapping(value = "pdf/showBillsPdf/{billTempId}", method = RequestMethod.GET)
-	public ModelAndView showBillsPdf(@PathVariable("billNos")String[] billTempIds,HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView showBillsPdf(@PathVariable("billTempId")String[] billTempIds,HttpServletRequest request, HttpServletResponse response) {
       System.out.println("IN Show bill PDF Method :/showBillPdf");
 		ModelAndView model = new ModelAndView("bill/allBillPdf");
    		
@@ -1065,9 +1066,9 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			strBillTempIds=strBillTempIds.substring(1);
 			
 			MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
-			map.add("billTempIds",billTempIds);
-			GetBillHeader[] billHeaderRes = rest.postForObject(Constants.url + "/findBillsById",map,GetBillHeader[].class);
-			ArrayList<GetBillHeader> billHeaders = new ArrayList<GetBillHeader>(Arrays.asList(billHeaderRes));
+			map.add("billTempIds",strBillTempIds);
+			BillHeaderReport[] billHeaderRes = rest.postForObject(Constants.url + "/findBillsById",map,BillHeaderReport[].class);
+			ArrayList<BillHeaderReport> billHeaders = new ArrayList<BillHeaderReport>(Arrays.asList(billHeaderRes));
    			
    		model.addObject("billHeaderList", billHeaders);
    		}

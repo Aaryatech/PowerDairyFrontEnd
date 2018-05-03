@@ -85,7 +85,7 @@
 										
 										<td class="col-md-3"><c:out
 												value="${itemList.itemName}" /></td>
-	                                    <td class="col-md-1"style="text-align: center;"><input type="number" style="text-align: right;" name="rate${itemList.itemId}" value="${rsDetailsList.rate}" id="rate${itemList.itemId}"/></td>
+	                                    <td class="col-md-1"style="text-align: center;"><input type="text" pattern="[+-]?([0-9]*[.])?[0-9]+" style="text-align: right;" name="rate${itemList.itemId}" value="${rsDetailsList.rate}" id="rate${itemList.itemId}"/></td>
 									</tr>
 									</c:when>
                                 </c:choose>

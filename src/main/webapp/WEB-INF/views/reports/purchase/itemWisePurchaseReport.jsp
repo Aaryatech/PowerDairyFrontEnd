@@ -160,8 +160,11 @@ jQuery(document).ready(function(){
 									<tr class="bgpink">
 										<th class="col-sm-1"style="text-align:center">Sr. No.</th>
 									
-										<th class="col-sm-1"style="text-align:center">Item No</th>
-										<th class="col-sm-2"style="text-align:center">Item Name</th>
+										<th class="col-sm-3"style="text-align:center">Item Name</th>
+										<th class="col-sm-1"style="text-align:center">Item Qty</th>
+										<th class="col-sm-1"style="text-align:center">Short No.</th>
+										<th class="col-sm-1"style="text-align:center">Extra Qty</th>
+										<th class="col-sm-1"style="text-align:center">PO Leakage Qty</th>
 										<th class="col-md-2"style="text-align:center">Total</th>
 									</tr>
 								</thead>
@@ -249,11 +252,20 @@ jQuery(document).ready(function(){
 
 					tr.append($('<td class="col-md-1"></td>').html(key + 1));
 
-					tr.append($('<td class="col-md-1"></td>').html(
-							billWisePurchaseData.itemId));
-
-					tr.append($('<td class="col-md-2" style="text-align:left"></td>').html(
+					tr.append($('<td class="col-md-3"></td>').html(
 							billWisePurchaseData.itemName));
+
+					tr.append($('<td class="col-md-1" style="text-align:right"></td>').html(
+							billWisePurchaseData.itemQty));
+					tr.append($('<td class="col-md-1" style="text-align:right"></td>').html(
+							billWisePurchaseData.shortNo));
+
+					tr.append($('<td class="col-md-1" style="text-align:right"></td>').html(
+							billWisePurchaseData.extraNo));
+
+					tr.append($('<td class="col-md-1" style="text-align:right"></td>').html(
+							billWisePurchaseData.poLeakageQty));
+
 
 					tr.append($('<td class="col-md-2"style="text-align:right"></td>').html(
 							billWisePurchaseData.total));

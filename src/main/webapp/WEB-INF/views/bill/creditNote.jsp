@@ -220,7 +220,7 @@
 				  <div class="row"><div class="col-md-2"><b>Remark</b></div>
 							<div class="col-md-3">									
 						<input id="remark" class="form-control"
-								placeholder="Remark" name="remark"  style="text-align: left;" type="text"  required>
+								placeholder="Remark" name="remark" value="NA" style="text-align: left;" type="text"  required>
 							</div>		
 								 
 						</div>

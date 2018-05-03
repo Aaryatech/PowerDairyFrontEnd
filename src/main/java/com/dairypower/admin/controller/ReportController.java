@@ -1495,20 +1495,26 @@ public class ReportController {
 			List<String> rowData = new ArrayList<String>();
 
 			rowData.add("Sr. No");
-			rowData.add("Item No");
 			rowData.add("Item Name");
+			rowData.add("Qty");
+			rowData.add("Short No.");
+			rowData.add("Extra No.");
+			rowData.add("Po Leakage Qty");
 			rowData.add("Total");
 
 			expoExcel.setRowData(rowData);
 			exportToExcelList.add(expoExcel);
-			int cnt = 1;
 			for (int i = 0; i < itemWisePurchaseReport.size(); i++) {
 				expoExcel = new ExportToExcel();
 				rowData = new ArrayList<String>();
-				cnt = cnt + i;
-				rowData.add("" + (cnt));
-				rowData.add("" + itemWisePurchaseReport.get(i).getItemId());
+				rowData.add("" + (i+1));
 				rowData.add("" + itemWisePurchaseReport.get(i).getItemName());
+				rowData.add("" + itemWisePurchaseReport.get(i).getItemQty());
+
+				rowData.add("" + itemWisePurchaseReport.get(i).getShortNo());
+				rowData.add("" + itemWisePurchaseReport.get(i).getExtraNo());
+
+				rowData.add("" + itemWisePurchaseReport.get(i).getPoLeakageQty());
 				rowData.add("" + itemWisePurchaseReport.get(i).getTotal());
 
 				expoExcel.setRowData(rowData);
@@ -1557,11 +1563,11 @@ public class ReportController {
 			e.printStackTrace();
 		}
 
-		PdfPTable table = new PdfPTable(4);
+		PdfPTable table = new PdfPTable(7);
 		try {
 			System.out.println("Inside PDF Table try");
 			table.setWidthPercentage(100);
-			table.setWidths(new float[] { 1.4f, 1.7f, 3.8f, 2.4f });
+			table.setWidths(new float[] { 1.4f, 3.7f,2.8f, 2.4f,2.8f, 2.4f,2.9f });
 			Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
 			Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
 			headFont1.setColor(BaseColor.WHITE);
@@ -1577,13 +1583,28 @@ public class ReportController {
 
 			table.addCell(hcell);
 
-			hcell = new PdfPCell(new Phrase("Item No", headFont1));
+			hcell = new PdfPCell(new Phrase("Item Name", headFont1));
 			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			hcell.setBackgroundColor(BaseColor.PINK);
 
 			table.addCell(hcell);
 
-			hcell = new PdfPCell(new Phrase("Item Name", headFont1));
+			hcell = new PdfPCell(new Phrase("Item Qty", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			hcell = new PdfPCell(new Phrase("Short No.", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			hcell = new PdfPCell(new Phrase("Extra Qty", headFont1));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			hcell.setBackgroundColor(BaseColor.PINK);
+
+			table.addCell(hcell);
+			hcell = new PdfPCell(new Phrase("Po Leakage Qty", headFont1));
 			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			hcell.setBackgroundColor(BaseColor.PINK);
 
@@ -1606,20 +1627,38 @@ public class ReportController {
 				cell.setPadding(3);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Phrase(" " + bill.getItemId(), headFont));
+				cell = new PdfPCell(new Phrase(" " + bill.getItemName(), headFont));
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				cell.setPaddingRight(2);
 				cell.setPadding(3);
 				table.addCell(cell);
 
-				cell = new PdfPCell(new Phrase("" + bill.getItemName(), headFont));
+				cell = new PdfPCell(new Phrase("" + bill.getItemQty(), headFont));
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				cell.setPaddingRight(2);
 				cell.setPadding(3);
 				table.addCell(cell);
-
+				cell = new PdfPCell(new Phrase("" + bill.getShortNo(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+			
+				cell = new PdfPCell(new Phrase("" + bill.getExtraNo(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
+				cell = new PdfPCell(new Phrase("" + bill.getPoLeakageQty(), headFont));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				cell.setPaddingRight(2);
+				cell.setPadding(3);
+				table.addCell(cell);
 				cell = new PdfPCell(new Phrase("" + bill.getTotal(), headFont));
 				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);

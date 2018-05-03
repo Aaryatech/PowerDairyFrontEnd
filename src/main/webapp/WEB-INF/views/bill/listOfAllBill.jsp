@@ -164,7 +164,7 @@
 												
 												  <c:set var="cnt" value="${cnt+1}"/>
 												 <tr>
-					<td><input type="checkbox" class="chk" name="select_to_print"id="${billHeader.billTempId}"	value="${billHeader.billTempId}" disabled/></td>
+					<td>#<%-- <input type="checkbox" class="chk" name="select_to_print"id="${billHeader.billTempId}"	value="${billHeader.billTempId}" disabled/> --%></td>
 												<td class="col-md-1"><c:out value="${cnt}" /></td> 
 												<td class="col-md-1"><c:out value="-" /></td> 
 												<td class="col-md-1"><c:out value="${billHeader.custName}" /></td> 

@@ -679,16 +679,18 @@ function deleteItemDetail(index) {
 function saveTempBill()
 {
 	var cratesCap=parseInt($("#cratesCap").val());
-	var custCap=parseInt($("#custCap").val());
+	var custCap=parseFloat($("#custCap").val());
 	var custId=parseInt($("#custId").val());
 	var vehId=parseInt($("#vehId").val());
 	var cratesIssueQty=parseInt($("#cratesIssueQty").val());
 	var cratesOpnQty=parseInt($("#cratesOpnQty").val());
 	var totalCrates=cratesIssueQty+cratesOpnQty;
-	var total=$("#grandTotalText").val();
+	var total=parseFloat($("#grandTotalText").val());
 	var vehOutKm=parseInt($("#vehOutKm").val());
 	if(totalCrates<=cratesCap)
 		{
+		if(total<custCap)
+			{
 	$('#loader').show();
 	$.getJSON('${insertTempBill}', {
 		
@@ -729,6 +731,12 @@ function saveTempBill()
 		
 
 	});
+			}
+		else
+			{
+			 alert("Sorry,Your Bill Amount is Greator than your Cap amount:"+custCap)
+
+			}
 		}
 	else
 		{
