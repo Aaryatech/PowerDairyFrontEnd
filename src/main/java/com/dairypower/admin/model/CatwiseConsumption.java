@@ -26,7 +26,27 @@ public class CatwiseConsumption {
 
 	private String itemName;
 
+	private int expireQty;
 	
+	private int leakageQty;
+	
+	
+	public int getExpireQty() {
+		return expireQty;
+	}
+
+	public int getLeakageQty() {
+		return leakageQty;
+	}
+
+	public void setExpireQty(int expireQty) {
+		this.expireQty = expireQty;
+	}
+
+	public void setLeakageQty(int leakageQty) {
+		this.leakageQty = leakageQty;
+	}
+
 	public int getBillDetailId() {
 		return billDetailId;
 	}
@@ -125,11 +145,12 @@ public class CatwiseConsumption {
 
 	@Override
 	public String toString() {
-		return "CategorywiseConsumptionReport [billTempId=" + billTempId + ", itemId=" + itemId + ", billQty=" + billQty
-				+ ", returnQty=" + returnQty + ", distLeakageQty=" + distLeakageQty + ", cgstPer=" + cgstPer
-				+ ", igstPer=" + igstPer + ", sgstPer=" + sgstPer + ", rate=" + rate + ", itemName=" + itemName + "]";
+		return "CatwiseConsumption [billDetailId=" + billDetailId + ", billTempId=" + billTempId + ", itemId=" + itemId
+				+ ", itemCatId=" + itemCatId + ", billQty=" + billQty + ", returnQty=" + returnQty + ", distLeakageQty="
+				+ distLeakageQty + ", cgstPer=" + cgstPer + ", igstPer=" + igstPer + ", sgstPer=" + sgstPer + ", rate="
+				+ rate + ", itemName=" + itemName + ", expireQty=" + expireQty + ", leakageQty=" + leakageQty + "]";
 	}
-
+    
 }
 
 

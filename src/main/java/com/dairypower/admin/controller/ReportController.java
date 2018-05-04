@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1783,11 +1784,11 @@ public class ReportController {
 				
 				int qty=catwiseReportList.get(i).getBillQty()-(catwiseReportList.get(i).getReturnQty()+catwiseReportList.get(i).getLeakageQty());
 				float taxPer=catwiseReportList.get(i).getCgstPer()+catwiseReportList.get(i).getSgstPer();
-				float baseRate=( catwiseReportList.get(i).getRate()*100)/(100+taxPer);
-				float taxableAmt=(baseRate*qty);
-				float cgstRs=(taxableAmt*catwiseReportList.get(i).getCgstPer())/100;
-				float sgstRs=(taxableAmt*catwiseReportList.get(i).getSgstPer())/100;
-				float totalTax=cgstRs+sgstRs;
+				float baseRate=roundUp(( catwiseReportList.get(i).getRate()*100)/(100+taxPer));
+				float taxableAmt=roundUp(baseRate*qty);
+				float cgstRs=roundUp((taxableAmt*catwiseReportList.get(i).getCgstPer())/100);
+				float sgstRs=roundUp((taxableAmt*catwiseReportList.get(i).getSgstPer())/100);
+				float totalTax=roundUp(cgstRs+sgstRs);
 				rowData.add("" + qty);
 				rowData.add("" + taxableAmt);
 				rowData.add("" + totalTax);
@@ -1857,6 +1858,8 @@ public class ReportController {
 				rowData.add("Qty");
 				rowData.add("Return Qty");
 				rowData.add("Dist Leakage Qty");
+				rowData.add("Expire Qty");
+				rowData.add("Shop Leakage Qty");
 				rowData.add("Rate");
 				rowData.add("Tax Amount");
 				rowData.add("Tax %");
@@ -1877,14 +1880,18 @@ public class ReportController {
 					
 					int qty=catwiseConsumptionList.get(i).getBillQty()-(catwiseConsumptionList.get(i).getReturnQty()+catwiseConsumptionList.get(i).getDistLeakageQty());
 					float taxPer=catwiseConsumptionList.get(i).getCgstPer()+catwiseConsumptionList.get(i).getSgstPer();
-					float baseRate=( catwiseConsumptionList.get(i).getRate()*100)/(100+taxPer);
-					float taxableAmt=(baseRate*qty);
-					float cgstRs=(taxableAmt*catwiseConsumptionList.get(i).getCgstPer())/100;
-					float sgstRs=(taxableAmt*catwiseConsumptionList.get(i).getSgstPer())/100;
-					float totalTax=cgstRs+sgstRs;
+					float baseRate=roundUp(( catwiseConsumptionList.get(i).getRate()*100)/(100+taxPer));
+					float taxableAmt=roundUp(baseRate*qty);
+					float cgstRs=roundUp((taxableAmt*catwiseConsumptionList.get(i).getCgstPer())/100);
+					float sgstRs=roundUp((taxableAmt*catwiseConsumptionList.get(i).getSgstPer())/100);
+					float totalTax=roundUp(cgstRs+sgstRs);
 					rowData.add("" +catwiseConsumptionList.get(i).getBillQty());
 					rowData.add("" + catwiseConsumptionList.get(i).getReturnQty());
 					rowData.add("" + catwiseConsumptionList.get(i).getDistLeakageQty());
+					rowData.add("" + catwiseConsumptionList.get(i).getExpireQty());
+
+					rowData.add("" + catwiseConsumptionList.get(i).getLeakageQty());
+
 					rowData.add("" + baseRate);
 					rowData.add("" + totalTax);
 					rowData.add("" + taxPer);
@@ -2011,11 +2018,11 @@ public class ReportController {
 
 					int qty=bill.getBillQty()-(bill.getReturnQty()+bill.getLeakageQty());
 					float taxPer=bill.getCgstPer()+bill.getSgstPer();
-					float baseRate=( bill.getRate()*100)/(100+taxPer);
-					float taxableAmt=(baseRate*qty);
-					float cgstRs=(taxableAmt*bill.getCgstPer())/100;
-					float sgstRs=(taxableAmt*bill.getSgstPer())/100;
-					float totalTax=cgstRs+sgstRs;
+					float baseRate=roundUp(( bill.getRate()*100)/(100+taxPer));
+					float taxableAmt=roundUp(baseRate*qty);
+					float cgstRs=roundUp((taxableAmt*bill.getCgstPer())/100);
+					float sgstRs=roundUp((taxableAmt*bill.getSgstPer())/100);
+					float totalTax=roundUp(cgstRs+sgstRs);
 					
 					cell = new PdfPCell(new Phrase("" +qty, headFont));
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -2033,15 +2040,15 @@ public class ReportController {
 
 					cell = new PdfPCell(new Phrase("" +totalTax, headFont));
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+					cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 					cell.setPaddingRight(2);
 					cell.setPadding(3);
 					table.addCell(cell);
 				
 
-					cell = new PdfPCell(new Phrase(totalTax+taxableAmt+"", headFont));
+					cell = new PdfPCell(new Phrase(roundUp(totalTax+taxableAmt)+"", headFont));
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+					cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 					cell.setPaddingRight(2);
 					cell.setPadding(3);
 					table.addCell(cell);
@@ -2107,6 +2114,9 @@ public class ReportController {
 			}
 
 		}
+		public static float roundUp(float d) {
+			return BigDecimal.valueOf(d).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+		}
 		@RequestMapping(value = "/showCategoryWiseItemReportPdf/{fromDate}/{toDate}", method = RequestMethod.GET)
 		public void showCategoryWiseItemReportPdf(@PathVariable("fromDate") String fromDate,
 				@PathVariable("toDate") String toDate, HttpServletRequest request, HttpServletResponse response)
@@ -2137,11 +2147,11 @@ public class ReportController {
 				e.printStackTrace();
 			}
 
-			PdfPTable table = new PdfPTable(10);
+			PdfPTable table = new PdfPTable(12);
 			try {
 				System.out.println("Inside PDF Table try");
 				table.setWidthPercentage(100);
-				table.setWidths(new float[] { 1.4f, 3.7f, 2.8f, 2.8f, 2.8f, 3.2f, 3.5f, 2.9f, 3.3f,3.0f });
+				table.setWidths(new float[] { 1.4f, 3.7f, 2.8f, 2.8f, 2.8f, 3.2f, 3.5f, 2.9f, 3.3f,3.0f,3.3f,3.0f  });
 				Font headFont = new Font(FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
 				Font headFont1 = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
 				headFont1.setColor(BaseColor.WHITE);
@@ -2176,6 +2186,18 @@ public class ReportController {
 				table.addCell(hcell);
 
 				hcell = new PdfPCell(new Phrase("Dist Leakage Qty", headFont1));
+				hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				hcell.setBackgroundColor(BaseColor.PINK);
+
+				table.addCell(hcell);
+				
+				hcell = new PdfPCell(new Phrase("Expire Qty", headFont1));
+				hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				hcell.setBackgroundColor(BaseColor.PINK);
+
+				table.addCell(hcell);
+				
+				hcell = new PdfPCell(new Phrase("Shop Leakage Qty", headFont1));
 				hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				hcell.setBackgroundColor(BaseColor.PINK);
 
@@ -2253,13 +2275,25 @@ public class ReportController {
 					cell.setPaddingRight(2);
 					cell.setPadding(3);
 					table.addCell(cell);
+					cell = new PdfPCell(new Phrase("" + bill.getExpireQty(), headFont));
+					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+					cell.setPaddingRight(2);
+					cell.setPadding(3);
+					table.addCell(cell);
+					cell = new PdfPCell(new Phrase("" + bill.getLeakageQty(), headFont));
+					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+					cell.setPaddingRight(2);
+					cell.setPadding(3);
+					table.addCell(cell);
 					int qty=bill.getBillQty()-(bill.getReturnQty()+bill.getDistLeakageQty());
 					float taxPer=bill.getCgstPer()+bill.getSgstPer();
-					float baseRate=( bill.getRate()*100)/(100+taxPer);
-					float taxableAmt=(baseRate*qty);
-					float cgstRs=(taxableAmt*bill.getCgstPer())/100;
-					float sgstRs=(taxableAmt*bill.getSgstPer())/100;
-					float totalTax=cgstRs+sgstRs;
+					float baseRate=roundUp((bill.getRate()*100)/(100+taxPer));
+					float taxableAmt=roundUp(baseRate*qty);
+					float cgstRs=roundUp(taxableAmt*bill.getCgstPer())/100;
+					float sgstRs=roundUp(taxableAmt*bill.getSgstPer())/100;
+					float totalTax=roundUp(cgstRs+sgstRs);
 
 					cell = new PdfPCell(new Phrase("" + baseRate, headFont));
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -2288,7 +2322,7 @@ public class ReportController {
 					cell.setPaddingRight(2);
 					cell.setPadding(3);
 					table.addCell(cell);
-					cell = new PdfPCell(new Phrase(totalTax+taxableAmt+"", headFont));
+					cell = new PdfPCell(new Phrase(roundUp(totalTax+taxableAmt)+"", headFont));
 					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 					cell.setPaddingRight(2);

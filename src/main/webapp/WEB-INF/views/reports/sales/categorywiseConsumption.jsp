@@ -177,6 +177,8 @@ jQuery(document).ready(function(){
 										<th class="col-md-1"style="text-align: center;">Qty</th>
 											<th class="col-md-1"style="text-align: center;">Return Qty</th>
 										<th class="col-md-1"style="text-align: center;">Dist Leakage Qty</th>
+											<th class="col-md-1"style="text-align: center;">Expire Qty</th>
+										<th class="col-md-1"style="text-align: center;">Leakage Qty</th>
 									
 										<th class="col-md-1"style="text-align: center;">Rate</th>
 										<th class="col-md-1"style="text-align: center;">Taxable Amount</th>
@@ -288,7 +290,8 @@ jQuery(document).ready(function(){
 												  	tr.append($('<td></td>').html(item.billQty));
 												 	tr.append($('<td style="text-align:right;"></td>').html(item.returnQty));
 												  	tr.append($('<td style="text-align:right;"></td>').html(item.distLeakageQty));
-												  	
+													tr.append($('<td style="text-align:right;"></td>').html(item.expireQty));
+												  	tr.append($('<td style="text-align:right;"></td>').html(item.leakageQty));
 												  	var taxPer=(item.cgstPer+item.sgstPer);
 
 												  	var baseRate=(item.rate*100)/(100+taxPer);

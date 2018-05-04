@@ -648,7 +648,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					creditNoteDetails.setScrapType(1);
 					creditNoteDetails.setLeakageQty(distLeakageQty);
 					creditNoteDetails.setExpireQty(0);
-					creditNoteDetails.setPackDate(currDate);
+					creditNoteDetails.setPackDate(""+header.getBillDetailList().get(i).getBillDetailId());
 					creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 					creditNoteDetail.add(creditNoteDetails);
 					total=total+(header.getBillDetailList().get(i).getRate()*distLeakageQty);
@@ -936,7 +936,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 						creditNoteDetails.setScrapType(2);
 						creditNoteDetails.setExpireQty(expireQty);
 						creditNoteDetails.setLeakageQty(leakageQty);
-						creditNoteDetails.setPackDate(currDate);
+						creditNoteDetails.setPackDate(""+header.getBillDetailList().get(i).getBillDetailId());
 						creditNoteDetails.setRate(header.getBillDetailList().get(i).getRate());
 						creditNoteDetail.add(creditNoteDetails);
 						
@@ -1096,7 +1096,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		String url = request.getParameter("url");
 		System.out.println("URL " + url);
 		// http://monginis.ap-south-1.elasticbeanstalk.com
-	    File f = new File("/home/ats-12/report.pdf");
+	    File f = new File("/report.pdf");
 		//File f = new File("/home/ats-11/pdf/ordermemo221.pdf");
 		//File f = new File("/Users/MIRACLEINFOTAINMENT/ATS/uplaods/reports/ordermemo221.pdf");
 
@@ -1114,7 +1114,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		ServletContext context = request.getSession().getServletContext();
 		String appPath = context.getRealPath("");
 		String filename = "ordermemo221.pdf";
-		 String filePath = "/home/ats-12/report.pdf";
+		 String filePath = "/report.pdf";
 		//String filePath = "/home/ats-11/pdf/ordermemo221.pdf";
 		//String filePath = "/Users/MIRACLEINFOTAINMENT/ATS/uplaods/reports/ordermemo221.pdf";
 

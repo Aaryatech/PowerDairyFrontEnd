@@ -69,13 +69,22 @@
 						Insert Or Edit Stock<span></span>
 					</div></a></li>
 					
+					<li><a href="${pageContext.request.contextPath}/creditNoteLeakageQtyReport"><div
+						class="img">
+						<i class="fa fa-file-pdf-o icon"></i>
+					</div>
+					<div class="title">
+						CRN Item Leakage Qty Report<span></span>
+					</div></a></li>
+					 
+		<!-- 			
 			<li><a href="#" onClick="openNav3()"><div class="img">
 						<i class="fa fa-file-o icon"></i>
 					</div>
 					<div class="title">
 						<span>Report</span>
 					</div></a></li>
-					
+					 -->
 					<li><a href="${pageContext.request.contextPath}/logout"><div
 						class="img">
 						<i class="fa fa-file-o icon"></i>
@@ -480,7 +489,7 @@
 		</div>
 	</div> 
 	<!--4nav-->
-	<div id="mySidenav3" class="sidenav">
+<%-- 	<div id="mySidenav3" class="sidenav">
 		<div class="topSlide">
 			<div class="topSlide2">
 				<a href="javascript:void(0)" class="closebtn" onClick="closeNav3()"><img
@@ -535,7 +544,7 @@
 
 			</div>
 		</div>
-	</div> 
+	</div>  --%>
 	<!--4nav-->
 
 	<!--3nav-->
