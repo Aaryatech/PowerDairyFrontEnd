@@ -60,7 +60,7 @@
 								value="${fromDate}" name="from_Date" type="text">
 								
 								<input id="toDay" class="texboxitemcode texboxcal"
-								value="${fromDate}" name="toDay" type="hidden">
+								value="${stockDate}" name="toDay" type="hidden">
 						</div>
 						<div class="col-md-1" align="left"></div>
 						 
@@ -237,8 +237,10 @@ function serchOtherBill()
 								tr.append($('<td ></td>').html(itemList.poId));
 							  	tr.append($('<td ></td>').html(itemList.poDate));
 							  	tr.append($('<td  ></td>').html(itemList.poTotal));
-							  	tr.append($('<td  ></td>').html(itemList.poRemarks)); 
-							  	if(toDay!=itemList.poDate)
+							  	tr.append($('<td  ></td>').html(itemList.poRemarks));
+							  	//alert("stockDate " + toDay);
+							  	//alert("itemList.poDate " + itemList.poDate);
+							  	if(compareDate(toDay,itemList.poDate)==false)
 						  		{
 						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
 						  		}
@@ -258,6 +260,41 @@ function serchOtherBill()
 			});
 	
 	
+}
+
+function compareDate(toDay,poDate) {
+	 
+	 
+	//alert(toDay,poDate);
+	var isValid=false;
+	
+	var stockDate = toDay.split('-'); 
+	var toDateValue = poDate.split('-');
+	//var fromDateValue = fromDate.split('-');
+	
+	var tDate=new Date();
+	tDate.setFullYear(toDateValue[2],(toDateValue[1] - 1 ),toDateValue[0]);
+	 
+	var sDate=new Date();
+	sDate.setFullYear(stockDate[2],(stockDate[1] - 1 ),stockDate[0]);
+	
+	/* var frDate=new Date();
+	frDate.setFullYear(fromDateValue[2],(fromDateValue[1] - 1 ),fromDateValue[0]); */
+ 
+	if(sDate<=tDate) 
+		{
+			 
+		isValid=true; 
+		}
+		
+	else
+		{
+		isValid = false; 
+		}
+		
+ //alert(isValid);
+       return isValid;
+ 
 }
 
 	</script>
