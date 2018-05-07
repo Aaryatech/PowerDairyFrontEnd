@@ -83,7 +83,31 @@
 						<a href="${pageContext.request.contextPath}/manufactureReturnHistory"><input type="button" value="Return History" class="btn btn-info">
 										</a>
 					</div>
-						 
+					
+						 <div class="colOuter">
+						  
+						 <div class="col-md-2">
+							<div class="col1title" align="left">Return Crates Qty*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="cratesQty" class="form-control"
+								placeholder="Return Crates Qty" name="cratesQty" style="text-align: left;"  type="number" onchange="checkCratesStock();"  required>
+							<input id="crateStock"  
+								placeholder="crateStock" value="${crateStock }" name="crateStock"    type="hidden"   >
+						</div>
+						<div class="col-md-1"></div>
+						<div class="col-md-2">
+							<div class="col1title" align="left">Remark : </div>
+						</div>
+						<div class="col-md-3">
+							<input id="remark" class="form-control"
+								placeholder="Remark" name="remark" style="text-align: left;"  type="text"  >
+
+						</div>
+ 
+					</div>
+					<div class="colOuter"></div>
+					<div class="colOuter"></div>
 						  
 					<div class="colOuter">
 						 
@@ -128,29 +152,14 @@
 
 						</div>
 						<div class="col-md-1"></div>
-						 <div class="col-md-2">
-							<div class="col1title" align="left">Return Crates Qty*: </div>
-						</div>
-						<div class="col-md-3">
-							<input id="cratesQty" class="form-control"
-								placeholder="Return Crates Qty" name="cratesQty" style="text-align: left;"  type="number" onchange="checkCratesStock();"  required>
-							<input id="crateStock"  
-								placeholder="crateStock" value="${crateStock }" name="crateStock"    type="hidden"   >
-						</div>
+						  
  
 					</div>
 					
 					<div class="colOuter">
 						
 					 
-						<div class="col-md-2">
-							<div class="col1title" align="left">Remark : </div>
-						</div>
-						<div class="col-md-3">
-							<input id="remark" class="form-control"
-								placeholder="Remark" name="remark" style="text-align: left;"  type="text"  >
-
-						</div>
+						
  
 					</div>
 					

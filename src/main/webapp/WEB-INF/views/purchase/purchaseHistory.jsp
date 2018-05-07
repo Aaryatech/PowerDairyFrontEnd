@@ -122,7 +122,8 @@
 														<td ><c:out value="${getPoHeaderList.poDate}" /></td> 
 														<td ><c:out value="${getPoHeaderList.poTotal}" /></td>
 												 	 	<td  ><c:out value="${getPoHeaderList.poRemarks}" /> </td>
-												 	 	 <td  ><a href="${pageContext.request.contextPath}/editPurchaseBill/${getPoHeaderList.poHeaderId}" class="action_btn" ><span class="fa fa-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/${getPoHeaderList.poHeaderId}" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a>  
+												 	 	 <td  ><a href="${pageContext.request.contextPath}/editPurchaseBill/${getPoHeaderList.poHeaderId}" class="action_btn" ><span class="fa fa-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/${getPoHeaderList.poHeaderId}" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a>
+												 	 	 <a href="${pageContext.request.contextPath}/deletePurchaseBill/${getPoHeaderList.poHeaderId}" class="action_btn" ><span class="fa fa-trash-o" ></span></a>  
 												 	 	  </td>
 													</tr>
 																 
@@ -246,7 +247,7 @@ function serchOtherBill()
 						  		}
 						  	else
 						  		{
-						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/editPurchaseBill/'+itemList.poHeaderId+'" class="action_btn" ><span class="fa fa-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> '));
+						  		tr.append($('<td></td>').html('<a href="${pageContext.request.contextPath}/editPurchaseBill/'+itemList.poHeaderId+'" class="action_btn" ><span class="fa fa-edit"></span></a> <a href="${pageContext.request.contextPath}/purchaseHeaderWithDetail/'+itemList.poHeaderId+'" class="action_btn" ><abbr title="Details"><i class="fa fa-list"></i></abbr></a> <a href="${pageContext.request.contextPath}/deletePurchaseBill/'+itemList.poHeaderId+'" class="action_btn" ><span class="fa fa-trash-o" ></span></a> '));
 						  		}
 							  
 							  	

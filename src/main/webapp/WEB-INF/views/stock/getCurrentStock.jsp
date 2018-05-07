@@ -83,7 +83,7 @@
 						<div class="col-md-1"></div>
 						
 						<div class="col-md-2">
-							<div class="col1title" align="left">Customer Type*: </div>
+							<div class="col1title" align="left">Stock Type*: </div>
 						</div>
 						<div class="col-md-3">
 							<select class="selectpicker" data-live-search="true" onchange="unlockDiv();" title="Please Select" 

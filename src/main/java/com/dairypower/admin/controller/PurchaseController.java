@@ -28,6 +28,7 @@ import com.dairypower.admin.model.GetCurrentStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.GetPoHeader;
+import com.dairypower.admin.model.Info;
 import com.dairypower.admin.model.Item;
 import com.dairypower.admin.model.LoginResponse;
 import com.dairypower.admin.model.PoDetail;
@@ -272,7 +273,7 @@ public class PurchaseController {
 				}
 				insert.setPoTotal(poTotal);
 				insert.setPoDetailList(poDetailList);
-				insert.setUserId(1);
+				//insert.setUserId(1);
 				PoHeader  poHeader =  rest.postForObject(Constants.url + "/savePo",insert, PoHeader .class);
 				
 				System.out.println("PoHeader " + poHeader);
@@ -377,6 +378,10 @@ public class PurchaseController {
 				model.addObject("itemList", itemList);
 			 
 			   editPurchaseBillList = editPoHeader.getPoDetailList();
+			   
+			   StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
+						StockHeader.class); 
+				model.addObject("stockDate", stockHeader.getDate());
 			 
 		}catch(Exception e)
 		{
@@ -545,9 +550,11 @@ public class PurchaseController {
 				insert.setPoRemarks(remark);
 				insert.setCratesRecievedQty(recievedCreates);
 				insert.setPoDatetime(time.format(date));
-				HttpSession session = request.getSession(); 
+				
+				HttpSession session = request.getSession();
 				LoginResponse login = (LoginResponse) session.getAttribute("UserDetail"); 
-				insert.setUserId(login.getUser().getIsUsed());
+				insert.setUserId(login.getUser().getUserId());
+				System.out.println(" user Id " + login.getUser().getUserId());
 				
 				List<PoDetail> poDetailList = new ArrayList<>();
 				float poTotal = 0;
@@ -576,6 +583,7 @@ public class PurchaseController {
 				}
 				insert.setPoTotal(poTotal);
 				insert.setPoDetailList(poDetailList);
+				System.out.println("insert " + insert.toString());
 				PoHeader  poHeader =  rest.postForObject(Constants.url + "/savePo",insert, PoHeader .class);
 				
 				System.out.println("PoHeader " + poHeader);
@@ -586,6 +594,28 @@ public class PurchaseController {
 			e.printStackTrace();
 		}
 		
+
+		return "redirect:/purchaseHistory";
+	}
+	
+	@RequestMapping(value = "/deletePurchaseBill/{poHeaderId}", method = RequestMethod.GET)
+	public String deletePurchaseBill(@PathVariable int poHeaderId, HttpServletRequest request, HttpServletResponse response) {
+
+		//ModelAndView model = new ModelAndView("purchase/editPurchaseBill");
+		try
+		{
+			  
+			 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+			 map.add("poHeaderId",poHeaderId); 
+			   Info deletePo =  rest.postForObject(Constants.url + "/deletePurchaseBill",map, Info .class);
+			 //model.addObject("getPoHeader", editPoHeader); 
+			 System.out.println("deletePo " + deletePo);
+			 
+			 
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		return "redirect:/purchaseHistory";
 	}

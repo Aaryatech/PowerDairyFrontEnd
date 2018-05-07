@@ -395,7 +395,7 @@ public class ReturnManufactureController {
 			TVehicle tVehicle = new TVehicle();
 			tVehicle.setVehId(vehId);
 			tVehicle.setInKms(inKm);
-			tVehicle.setEntryBy(1);
+			tVehicle.setEntryBy(login.getUser().getIsUsed());
 			tVehicle.setRemark(remark);
 			tVehicle.setDriverName(driverName);
 			tVehicle.setDate(sf.format(date));

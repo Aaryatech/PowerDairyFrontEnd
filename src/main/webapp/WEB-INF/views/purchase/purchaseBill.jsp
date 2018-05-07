@@ -295,18 +295,18 @@
 					<div class="colOuter">
 						<div align="center">
 						
-						<c:choose>
-							<c:when test="${today==stockDate }">
+						<%-- <c:choose>
+							<c:when test="${today==stockDate }"> --%>
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center">
-							</c:when>
+							<%-- </c:when>
 							<c:otherwise>
 							
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center" disabled>
 								Please Complete The Day End Process.....
 							</c:otherwise>
-						</c:choose>
+						</c:choose> --%>
 							 
 					</div>
 				 
@@ -629,6 +629,8 @@ function getCurrentStockByItem() {
 								document.getElementById("itemQty").value=qty;
 			 
 }  
+  
+  
 
 (function() {
   var fauxTable = document.getElementById("faux-table");
@@ -643,6 +645,6 @@ function getCurrentStockByItem() {
 
 
 	</script>
-
+	 
 </body>
 </html>

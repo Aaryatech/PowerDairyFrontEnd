@@ -138,6 +138,7 @@
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
 								style="text-align: left;" value="${getPoHeader.poRemarks}" placeholder="Remark" name="remark" type="text"  >
+								<input id="stockDate" value="${stockDate}" name="stockDate" type="hidden"  >
 							 
 
 						</div>
