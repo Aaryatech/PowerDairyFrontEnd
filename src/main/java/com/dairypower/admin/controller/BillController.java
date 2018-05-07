@@ -647,7 +647,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 					CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
 					creditNoteDetails.setCrnDetailId(0);
 					creditNoteDetails.setCrnHeaderId(0);
-					creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
+					creditNoteDetails.setBatchId(header.getBillDetailList().get(i).getBatchNo());
 					creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
 					creditNoteDetails.setScrapType(1);
 					creditNoteDetails.setLeakageQty(distLeakageQty);
@@ -935,7 +935,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 						CreditNoteDetail creditNoteDetails=new CreditNoteDetail();
 						creditNoteDetails.setCrnDetailId(0);
 						creditNoteDetails.setCrnHeaderId(0);
-						creditNoteDetails.setBatchId(Integer.parseInt(header.getBillDetailList().get(i).getBatchNo()));
+						creditNoteDetails.setBatchId(header.getBillDetailList().get(i).getBatchNo());
 						creditNoteDetails.setItemId(header.getBillDetailList().get(i).getItemId());
 						creditNoteDetails.setScrapType(2);
 						creditNoteDetails.setExpireQty(expireQty);
