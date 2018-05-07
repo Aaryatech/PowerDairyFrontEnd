@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -48,6 +49,7 @@ import com.dairypower.admin.model.GetCratesStock;
 import com.dairypower.admin.model.GetItem;
 import com.dairypower.admin.model.GetPoDetail;
 import com.dairypower.admin.model.Info;
+import com.dairypower.admin.model.LoginResponse;
 import com.dairypower.admin.model.PoDetail;
 import com.dairypower.admin.model.ReturnStockUpdate;
 import com.dairypower.admin.model.RsDetail;
@@ -422,6 +424,8 @@ public int checkPoBalance(HttpServletRequest request, HttpServletResponse respon
 public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpServletResponse response) {
 	
 	RestTemplate restTemplate=new RestTemplate();
+	HttpSession session = request.getSession(); 
+	LoginResponse login = (LoginResponse) session.getAttribute("UserDetail"); 
 	
 	System.out.println("Item  Detail Before Submit "+billDetailList.toString());
 	BillHeader  billHeaderRes = null;
@@ -478,7 +482,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 			tVehicleRes.setOutKm(outKm);
 			tVehicleRes.setDate(currdDate);
 			tVehicleRes.setDatetime(strDateTime);
-			tVehicleRes.setEntryBy(1);
+			tVehicleRes.setEntryBy(login.getUser().getIsUsed());
 			tVehicleRes.setRemark("");
 			tVehicleRes.setDriverName("");
 			

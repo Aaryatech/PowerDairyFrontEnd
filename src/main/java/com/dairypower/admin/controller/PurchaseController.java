@@ -434,8 +434,29 @@ public class PurchaseController {
 				 System.out.println("edit Item" + key);
 				 editPurchaseBillList.get(key).setItemId(itemId); 
 				 editPurchaseBillList.get(key).setBatchNo(batchNo);
+				 int balance=editPurchaseBillList.get(key).getBalance();
+                 int prevQty= editPurchaseBillList.get(key).getItemQty();
+                 int actQty=0;
+                 int totQty=editPurchaseBillList.get(key).getBalance();
+                 if(prevQty>qty)
+                 {
+                	 actQty=(prevQty-qty);
+                	 totQty=balance-actQty;
+                	 
+                 }else if(qty>prevQty)
+                 {
+                	 actQty=(qty-prevQty);
+                	 totQty=balance+actQty;
+                	 
+                 }
+                 else if(qty==prevQty)
+                 {
+                	 actQty=qty;
+                 }
+                 
 				 editPurchaseBillList.get(key).setItemQty(qty);
-				 editPurchaseBillList.get(key).setBalance(qty);
+				 
+				 editPurchaseBillList.get(key).setBalance(totQty);
 				 editPurchaseBillList.get(key).setShortNo(shortNo);
 				 editPurchaseBillList.get(key).setExtraNo(extraNo);
 				 editPurchaseBillList.get(key).setPoLeakageQty(leakageQty);
@@ -555,7 +576,6 @@ public class PurchaseController {
 				}
 				insert.setPoTotal(poTotal);
 				insert.setPoDetailList(poDetailList);
-				insert.setUserId(1);
 				PoHeader  poHeader =  rest.postForObject(Constants.url + "/savePo",insert, PoHeader .class);
 				
 				System.out.println("PoHeader " + poHeader);
