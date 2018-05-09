@@ -27,17 +27,36 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 <script>
-		$(function() {
+		 $(function() {
+			var c = document.getElementById("stockDateDDMMYYYY").value; 
+			var toDateValue = c.split('-');
+			var tDate=new Date();
+			tDate.setFullYear(toDateValue[2],(toDateValue[1] - 1 ),toDateValue[0]); 
+			var min = new Date(tDate.setDate(tDate.getDate())); 
 			$("#datepicker").datepicker({
-				dateFormat : 'dd-mm-yy'
+				dateFormat : 'dd-mm-yy',
+					minDate : min
 			});
-		});
-		$(function() {
+		});  
+		 $(function() {
 			$("#datepicker1").datepicker({
 				dateFormat : 'dd-mm-yy'
 			});
-		});
+		}); 
 	</script>
+	
+	<!-- <script>
+		$(function() {
+			 
+			var todaysDate = new Date();
+			var min = new Date(todaysDate.setDate(todaysDate.getDate()));
+
+			$("#datepicker").datepicker({
+				dateFormat : 'dd-mm-yy',
+					minDate : min
+			});
+		});
+</script> -->
 <!--datepicker-->
 
 <!--topLeft-nav-->
@@ -163,8 +182,9 @@
 								style="text-align: left;" placeholder="Remark" name="remark" type="text"  >
 								
 							<input id="stockDate" value="${stockDate}" name="stockDate" type="hidden"  >
+							<input id="stockDateDDMMYYYY" value="${stockDateDDMMYYYY}" name="stockDateDDMMYYYY" type="hidden"  >
 							 
-
+ 
 						</div>
  
 					</div> 
@@ -461,6 +481,8 @@ function addItem( ) {
 										
 										document.getElementById("itemId").value="";
 										$('.selectpicker').selectpicker('refresh');
+										$('#itemId').focus();
+										 
 										document.getElementById("index").value="";
 										document.getElementById("batchNo").value="";  
 										document.getElementById("qty").value=0;

@@ -65,7 +65,7 @@ public class PurchaseController {
 			StockHeader stockHeader = rest.getForObject(Constants.url + "getStock",
 					StockHeader.class); 
 			model.addObject("stockDate", stockHeader.getDate());
-			
+			model.addObject("stockDateDDMMYYYY",DateConvertor.convertToDMY(stockHeader.getDate()));
 		}catch(Exception e)
 		{
 			e.printStackTrace();

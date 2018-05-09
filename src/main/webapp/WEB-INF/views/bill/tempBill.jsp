@@ -24,8 +24,15 @@
 <script>
 		$(function() {
 			
+			var c = document.getElementById("stockDate").value; 
+			var toDateValue = c.split('-');
+			var tDate=new Date();
+			tDate.setFullYear(toDateValue[0],(toDateValue[1] - 1 ),toDateValue[2]); 
+			var min = new Date(tDate.setDate(tDate.getDate())); 
+			
 			$("#fromdatepicker").datepicker({
-				dateFormat : 'dd-mm-yy'
+				dateFormat : 'dd-mm-yy',
+				minDate : min
 			});
 		});
 		$(function() {
@@ -176,6 +183,7 @@
 						<div class="col-md-2">
 							<input id="fromdatepicker"  placeholder="Bill Date" class="form-control"
 													value="${billdate}"		name="billDate" type="text" required>
+							<input id="stockDate" value="${stockDate}"	name="stockDate" type="hidden" required>
 
 						</div>
 						
