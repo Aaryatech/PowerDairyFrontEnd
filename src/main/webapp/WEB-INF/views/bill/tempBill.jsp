@@ -23,6 +23,7 @@
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 <script>
 		$(function() {
+			
 			$("#fromdatepicker").datepicker({
 				dateFormat : 'dd-mm-yy'
 			});
@@ -166,12 +167,22 @@
 								placeholder="Vehicle Out KM" name="vehOutKm" style="text-align: left;" type="number" readonly>
 
 						</div>
-						
 						<div class="col-md-1">
+							
+						</div>
+						<div class="col-md-2">
+							<div class="col1title" align="left">Date*: </div>
+						</div>
+						<div class="col-md-2">
+							<input id="fromdatepicker"  placeholder="Bill Date" class="form-control"
+													value="${billdate}"		name="billDate" type="text" required>
+
+						</div>
+						
+                       <div class="col-md-2">
 							<a href="${pageContext.request.contextPath}/adjustKm"> <input type="button" class="btn additem_btn" value="Adjust KM"  
 												id="adjustKm"/></a>
 						</div>
- 
 					</div> 
 					
 					 <div class="colOuter"> 
@@ -287,19 +298,19 @@
 						 
 					<div class="colOuter">
 						<div align="center">
-						
+					<%-- 	
 						<c:choose>
-							<c:when test="${today==stockDate}">
+							<c:when test="${today==stockDate}"> --%>
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="button" align="center" onclick="saveTempBill()">
-							</c:when>
-							<c:otherwise>
+						<%--	</c:when>
+						 	<c:otherwise>
 							
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center" disabled>
 								Please Complete The Day End Process.....
 							</c:otherwise>
-						</c:choose>
+						</c:choose> --%>
 						</div>
 				 
 					</div>
@@ -687,6 +698,8 @@ function saveTempBill()
 	var totalCrates=cratesIssueQty+cratesOpnQty;
 	var total=parseFloat($("#grandTotalText").val());
 	var vehOutKm=parseInt($("#vehOutKm").val());
+	var billDate=$("#fromdatepicker").val();
+	
 	if(totalCrates<=cratesCap)
 		{
 		if(total<custCap)
@@ -700,7 +713,7 @@ function saveTempBill()
 		cratesOpnQty:cratesOpnQty,
 		cratesIssueQty:cratesIssueQty,
 		vehOutKm:vehOutKm,
-		
+		billDate:billDate,
 		ajax : 'true',
 	},  function(data) { 
  

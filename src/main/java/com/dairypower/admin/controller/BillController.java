@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -216,8 +217,11 @@ public class BillController {
 			  model.addObject("crateStock", totalCrates);
 			  
 			  SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			  SimpleDateFormat sf1 = new SimpleDateFormat("dd-MM-yyyy");
 				Date today = new Date();
 				model.addObject("today", sf.format(today));
+				model.addObject("billdate", sf1.format(today));
+
 
 		}catch(Exception e)
 		{
@@ -434,6 +438,11 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 	{
 		int custId=Integer.parseInt(request.getParameter("custId"));
 		System.out.println("custId"+custId);
+		String billDate=request.getParameter("billDate");
+		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
+		Date date1 = (Date)formatter.parse(billDate);
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String finalString = newFormat.format(date1);
 		
 		int vehId=Integer.parseInt(request.getParameter("vehId"));
 		System.out.println("vehId"+vehId);
@@ -445,7 +454,7 @@ public @ResponseBody BillHeader insertTempBill(HttpServletRequest request, HttpS
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		billHeader.setBillTempId(0);
 		billHeader.setBillId(0);
-		billHeader.setBillDate(df.format(new Date()));
+		billHeader.setBillDate(finalString);
 		billHeader.setCollectedAmt(0);
 		billHeader.setCollectionPaymode(0);
 		billHeader.setCratesClBal(0);
