@@ -26,16 +26,24 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-ui.js"></script>
 <script>
-		$(function() {
-			$("#fromdatepicker").datepicker({
-				dateFormat : 'dd-mm-yy'
-			});
-		});
-		$(function() {
-			$("#todatepicker").datepicker({
-				dateFormat : 'dd-mm-yy'
-			});
-		});
+$(function() {
+	
+	var c = document.getElementById("stockDate").value; 
+	var toDateValue = c.split('-');
+	var tDate=new Date();
+	tDate.setFullYear(toDateValue[0],(toDateValue[1] - 1 ),toDateValue[2]); 
+	var min = new Date(tDate.setDate(tDate.getDate())); 
+	
+	$("#fromdatepicker").datepicker({
+		dateFormat : 'dd-mm-yy',
+		minDate : min
+	});
+});
+$(function() {
+	$("#todatepicker").datepicker({
+		dateFormat : 'dd-mm-yy'
+	});
+});
 	</script>
 <!--datepicker-->
 
@@ -102,9 +110,19 @@
 						<div class="col-md-3">
 							<input id="remark" class="form-control"
 								placeholder="Remark" name="remark" style="text-align: left;"  type="text"  >
+								<input id="stockDate"  value="${stockDate}" name="stockDate" style="text-align: left;"  type="hidden"  >
 
 						</div>
  
+					</div>
+					<div class="colOuter">
+						<div class="col-md-2">
+							<div class="col1title" align="left">Date*: </div>
+						</div>
+						<div class="col-md-3">
+							<input id="fromdatepicker"  placeholder="Date" style="text-align: left;" class="form-control" name="returnDate" type="text" required> 
+
+						</div>
 					</div>
 					<div class="colOuter"></div>
 					<div class="colOuter"></div>
@@ -199,18 +217,18 @@
 						 
 					<div class="colOuter">
 						<div align="center">
-						<c:choose>
-							<c:when test="${today==stockDate }">
+						<%-- <c:choose>
+							<c:when test="${today==stockDate }"> --%>
 							<input name="submit" id="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center" disabled>
-							</c:when>
+							<%-- </c:when>
 							<c:otherwise>
 							
 							<input name="submit" class="buttonsaveorder" value="Submit"
 								type="submit" align="center" disabled>
 								Please Complete The Day End Process.....
 							</c:otherwise>
-						</c:choose>
+						</c:choose> --%>
 							
 								<!-- <input type="button" class="buttonsaveorder" value="Cancel" id="cancel" onclick="cancel1()" disabled> -->
 						</div>

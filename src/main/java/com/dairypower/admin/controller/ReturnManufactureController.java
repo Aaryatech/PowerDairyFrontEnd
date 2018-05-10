@@ -230,7 +230,7 @@ public class ReturnManufactureController {
 	 
 		try {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
 		 
 			HttpSession session = request.getSession(); 
@@ -240,18 +240,20 @@ public class ReturnManufactureController {
 			 
 			int cratesQty = Integer.parseInt(request.getParameter("cratesQty")); 
 			String remark = request.getParameter("remark");
-			
+			String returnDate = request.getParameter("returnDate");
+			System.out.println("returnDate " +returnDate);
 			MfgReturn mfgReturn = new MfgReturn();
 			 
 			mfgReturn.setCratesReturnQty(cratesQty);
 			mfgReturn.setRemark(remark);
-			mfgReturn.setDate(sf.format(date));
-			mfgReturn.setDatetime(time.format(date));
+			mfgReturn.setDate(DateConvertor.convertToYMD(returnDate));
+			mfgReturn.setDatetime(DateConvertor.convertToYMD(returnDate)+" "+time.format(date));
 			mfgReturn.setEntryBy(login.getUser().getUserId());
 			mfgReturn.setMfgReturnDetailList(mfgReturnDetailList);
 			
+				 System.out.println("mfgReturn " +mfgReturn);
 				 
-				 Info info = rest.postForObject(Constants.url + "/saveMfgReturn",mfgReturn,
+				  Info info = rest.postForObject(Constants.url + "/saveMfgReturn",mfgReturn,
 						 Info.class); 
 				 
 				 if(info.isError()==false)
@@ -259,7 +261,7 @@ public class ReturnManufactureController {
 					 List<PoDetail> res = rest.postForObject(Constants.url + "updatePoDetailList",updatePoDetaillist,
 							 List.class); 
 					 System.out.println("res " + res);
-				 }
+				 } 
 			 
 			 
 			
